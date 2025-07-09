@@ -1,0 +1,40 @@
+.signup-card {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 450px;
+    color: #fff;
+}
+
+.signup-title {
+    font-weight: bold;
+    color: #ffebcd;
+    /* Màu sáng nổi bật trên nền trong */
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border: 1px solid #ff6347;
+}
+
+.btn-signup {
+    background-color: #ff6347;
+    border: none;
+}
+
+.btn-signup:hover {
+    background-color: #e5533d;
+}
+
+a {
+    color: #fce4ec;
+}

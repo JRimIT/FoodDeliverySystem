@@ -1,0 +1,49 @@
+.bodyLogin {
+    background: url('https://static.vecteezy.com/system/resources/previews/003/823/542/non_2x/spices-for-use-as-cooking-ingredients-on-a-wooden-background-with-fresh-vegetables-healthy-food-herbs-organic-vegetables-on-the-table-raw-materials-of-cooking-preparation-tom-yum-free-photo.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    color: #fff;
+}
+
+.login-title {
+    font-weight: bold;
+    color: #ffebcd;
+    /* Màu sáng nổi bật trên nền trong */
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border: 1px solid #ff6347;
+}
+
+.btn-login {
+    background-color: #ff6347;
+    border: none;
+}
+
+.btn-login:hover {
+    background-color: #e5533d;
+}
+
+a {
+    color: #fce4ec;
+}

@@ -1,0 +1,51 @@
+body {
+    background: linear-gradient(to right, #fff0f5, #ffe5ec);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+}
+
+.cart-container {
+    max-width: 1000px;
+    height: 100vh;
+    margin: 50px auto;
+    margin-top: 120px;
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item {
+    border-bottom: 1px solid #eee;
+    padding: 20px 0;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.product-image {
+    width: 100px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.total-section {
+    text-align: right;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.btn-checkout {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-size: 18px;
+}
+
+.btn-checkout:hover {
+    background-color: #e63c3f;
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= product.name %> - Foodie Express
+    </title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="/css/navbar.css">
+    <link rel="stylesheet" href="/css/DetailProduct.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <%- include('../partials/navbar.ejs') %>
+
+        <div class="container product-detail" data-aos="fade-up">
+            <div class="row">
+                <!-- Product Image -->
+                <div class="col-md-6">
+                    <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="product-image" />
+                </div>
+
+                <!-- Product Info -->
+                <div class="col-md-6">
+                    <h2 class="product-title">
+                        <%= product.name %>
+                    </h2>
+                    <p><strong>Category:</strong>
+                        <%= product.category %>
+                    </p>
+                    <p><strong>Price:</strong> $<%= product.price %>
+                    </p>
+                    <p>
+                        <%= product.description %>
+                    </p>
+
+                    <div class="mt-4">
+                        <!-- Input số lượng -->
+                        <div class="mb-3 d-flex align-items-center">
+                            <label for="quantity" class="form-label me-3 mb-0"><strong>Quantity:</strong></label>
+                            <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1" style="width: 100px;">
+                        </div>
+
+                        
+                        <a href="#" onclick="orderNow('<%= product._id %>')" class="btn btn-order me-3">Order Now</a>
+                        <a href="#" onclick="addToCart('<%= product._id %>')" class="btn btn-cart">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Section -->
+            <div class="review-section" data-aos="fade-up" data-aos-delay="200">
+                <h4 class="mt-5 mb-4">Customer Reviews</h4>
+
+                <% if (product.reviews && product.reviews.length> 0) { %>
+                    <% product.reviews.forEach(review=> { %>
+                        <div class="review-item">
+                            <strong>
+                                <%= review.username %>
+                            </strong>
+                            <span class="text-warning">
+                                <% for (let i=1; i <= 5; i++) { %> 
+                                    <% if(i <= review.rating) { %> 
+                                        <i class= "fas fa-star"></i>
+                                        
+                                    <% } else {%> 
+                                        <i class='far fa-star'></i>
+                                        <% } %>
+                                <% } %>
+                            </span>
+                            <p>
+                                <%= review.comment %>
+                            </p>
+                        </div>
+                        <% }) %>
+                            <% } else { %>
+                                <p>No reviews yet.</p>
+                                <% } %>
+            </div>
+
+            <!-- Form Write Review -->
+            <div class="mt-5">
+                <h5>Write a Review</h5>
+                <form action="/product/<%= product._id %>/review" method="POST">
+                    <div class="mb-3">
+                        <label for="rating" class="form-label">Rating</label>
+                        <select name="rating" id="rating" class="form-select" required>
+                            <option value="">Select Rating</option>
+                            <option value="5">5 - Excellent</option>
+                            <option value="4">4 - Good</option>
+                            <option value="3">3 - Average</option>
+                            <option value="2">2 - Poor</option>
+                            <option value="1">1 - Terrible</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Your Review</label>
+                        <textarea name="comment" id="comment" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-order">Submit Review</button>
+                </form>
+            </div>
+
+        </div>
+
+        <script>
+            function orderNow(productId) {
+                const quantity = document.getElementById('quantity').value || 1;
+               
+                window.location.href = `/order/${productId}?quantity=${quantity}`;
+            }
+
+            function addToCart(productId) {
+                const quantity = document.getElementById('quantity').value || 1;
+                window.location.href = `/cart/add/${productId}?quantity=${quantity}`;
+            }
+        </script>
+        
+
+        <!-- Footer -->
+<%- include('../partials/footer.ejs') %>
+
+       

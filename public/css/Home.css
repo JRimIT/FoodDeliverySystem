@@ -1,0 +1,65 @@
+.bodyHome {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url('https://images.unsplash.com/photo-1604908811714-f8f1160a8c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+}
+
+.navbar-custom {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand img {
+    height: 50px;
+}
+
+.nav-link {
+    color: #ff6347 !important;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.nav-link:hover {
+    color: #e5533d !important;
+}
+
+.search-bar {
+    max-width: 400px;
+}
+
+.carousel-item img {
+    height: 500px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.products-section {
+    padding: 50px 15px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    margin: 30px auto;
+    max-width: 1200px;
+}
+
+.card img {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+}
+
+.card-title {
+    color: #ff6347;
+    font-weight: bold;
+}
+
+.btn-order {
+    background-color: #ff6347;
+    border: none;
+}
+
+.btn-order:hover {
+    background-color: #e5533d;
+}
