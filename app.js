@@ -15,6 +15,7 @@ import detailProduct from "./routes/detail.product.route.js";
 import cartRoute from "./routes/Cart.route.js";
 import adminRoute from "./routes/admin.route.js";
 import staticRoute from "./routes/static.route.js";
+import profileRoute from "./routes/profile.routes.js";
 
 import { connectToMongoDB } from "./db/connectToMongoDB.js";
 
@@ -41,6 +42,7 @@ app.use("/", verifyUser, menuRoute);
 app.use("/", verifyUser, detailProduct);
 app.use("/", verifyUser, cartRoute);
 app.use("/", staticRoute);
+app.use("/", verifyUser, profileRoute);
 app.use("/", verifyAdmin, adminRoute);
 
 // Server start

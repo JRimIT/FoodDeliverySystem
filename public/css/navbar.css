@@ -1,23 +1,36 @@
 .navbar-custom {
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand img {
-    height: 50px;
+  height: 50px;
 }
 
 .nav-link {
-    color: #ff6347 !important;
-    font-weight: bold;
-    margin-right: 15px;
+  color: #ff6347 !important;
+  font-weight: bold;
+  margin-right: 15px;
 }
 
 .nav-link:hover {
-    color: #e5533d !important;
+  color: #e5533d !important;
 }
 
 .search-bar {
-    max-width: 400px;
+  max-width: 400px;
+}
+
+.navbar-custom {
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand img {
+  height: 40px;
+}
+
+.dropdown img {
+  object-fit: cover;
 }

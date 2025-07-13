@@ -1,0 +1,42 @@
+/* Đảm bảo phần nội dung không bị che bởi navbar */
+.settings-wrapper {
+  margin-top: 100px; /* đủ để tránh navbar cao khoảng 60–80px */
+  padding-bottom: 50px;
+}
+
+/* Phần menu bên trái */
+.settings-wrapper h4 {
+  font-weight: 600;
+}
+
+/* Menu tab trái */
+.settings-menu .list-group-item {
+  border: none;
+  background: none;
+  padding: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #222;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settings-menu .list-group-item:hover,
+.settings-menu .list-group-item.active {
+  color: #000;
+  font-weight: 600;
+  background-color: #f2f2f2;
+  border-radius: 8px;
+}
+
+/* Nội dung từng tab */
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}

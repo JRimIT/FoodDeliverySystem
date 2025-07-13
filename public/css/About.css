@@ -19,6 +19,7 @@
 .about-page .timeline {
   border-left: 4px solid #dc3545;
   padding-left: 20px;
+  margin-left: 200px;
 }
 
 .about-page .timeline-item {
