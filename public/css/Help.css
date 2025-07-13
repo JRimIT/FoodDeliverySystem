@@ -1,0 +1,38 @@
+.help-search-section {
+  padding-top: 120px;
+  padding-bottom: 40px;
+  background-color: #fff;
+}
+
+.search-box input {
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 10px;
+  padding: 12px 20px;
+  border: 1px solid #ccc;
+}
+
+.faq-item h5 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.faq-question {
+  cursor: pointer;
+  color: #0077cc;
+  margin-bottom: 5px;
+}
+
+.faq-question:hover {
+  text-decoration: underline;
+}
+
+.faq-answer-panel {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.faq-answer-panel .card {
+  background-color: #f8f9fa;
+  border-left: 5px solid #ff6347;
+}
