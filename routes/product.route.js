@@ -46,14 +46,15 @@ router.get('/listFeatureFood', async (req, res) => {
             res.status(200).json({ message: "Not have any products" });
         }
 
-
-
         const cartCount = await countProduct(req.user.userId)
+
+
+
         // res.status(200).json(product);
         res.render('pages/Home', {
             listFeatureFood: product,
-            cartCount: cartCount
-
+            cartCount: cartCount,
+            user: req.user
         })
 
 

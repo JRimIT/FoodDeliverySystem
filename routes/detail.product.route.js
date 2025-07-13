@@ -30,13 +30,15 @@ router.get('/detail/:productId', async (req, res) => {
             const cartCount = await countProduct(req.user.userId)
             res.render('pages/detailProduct', {
                 product: product,
-                cartCount: cartCount
+                cartCount: cartCount,
+                user: req.user
             })
         } else {
 
             res.render('pages/detailProduct', {
                 product: product,
-                cartCount: 0
+                cartCount: 0,
+                user: req.user
             })
         }
 

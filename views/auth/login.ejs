@@ -21,6 +21,14 @@
     
     <div class="login-card text-center">
         <h2 class="login-title mb-4">Food Delivery Login</h2>
+        <% if (typeof error !=='undefined' ) { %>
+            <div class="alert alert-danger">
+                <% if (error==='UserNotFound' ) { %>
+                    Người dùng không tồn tại.
+                    <% } else if (error==='InvalidPassword' ) { %>
+                        Mật khẩu không đúng.
+                        <% } %>
+            </div> <% } %>
         <form action="/auth/login" method="POST">
             <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>

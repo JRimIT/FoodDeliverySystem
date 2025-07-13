@@ -13,6 +13,7 @@ import productRoute from './routes/product.route.js'
 import menuRoute from './routes/menu.route.js'
 import detailProduct from './routes/detail.product.route.js'
 import cartRoute from './routes/Cart.route.js'
+import adminRoute from './routes/admin.route.js'
 
 import { connectToMongoDB } from './db/connectToMongoDB.js';
 
@@ -38,6 +39,9 @@ app.use('/', verifyUser, productRoute)
 app.use('/', verifyUser, menuRoute)
 app.use('/', verifyUser, detailProduct)
 app.use('/', verifyUser, cartRoute)
+
+app.use('/', verifyAdmin, adminRoute)
+
 
 // Server start
 const PORT = process.env.PORT || 4000;

@@ -20,7 +20,7 @@ const axiosInstance = axios.create({
 router.get('/view/cart', verifyUser, async (req, res) => {
     try {
         console.log("User: ", req.user.userId);
-
+        const user = req.user
         const cart = await Cart.findOne({ userId: req.user.userId }).populate({
             path: 'items',
             populate: {
@@ -30,17 +30,21 @@ router.get('/view/cart', verifyUser, async (req, res) => {
 
         })
         console.log(`cart: `, cart);
-
-
-        const totalPrice = await cart.items.reduce((sum, item) => {
-            return sum + item.product.price * item.quantity
-        }, 0)
-
         const cartCount = await countProduct(req.user.userId)
+
+        if (cart) {
+            const totalPrice = await cart.items.reduce((sum, item) => {
+                return sum + item.product.price * item.quantity
+            }, 0)
+
+
+            res.render('pages/Cart', { items: cart.items, total: totalPrice, cartCount: cartCount, user })
+        } else {
+            res.render('pages/Cart', { items: [], total: 0, cartCount: cartCount, user })
+        }
 
         // res.json(cart)
 
-        res.render('pages/Cart', { items: cart.items, total: totalPrice, cartCount: cartCount })
     } catch (error) {
         console.error("Error fetching /view/cart:", error);
         res.status(500).json({ message: "Internal server error" });

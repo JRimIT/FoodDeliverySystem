@@ -40,11 +40,11 @@ router.post('/auth/login', async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-        return res.status(401).send('Invalid credentials');
+        return res.redirect('/login?error=UserNotFound');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).send('Invalid credentials');
+    if (!isMatch) return res.redirect('/login?error=InvalidPassword');
 
     const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '3h' });
     console.log("Token : ", token);
@@ -52,5 +52,10 @@ router.post('/auth/login', async (req, res) => {
     // res.json({ message: 'Login successful', user, token });
     res.redirect('/listFeatureFood')
 })
+
+router.get('/login', (req, res) => {
+    const error = req.query.error;
+    res.render('auth/login', { error });
+});
 
 export default router;

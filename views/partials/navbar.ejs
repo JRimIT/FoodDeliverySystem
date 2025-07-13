@@ -17,6 +17,14 @@
                 <li class="nav-item"><a class="nav-link" href="/Menu/listFoods">Menu</a></li>
                 <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
                 <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+                <!-- Hiển thị icon admin nếu là admin -->
+                <% if (user && user.role==='admin' ) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/Home">
+                            <i class="fas fa-user-shield"></i> Admin
+                        </a>
+                    </li>
+                    <% } %>
             </ul>
 
             <!-- Search bar -->

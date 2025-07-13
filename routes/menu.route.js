@@ -44,7 +44,8 @@ router.get('/Menu/listFoods', async (req, res) => {
                 selectedCategory: category,
                 currentPage: page,
                 listCategory,
-                cartCount: cartCount
+                cartCount: cartCount,
+                user: req.user
             })
         } else {
 
@@ -54,7 +55,8 @@ router.get('/Menu/listFoods', async (req, res) => {
                 selectedCategory: category,
                 currentPage: page,
                 listCategory,
-                cartCount: 0
+                cartCount: 0,
+                user: req.user
             })
         }
 

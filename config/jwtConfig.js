@@ -39,7 +39,7 @@ export const verifyUser = (req, res, next) => {
     if (!token) {
         return res.status(403).json({ message: 'No token provided!' });
     }
-    console.log("token verify: ", token);
+    // console.log("token verify: ", token);
 
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
