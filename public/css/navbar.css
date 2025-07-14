@@ -33,4 +33,19 @@
 
 .dropdown img {
   object-fit: cover;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.dropdown-menu.show {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+.dropdown-menu {
+  z-index: 1000;
 }
