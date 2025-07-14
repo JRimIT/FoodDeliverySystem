@@ -1,64 +1,75 @@
 <%- include('../partials/header.ejs') %>
 
-
 <div class="bodyHome">
+  <!-- Navbar -->
+  <%- include('../partials/navbar.ejs') %>
 
-    <!-- Navbar -->
-    <%- include('../partials/navbar.ejs') %>
-    
-    <!-- Slideshow Banner -->
-    <div id="carouselExampleIndicators" class="carousel slide mt-5" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active" data-aos="fade-up">
-                <img src="https://andylewis.com.au/wp-content/uploads/2023/01/Andy-Lewis-Food-Photographer_Created-Equal-Helgas-BLT_Bacon-Sandwich-Advert-Core-Loaf_Low-Res.jpg"
-                    class="d-block w-100" alt="Pizza">
-            </div>
-            <div class="carousel-item" data-aos="fade-up">
-                <img src="https://andylewis.com.au/wp-content/uploads/2023/01/Andy-Lewis-Food-Photographer_Created-Equal-Helgas-BLT_Bacon-Sandwich-Advert-Core-Loaf_Low-Res.jpg"
-                    class="d-block w-100" alt="Burger">
-            </div>
-            <div class="carousel-item" data-aos="fade-up">
-                <img src="https://andylewis.com.au/wp-content/uploads/2023/01/Andy-Lewis-Food-Photographer_Created-Equal-Helgas-BLT_Bacon-Sandwich-Advert-Core-Loaf_Low-Res.jpg"
-                    class="d-block w-100" alt="Sushi">
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
-            data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
+  <!-- Slideshow Banner -->
+  <div
+    id="carouselExampleIndicators"
+    class="carousel slide mt-5"
+    data-bs-ride="carousel"
+  >
+    <div class="carousel-inner">
+      <div class="carousel-item active" data-aos="fade-up">
+        <img
+          src="https://andylewis.com.au/wp-content/uploads/2023/01/Andy-Lewis-Food-Photographer_Created-Equal-Helgas-BLT_Bacon-Sandwich-Advert-Core-Loaf_Low-Res.jpg"
+          class="d-block w-100"
+          alt="Pizza"
+        />
+      </div>
+      <div class="carousel-item" data-aos="fade-up">
+        <img
+          src="https://andylewis.com.au/wp-content/uploads/2023/01/Andy-Lewis-Food-Photographer_Created-Equal-Helgas-BLT_Bacon-Sandwich-Advert-Core-Loaf_Low-Res.jpg"
+          class="d-block w-100"
+          alt="Burger"
+        />
+      </div>
+      <div class="carousel-item" data-aos="fade-up">
+        <img
+          src="https://andylewis.com.au/wp-content/uploads/2023/01/Andy-Lewis-Food-Photographer_Created-Equal-Helgas-BLT_Bacon-Sandwich-Advert-Core-Loaf_Low-Res.jpg"
+          class="d-block w-100"
+          alt="Sushi"
+        />
+      </div>
     </div>
-    
-    <!-- Product Section -->
-    <div class="products-section" data-aos="fade-up">
-        <h2 class="text-center mb-5">Popular Dishes</h2>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <% listFeatureFood.forEach(food => {%>
-                <div class="col" data-aos="zoom-in">
-                    <div class="card h-100">
-                        <img src="<%= food.imageUrl%>"
-                            alt="<%= food.name %>">
-                        <div class="card-body text-center">
-                            <h5 class="card-title"><%= food.name %></h5>
-                            <p class="card-text"><%= food.price %></p>
-                            <button class="btn btn-order">Order Now</button>
-                        </div>
-                    </div>
-                </div>
+    <button
+      class="carousel-control-prev"
+      type="button"
+      data-bs-target="#carouselExampleIndicators"
+      data-bs-slide="prev"
+    >
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button
+      class="carousel-control-next"
+      type="button"
+      data-bs-target="#carouselExampleIndicators"
+      data-bs-slide="next"
+    >
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
 
-            <%}) %>
-
-
-           
-    
-            
+  <!-- Product Section -->
+  <div class="products-section" data-aos="fade-up">
+    <h2 class="text-center mb-5">Popular Dishes</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <% listFeatureFood.forEach(food => {%>
+      <div class="col" data-aos="zoom-in">
+        <div class="card h-100">
+          <img src="<%= food.imageUrl%>" alt="<%= food.name %>" />
+          <div class="card-body text-center">
+            <h5 class="card-title"><%= food.name %></h5>
+            <p class="card-text"><%= food.price %> VND</p>
+            <button class="btn btn-order">Order Now</button>
+          </div>
         </div>
+      </div>
+
+      <%}) %>
     </div>
-
-
+  </div>
 </div>
 
 <%- include('../partials/footer.ejs') %>

@@ -1,0 +1,44 @@
+.profile-container,
+.settings-container {
+  max-width: 600px;
+  margin: auto;
+}
+
+.card {
+  border-radius: 16px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.profile-container img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 3px solid #e9ecef;
+}
+
+.list-group-item {
+  font-size: 1rem;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  background-color: transparent;
+}
+
+.settings-container form .form-label {
+  font-weight: 500;
+}
+
+.settings-container form input {
+  border-radius: 8px;
+}
+
+.settings-container form button {
+  margin-top: 10px;
+  border-radius: 8px;
+  padding: 8px 20px;
+}

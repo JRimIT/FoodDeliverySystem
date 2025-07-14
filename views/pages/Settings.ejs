@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap & FontAwesome -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/settings.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+  </head>
+
+  <body>
+    <%- include('../partials/navbar.ejs') %>
+
+    <div class="settings-wrapper container mt-5 pt-5">
+      <div class="row">
+        <!-- Sidebar Menu -->
+        <div class="col-md-4 col-lg-3">
+          <h4>Settings</h4>
+          <ul class="list-group settings-menu mt-4">
+            <li class="list-group-item active" data-tab="account">
+              <i class="fas fa-user"></i> Account Details
+            </li>
+            <li class="list-group-item" data-tab="payment">
+              <i class="fas fa-credit-card"></i> Payment Methods
+            </li>
+            <li class="list-group-item" data-tab="delivery">
+              <i class="fas fa-box"></i> Delivery Addresses
+            </li>
+            <li class="list-group-item" data-tab="shop">
+              <i class="fas fa-store"></i> Shop Preferences
+            </li>
+            <li class="list-group-item" data-tab="communication">
+              <i class="fas fa-envelope"></i> Communication Preferences
+            </li>
+            <li class="list-group-item" data-tab="privacy">
+              <i class="fas fa-user-shield"></i> Privacy
+            </li>
+            <li class="list-group-item" data-tab="visibility">
+              <i class="fas fa-eye"></i> Profile Visibility
+            </li>
+            <li class="list-group-item" data-tab="linked">
+              <i class="fas fa-link"></i> Linked Accounts
+            </li>
+          </ul>
+        </div>
+
+        <!-- Content Area -->
+        <div class="col-md-8 col-lg-9">
+          <div class="tab-content">
+            <div class="tab-pane active" id="account">
+              <h5>Account Details</h5>
+              <form id="accountForm">
+                <div class="mb-3">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    value="foodgood@gmail.com"
+                    disabled
+                  />
+                </div>
+                <div class="mb-3">
+                  <label>Password</label>
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <input
+                      type="password"
+                      class="form-control me-3"
+                      value="password123"
+                      disabled
+                    />
+                    <button type="button" class="btn btn-link edit-btn">
+                      Edit
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label>Phone Number</label>
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <input
+                      type="text"
+                      class="form-control me-3"
+                      value="0905544987"
+                      disabled
+                    />
+                    <button type="button" class="btn btn-link edit-btn">
+                      Edit
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label>Date of Birth</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    value="2025-07-14"
+                    disabled
+                  />
+                </div>
+                <div class="mb-3">
+                  <label>Location</label>
+                  <select class="form-select mb-2" disabled>
+                    <option selected>Vietnam</option>
+                  </select>
+                  <input
+                    type="text"
+                    class="form-control mb-2"
+                    value="Da Nang"
+                    disabled
+                  />
+                  <input
+                    type="text"
+                    class="form-control mb-2"
+                    value="Da Nang"
+                    disabled
+                  />
+                  <input
+                    type="text"
+                    class="form-control mb-2"
+                    placeholder="Postcode"
+                    disabled
+                  />
+                </div>
+                <div class="d-none" id="accountActions">
+                  <button type="submit" class="btn btn-success">Save</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary ms-2"
+                    id="cancelEdit"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div class="tab-pane" id="payment">
+              <h5>Saved Payment Methods</h5>
+              <button class="btn btn-dark rounded-pill mt-3 px-4 py-2 fw-bold">
+                Payment Options
+              </button>
+            </div>
+
+            <div class="tab-pane" id="delivery">
+              <h5>Delivery Addresses</h5>
+              <p>Manage your delivery addresses here.</p>
+            </div>
+
+            <div class="tab-pane" id="shop">
+              <h5>Shop Preferences</h5>
+              <p>Set your shop preferences here.</p>
+            </div>
+
+            <div class="tab-pane" id="communication">
+              <h5>Communication Preferences</h5>
+              <p>Choose how we contact you.</p>
+            </div>
+
+            <div class="tab-pane" id="privacy">
+              <h5>Privacy</h5>
+              <p>Privacy-related settings.</p>
+            </div>
+
+            <div class="tab-pane" id="visibility">
+              <h5>Profile Visibility</h5>
+              <p>Manage who can see your profile.</p>
+            </div>
+
+            <div class="tab-pane" id="linked">
+              <h5>Linked Accounts</h5>
+              <p>Manage linked social/media accounts here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('../partials/footer.ejs') %>
+
+    <script>
+      const tabs = document.querySelectorAll(".settings-menu .list-group-item");
+      const panes = document.querySelectorAll(".tab-pane");
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+
+          const targetId = tab.getAttribute("data-tab");
+          panes.forEach((pane) => {
+            pane.classList.remove("active");
+            if (pane.id === targetId) {
+              pane.classList.add("active");
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

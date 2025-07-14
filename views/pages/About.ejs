@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us - Foodie Express</title>
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/About.css" />
+  </head>
+
+  <body>
+    <%- include('../partials/navbar.ejs') %>
+
+    <div class="container about-page mt-5 pt-5">
+      <h1 class="text-center mb-4">About Foodie Express</h1>
+      <p class="text-center">
+        Foodie Express is a fast and reliable food delivery platform created
+        with passion and dedication. Our mission is to connect hungry customers
+        with their favorite restaurants in the fastest, easiest way possible.
+        Whether it's breakfast, lunch, dinner, or a late-night snack — we’re
+        here to deliver.
+      </p>
+
+      <hr class="my-4" />
+
+      <h3 class="text-center mb-3">👨‍💻 Our Team</h3>
+      <div id="teamCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner text-center">
+          <div class="carousel-item active">
+            <div class="row justify-content-center">
+              <div class="col-md-4">
+                <img
+                  src="https://i.pinimg.com/736x/e8/86/27/e8862709fd7193e2c20930554a627e15.jpg"
+                  class="rounded-circle mb-2"
+                  alt="Member 1"
+                />
+                <p>Nguyễn Duy Rim</p>
+              </div>
+              <div class="col-md-4">
+                <img
+                  src="https://i.pinimg.com/736x/5b/e7/d4/5be7d474f77c7ecf26d50072049e435c.jpg"
+                  class="rounded-circle mb-2"
+                  alt="Member 2"
+                />
+                <p>Trần Nguyễn Hoàng Phúc</p>
+              </div>
+              <div class="col-md-4">
+                <img
+                  src="https://i.pinimg.com/736x/5f/78/fa/5f78faf0649bab7f7f2afd0fe284ced8.jpg"
+                  class="rounded-circle mb-2"
+                  alt="Member 3"
+                />
+                <p>Lê Quang Bách</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-item">
+            <div class="row justify-content-center">
+              <div class="col-md-4">
+                <img
+                  src="https://i.pinimg.com/736x/15/82/6c/15826c8fca27e18276bd2f0b25cbbc3c.jpg"
+                  class="rounded-circle mb-2"
+                  alt="Member 4"
+                />
+                <p>Nguyễn Thanh Tùng</p>
+              </div>
+              <div class="col-md-4">
+                <img
+                  src="https://i.pinimg.com/736x/af/f4/56/aff45698092ec2541d641407584d5fc0.jpg"
+                  class="rounded-circle mb-2"
+                  alt="Member 5"
+                />
+                <p>Nguyễn Quang Tâm</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#teamCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#teamCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+
+      <h3 class="text-center mt-5">📈 Development Timeline</h3>
+      <div class="d-flex justify-content-center">
+        <ul class="timeline list-unstyled">
+          <li class="timeline-item">
+            <strong>2023:</strong> Ý tưởng được hình thành với tầm nhìn tạo ra
+            một nền tảng giao đồ ăn nhanh chóng và tiện lợi.
+          </li>
+          <li class="timeline-item">
+            <strong>2024:</strong> Bắt đầu phát triển ứng dụng với nhóm nhỏ, xây
+            dựng tính năng đặt món, theo dõi đơn hàng và đánh giá cửa hàng.
+          </li>
+          <li class="timeline-item">
+            <strong>2025:</strong> Ra mắt phiên bản chính thức, hợp tác với hơn
+            100 nhà hàng địa phương và mở rộng thị trường.
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <%- include('../partials/footer.ejs') %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

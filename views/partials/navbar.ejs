@@ -1,48 +1,113 @@
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
-    <div class="container-fluid">
-        <!-- Logo -->
-        <a class="navbar-brand" href="/">
-            <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" alt="Logo">
+  <div class="container-fluid">
+    <!-- Logo -->
+    <a class="navbar-brand" href="/">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png"
+        alt="Logo"
+        width="40"
+        height="40"
+      />
+    </a>
+
+    <!-- Toggle for mobile -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar content -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="/Home">Home</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="/Menu/listFoods">Menu</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/help">Help</a>
+        </li>
+
+        <!-- Hiển thị icon admin nếu là admin -->
+        <% if (user && user.role === 'admin') { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/Home">
+            <i class="fas fa-user-shield"></i> Admin
+          </a>
+        </li>
+        <% } %>
+      </ul>
+
+      <!-- Search bar -->
+      <form class="d-flex search-bar me-4" role="search">
+        <input
+          class="form-control me-2"
+          type="search"
+          placeholder="Search food..."
+          aria-label="Search"
+        />
+        <button class="btn btn-outline-danger" type="submit">Search</button>
+      </form>
+
+      <!-- Cart Icon -->
+      <div class="cart-icon position-relative me-3">
+        <a
+          href="/view/cart"
+          class="position-relative text-decoration-none text-dark"
+        >
+          <i class="fas fa-shopping-cart fa-lg"></i>
+          <span
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          >
+            <%= cartCount || 0 %>
+          </span>
         </a>
+      </div>
 
-        <!-- Toggle for mobile -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Navbar content -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="/Home">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/Menu/listFoods">Menu</a></li>
-                <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-                <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
-                <!-- Hiển thị icon admin nếu là admin -->
-                <% if (user && user.role==='admin' ) { %>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/Home">
-                            <i class="fas fa-user-shield"></i> Admin
-                        </a>
-                    </li>
-                    <% } %>
-            </ul>
-
-            <!-- Search bar -->
-            <form class="d-flex search-bar me-4" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search food..." aria-label="Search">
-                <button class="btn btn-outline-danger" type="submit">Search</button>
-            </form>
-
-            <!-- Cart Icon -->
-            <div class="cart-icon">
-                <a href="/view/cart" class="position-relative text-decoration-none text-dark">
-                    <i class="fas fa-shopping-cart fa-lg"></i>
-                    <!-- Badge số lượng sản phẩm -->
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        <%= cartCount || 0 %>
-                    </span>
-                </a>
-            </div>
-        </div>
+      <!-- Avatar Dropdown -->
+      <% if (user) { %>
+      <div class="dropdown">
+        <a
+          href="#"
+          class="d-flex align-items-center text-decoration-none dropdown-toggle"
+          id="dropdownUser"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <img
+            src="<%= user.avatarUrl || 'https://i.pinimg.com/1200x/dc/6c/b0/dc6cb0521d182f959da46aaee82e742f.jpg' %>"
+            alt="avatar"
+            width="40"
+            height="40"
+            class="rounded-circle"
+          />
+        </a>
+        <ul
+          class="dropdown-menu dropdown-menu-end"
+          aria-labelledby="dropdownUser"
+        >
+          <li><a class="dropdown-item" href="/profile">👤 Profile</a></li>
+          <li><a class="dropdown-item" href="/settings">⚙️ Settings</a></li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <a class="dropdown-item text-danger" href="/logout">🚪 Logout</a>
+          </li>
+        </ul>
+      </div>
+      <% } else { %>
+      <!-- Đăng nhập nếu chưa có user -->
+      <a href="/login" class="btn btn-outline-primary">Login</a>
+      <% } %>
     </div>
+  </div>
 </nav>
