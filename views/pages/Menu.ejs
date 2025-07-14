@@ -1,107 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Menu - Foodie Express</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <!-- AOS Animation -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
 
-    <link rel="stylesheet" href="/css/Menu.css">
-    <link rel="stylesheet" href="/css/navbar.css">
-</head>
+    <link rel="stylesheet" href="/css/Menu.css" />
+    <link rel="stylesheet" href="/css/navbar.css" />
+  </head>
 
-<body>
-
+  <body>
     <!-- Navbar -->
     <%- include('../partials/navbar.ejs') %>
 
-        <!-- Menu Section -->
-        <div class="menu-section" data-aos="fade-up">
-            <h2 class="text-center mb-4">Our Menu</h2>
+    <!-- Menu Section -->
+    <div class="menu-section" data-aos="fade-up">
+      <h2 class="text-center mb-4">Our Menu</h2>
 
-            <!-- Filter Buttons -->
-            <div class="text-center mb-4">
-                <a class="btn btn-outline-danger filter-btn" href="/Menu/listFoods?page=1&category=All">All</a>
-                <% listCategory.forEach(category => {   %>
-                    <a class="btn btn-outline-danger filter-btn" href="/Menu/listFoods?page=1&category=<%= category.category %>"><%= category.category %></a>
-                    
-                <%}) %>
-                
+      <!-- Filter Buttons -->
+      <div class="text-center mb-4">
+        <a
+          class="btn btn-outline-danger filter-btn"
+          href="/Menu/listFoods?page=1&category=All"
+          >All</a
+        >
+        <% listCategory.forEach(category => { %>
+        <a
+          class="btn btn-outline-danger filter-btn"
+          href="/Menu/listFoods?page=1&category=<%= category.category %>"
+          ><%= category.category %></a
+        >
+
+        <%}) %>
+      </div>
+
+      <!-- Product List -->
+      <div class="row row-cols-1 row-cols-md-3 g-4" id="product-list">
+        <% products.forEach(product=> { %>
+
+        <div
+          class="col product-item"
+          data-category="<%= product.category %>"
+          data-aos="zoom-in"
+        >
+          <div class="card h-100">
+            <img src="<%= product.imageUrl %>" alt="<%= product.name %>" />
+            <div class="card-body text-center">
+              <h5 class="card-title"><%= product.name %></h5>
+              <p class="card-text"><%= product.price %> VND</p>
+              <a href="/detail/<%= product._id %>" class="btn btn-order"
+                >View</a
+              >
             </div>
-
-            <!-- Product List -->
-            <div class="row row-cols-1 row-cols-md-3 g-4" id="product-list">
-                <% products.forEach(product=> { %>
-                
-                    <div class="col product-item" data-category="<%= product.category %>" data-aos="zoom-in">
-                        <div class="card h-100">
-                            <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">
-                                    <%= product.name %>
-                                </h5>
-                                <p class="card-text">
-                                    <%= product.price %> VND
-                                </p>
-                                <a href="/detail/<%= product._id %>" class="btn btn-order">View</a>
-                             
-                            </div>
-                        </div>
-                    </div>
-                    <% }) %>
-            </div>
-
-            <!-- Pagination -->
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination justify-content-center">
-                    <% for (let i = 1; i <= totalPages; i++) { %>
-                        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
-                            <a class="page-link" href="/Menu/listFoods?page=<%= i %>&category=<%= selectedCategory %>"><%= i %></a>
-                        </li>
-                    <% } %>
-                </ul>
-            </nav>
-
-           
-           
+          </div>
         </div>
+        <% }) %>
+      </div>
 
-      
-            <!-- Bootstrap JS -->
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-            <!-- AOS Animation -->
-            <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-            <script>
-                AOS.init();
-            </script>
+      <!-- Pagination -->
+      <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+          <% for (let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+            <a
+              class="page-link"
+              href="/Menu/listFoods?page=<%= i %>&category=<%= selectedCategory %>"
+              ><%= i %></a
+            >
+          </li>
+          <% } %>
+        </ul>
+      </nav>
+    </div>
 
-            <!-- Filter Logic -->
-            <script>
-                
-                function filterCategory(category) {
-                        const items = document.querySelectorAll('.product-item');
-                        items.forEach(item => {
-                            const itemCategory = item.getAttribute('data-category').trim().toLowerCase();
-                            const selectedCategory = category.trim().toLowerCase();
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
 
-                            if (selectedCategory === 'all' || itemCategory === selectedCategory) {
-                                console.log('itemCategory', itemCategory)
-                                console.log('selectedCategory', selectedCategory)
-                                item.style.display = 'block';
-                            } else {
-                                console.log('itemCategory', itemCategory)
-                                console.log('selectedCategory', selectedCategory)
-                                item.style.display = 'none';
-                            }
-                        });
-                               }
-            </script>
+    <!-- Filter Logic -->
+    <script>
+      function filterCategory(category) {
+        const items = document.querySelectorAll(".product-item");
+        items.forEach((item) => {
+          const itemCategory = item
+            .getAttribute("data-category")
+            .trim()
+            .toLowerCase();
+          const selectedCategory = category.trim().toLowerCase();
 
-<%- include('../partials/footer.ejs') %>
+          if (selectedCategory === "all" || itemCategory === selectedCategory) {
+            console.log("itemCategory", itemCategory);
+            console.log("selectedCategory", selectedCategory);
+            item.style.display = "block";
+          } else {
+            console.log("itemCategory", itemCategory);
+            console.log("selectedCategory", selectedCategory);
+            item.style.display = "none";
+          }
+        });
+      }
+    </script>
+
+    <%- include('../partials/footer.ejs') %>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</html>
