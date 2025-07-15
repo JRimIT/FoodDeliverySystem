@@ -165,8 +165,24 @@
 
           items.forEach((item) => {
             const keywords = item.getAttribute("data-keywords").toLowerCase();
-            item.style.display =
-              keywords.includes(search) || search === "" ? "block" : "none";
+            const questions = item.querySelectorAll(".faq-question");
+
+            let matchFound = false;
+
+            // Kiểm tra data-keywords
+            if (keywords.includes(search)) {
+              matchFound = true;
+            }
+
+            // Kiểm tra nội dung từng câu hỏi
+            questions.forEach((q) => {
+              if (q.textContent.toLowerCase().includes(search)) {
+                matchFound = true;
+              }
+            });
+
+            // Ẩn hoặc hiển thị item
+            item.style.display = matchFound || search === "" ? "block" : "none";
           });
         });
     </script>
