@@ -111,6 +111,10 @@
                   />
                 </div>
                 <div class="mb-3">
+                  <label>Số dư ví</label>
+                  <input type="text" class="form-control" value="<%= user.balance?.toLocaleString() || 0 %> VND" disabled />
+                </div>
+                <div class="mb-3">
                   <label>Location</label>
                   <select class="form-select mb-2" disabled>
                     <option selected>Vietnam</option>

@@ -62,7 +62,10 @@
           <div class="card-body text-center">
             <h5 class="card-title"><%= food.name %></h5>
             <p class="card-text"><%= food.price %> VND</p>
-            <button class="btn btn-order">Order Now</button>
+            <div class="d-flex justify-content-center align-items-center mb-2">
+              <input type="number" min="1" value="1" class="form-control me-2" style="width: 70px;" id="order-qty-<%= food._id %>" />
+              <button class="btn btn-order" onclick="orderNow('<%= food._id %>')">Order Now</button>
+            </div>
           </div>
         </div>
       </div>
@@ -73,3 +76,11 @@
 </div>
 
 <%- include('../partials/footer.ejs') %>
+
+<script>
+  function orderNow(productId) {
+    var qtyInput = document.getElementById('order-qty-' + productId);
+    var quantity = qtyInput ? qtyInput.value : 1;
+    window.location.href = `/order/${productId}?quantity=${quantity}`;
+  }
+</script>

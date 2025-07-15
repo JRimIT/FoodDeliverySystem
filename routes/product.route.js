@@ -45,19 +45,17 @@ router.get('/listFeatureFood', async (req, res) => {
         if (!product) {
             res.status(200).json({ message: "Not have any products" });
         }
-
         const cartCount = await countProduct(req.user.userId)
-
-
-
-        // res.status(200).json(product);
+        let user = req.user;
+        if (req.user && req.user.userId) {
+            const User = (await import('../models/user.model.js')).default;
+            user = await User.findById(req.user.userId);
+        }
         res.render('pages/Home', {
             listFeatureFood: product,
             cartCount: cartCount,
-            user: req.user
+            user
         })
-
-
     } catch (error) {
         console.error("Error fetching Feature Food:", error);
         res.status(500).json({ message: "Internal server error" });

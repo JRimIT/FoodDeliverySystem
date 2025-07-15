@@ -14,6 +14,7 @@ const orderSchema = new mongoose.Schema({
     totalPrice: Number,
     status: { type: String, default: 'Pending' },
     address: String,
+    paymentMethod: { type: String, default: 'cod' }, // 'wallet' hoặc 'cod'
     createdAt: { type: Date, default: Date.now }
 });
 

@@ -49,12 +49,14 @@
       </ul>
 
       <!-- Search bar -->
-      <form class="d-flex search-bar me-4" role="search">
+      <form class="d-flex search-bar me-4" role="search" method="get" action="/Menu/listFoods">
         <input
           class="form-control me-2"
           type="search"
+          name="search"
           placeholder="Search food..."
           aria-label="Search"
+          value="<%= typeof search !== 'undefined' ? search : '' %>"
         />
         <button class="btn btn-outline-danger" type="submit">Search</button>
       </form>
@@ -73,6 +75,13 @@
           </span>
         </a>
       </div>
+
+      <!-- Hiển thị số dư ví user (balance) trên navbar nếu đã đăng nhập -->
+      <% if (user) { %>
+      <div class="d-flex align-items-center me-3">
+        <span class="badge bg-success me-2">Số dư: <%= user.balance ? user.balance.toLocaleString() : 0 %> VND</span>
+      </div>
+      <% } %>
 
       <!-- Avatar Dropdown -->
       <% if (user) { %>
@@ -98,6 +107,7 @@
         >
           <li><a class="dropdown-item" href="/profile">👤 Profile</a></li>
           <li><a class="dropdown-item" href="/settings">⚙️ Settings</a></li>
+          <li><a class="dropdown-item" href="/orders">📦 Orders</a></li>
           <li><hr class="dropdown-divider" /></li>
           <li>
             <a class="dropdown-item text-danger" href="/">🚪 Logout</a>

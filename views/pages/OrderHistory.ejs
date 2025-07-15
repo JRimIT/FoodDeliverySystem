@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lịch sử đơn hàng - Foodie Express</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/profile.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <%- include('../partials/navbar.ejs') %>
+  <div class="container mt-5 pt-5" style="max-width: 900px;">
+    <div class="card shadow p-4">
+      <h3 class="mb-4 text-center">Lịch sử đơn hàng</h3>
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Mã đơn</th>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+            <th>Phương thức</th>
+            <th>Tổng tiền</th>
+            <th>Địa chỉ</th>
+            <th>Chi tiết</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (orders.length === 0) { %>
+            <tr><td colspan="7" class="text-center">Bạn chưa có đơn hàng nào.</td></tr>
+          <% } %>
+          <% orders.forEach(order => { %>
+            <tr>
+              <td><%= order._id %></td>
+              <td><%= order.createdAt ? order.createdAt.toLocaleString() : '' %></td>
+              <td>
+                <% if (order.status === 'Pending') { %>
+                  <span class="badge bg-warning text-dark">Đang xử lý</span>
+                <% } else if (order.status === 'Completed') { %>
+                  <span class="badge bg-success">Hoàn thành</span>
+                <% } else if (order.status === 'Cancelled') { %>
+                  <span class="badge bg-danger">Đã huỷ</span>
+                <% } else { %>
+                  <span class="badge bg-secondary"><%= order.status %></span>
+                <% } %>
+              </td>
+              <td><%= order.paymentMethod === 'wallet' ? 'Ví nội bộ' : 'COD' %></td>
+              <td class="fw-bold text-danger"><%= order.totalPrice.toLocaleString() %> VND</td>
+              <td><%= order.address %></td>
+              <td>
+                <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#orderDetail<%= order._id %>">Xem</button>
+              </td>
+            </tr>
+            <tr class="collapse" id="orderDetail<%= order._id %>">
+              <td colspan="7">
+                <ul class="mb-0">
+                  <% order.items.forEach(item => { %>
+                    <li>
+                      <strong><%= item.productId?.name || 'Sản phẩm đã xoá' %></strong> x <%= item.quantity %> - Đơn giá: <%= item.price.toLocaleString() %> VND
+                    </li>
+                  <% }) %>
+                  <% if (order.note) { %>
+                    <li><em>Ghi chú: <%= order.note %></em></li>
+                  <% } %>
+                </ul>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <%- include('../partials/footer.ejs') %>
+</body>
+</html> 

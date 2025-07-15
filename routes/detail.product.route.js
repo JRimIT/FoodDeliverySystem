@@ -24,12 +24,14 @@ router.get("/detail/:productId", async (req, res) => {
       },
     });
     // res.json(product)
-    if (req.user.userId) {
+    if (req.user && req.user.userId) {
       const cartCount = await countProduct(req.user.userId);
+      const User = (await import('../models/user.model.js')).default;
+      const user = await User.findById(req.user.userId);
       res.render("pages/detailProduct", {
         product: product,
         cartCount: cartCount,
-        user: req.user,
+        user,
         category,
       });
     } else {

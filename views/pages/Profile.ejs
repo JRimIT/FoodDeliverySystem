@@ -29,8 +29,7 @@
           />
           <h3><%= user.fullName || user.username %></h3>
           <p>
-            <i class="fas fa-envelope me-1"></i> <%= user.email || "No email
-            provided" %>
+            <i class="fas fa-envelope me-1"></i> <%= user.email ? user.email : 'No email provided' %>
           </p>
         </div>
         <hr />
@@ -48,15 +47,16 @@
             <strong>Post Code:</strong> <%= user.postCode || 'Not provided' %>
           </li>
           <li class="list-group-item">
-            <strong>Date of Birth:</strong>
-            <%= user.dateOfBirth ? user.dateOfBirth.toDateString() : 'Not
-            provided' %>
+            <strong>Date of Birth:</strong> <%= user.dateOfBirth ? user.dateOfBirth.toDateString() : 'Not provided' %>
           </li>
           <li class="list-group-item">
             <strong>Role:</strong> <%= user.role %>
           </li>
           <li class="list-group-item">
-            <strong>Joined:</strong> <%= user.createdAt.toDateString() %>
+            <strong>Joined:</strong> <%= user.createdAt ? user.createdAt.toDateString() : 'Not provided' %>
+          </li>
+          <li class="list-group-item">
+            <strong>Số dư ví:</strong> <%= user.balance ? user.balance.toLocaleString() : 0 %> VND
           </li>
         </ul>
       </div>
