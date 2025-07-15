@@ -17,6 +17,7 @@ import adminRoute from "./routes/admin.route.js";
 import staticRoute from "./routes/static.route.js";
 import profileRoute from "./routes/profile.routes.js";
 import reviewRoute from "./routes/review.route.js";
+import contactRoutes from "./routes/contact.route.js";
 
 import { connectToMongoDB } from "./db/connectToMongoDB.js";
 
@@ -45,9 +46,14 @@ app.use("/", verifyUser, cartRoute);
 app.use("/", staticRoute);
 app.use("/", verifyUser, profileRoute);
 app.use("/", verifyUser, reviewRoute);
+app.use("/", contactRoutes);
 
 app.use("/", verifyAdmin, adminRoute);
+import sendMail from "./utils/mailer.js";
 
+sendMail("your@email.com", "Test Subject", "<b>Hello World</b>")
+  .then(() => console.log("✅ Test email sent"))
+  .catch((err) => console.error("❌ Test email error", err));
 // Server start
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
