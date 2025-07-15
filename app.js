@@ -49,11 +49,7 @@ app.use("/", verifyUser, reviewRoute);
 app.use("/", contactRoutes);
 
 app.use("/", verifyAdmin, adminRoute);
-import sendMail from "./utils/mailer.js";
 
-sendMail("your@email.com", "Test Subject", "<b>Hello World</b>")
-  .then(() => console.log("✅ Test email sent"))
-  .catch((err) => console.error("❌ Test email error", err));
 // Server start
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
