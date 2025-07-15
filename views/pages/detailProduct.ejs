@@ -28,6 +28,20 @@
 
     <div class="container product-detail" data-aos="fade-up">
       <div class="row">
+        <!-- Back Button -->
+        <% if (category) { %>
+        <a
+          href="/Menu/listFoods?category=<%= category %>"
+          class="btn btn-outline-secondary mb-4"
+        >
+          <i class="fas fa-arrow-left me-2"></i> Back to <%= category %> Menu
+        </a>
+        <% } else { %>
+        <a href="/Menu/listFoods" class="btn btn-outline-secondary mb-4">
+          <i class="fas fa-arrow-left me-2"></i> Back to Menu
+        </a>
+        <% } %>
+
         <!-- Product Image -->
         <div class="col-md-6">
           <img

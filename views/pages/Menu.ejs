@@ -62,9 +62,12 @@
             <div class="card-body text-center">
               <h5 class="card-title"><%= product.name %></h5>
               <p class="card-text"><%= product.price %> VND</p>
-              <a href="/detail/<%= product._id %>" class="btn btn-order"
-                >View</a
+              <a
+                href="/detail/<%= product._id %>?category=<%= selectedCategory %>&page=<%= currentPage %>"
+                class="btn btn-order"
               >
+                View
+              </a>
             </div>
           </div>
         </div>
