@@ -22,16 +22,36 @@
       <div class="card shadow p-4">
         <div class="text-center">
           <img
-            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            src="<%= user.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/149/149071.png' %>"
             class="rounded-circle mb-3"
             width="120"
             alt="Avatar"
           />
-          <h3><%= user.username %></h3>
-          <p><%= user.email || "No email provided" %></p>
+          <h3><%= user.fullName || user.username %></h3>
+          <p>
+            <i class="fas fa-envelope me-1"></i> <%= user.email || "No email
+            provided" %>
+          </p>
         </div>
         <hr />
         <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <strong>Username:</strong> <%= user.username %>
+          </li>
+          <li class="list-group-item">
+            <strong>Phone:</strong> <%= user.phone || 'Not provided' %>
+          </li>
+          <li class="list-group-item">
+            <strong>Address:</strong> <%= user.address || 'Not provided' %>
+          </li>
+          <li class="list-group-item">
+            <strong>Post Code:</strong> <%= user.postCode || 'Not provided' %>
+          </li>
+          <li class="list-group-item">
+            <strong>Date of Birth:</strong>
+            <%= user.dateOfBirth ? user.dateOfBirth.toDateString() : 'Not
+            provided' %>
+          </li>
           <li class="list-group-item">
             <strong>Role:</strong> <%= user.role %>
           </li>
