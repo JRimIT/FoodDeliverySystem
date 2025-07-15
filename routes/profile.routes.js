@@ -26,7 +26,8 @@ router.get("/settings", verifyUser, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
     const cartCount = await countProduct(req.user.userId);
-    res.render("pages/Settings", { user, cartCount });
+    const transactions = await Transaction.find({ userId: user._id }).sort({ createdAt: -1 });
+    res.render("pages/Settings", { user, cartCount, transactions });
   } catch (err) {
     console.error("Error loading settings:", err);
     res.status(500).send("Server Error");
@@ -56,7 +57,8 @@ router.post("/wallet/deposit", verifyUser, async (req, res) => {
     balanceAfter: user.balance,
     description: `Nạp tiền vào ví: +${amount.toLocaleString()} VND`,
   });
-  res.render("pages/Deposit", { user, cartCount: await countProduct(user._id), success: `Nạp thành công ${amount.toLocaleString()} VND!` });
+  // Redirect to settings with success message
+  res.redirect(`/settings?depositSuccess=${amount}`);
 });
 
 // Lịch sử giao dịch

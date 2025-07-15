@@ -150,9 +150,12 @@ router.get("/checkout", verifyUser, async (req, res) => {
       },
     });
     const cartCount = await countProduct(userId);
-    // Render trang checkout (placeholder)
+    // Lấy user mới nhất từ DB để lấy balance đúng
+    const User = (await import('../models/user.model.js')).default;
+    const user = await User.findById(userId);
+    // Render trang checkout
     res.render("pages/Checkout", {
-      user: req.user,
+      user: user,
       cart: cart,
       cartCount: cartCount,
     });
