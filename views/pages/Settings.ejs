@@ -62,34 +62,29 @@
           <div class="tab-content">
             <div class="tab-pane active" id="account">
               <h5>Account Details</h5>
-              <form
-                id="accountForm"
-                method="POST"
-                action="/profile/updateAccount"
-                enctype="multipart/form-data"
-              >
-                <!-- Avatar -->
-                <div class="text-center mb-4">
-                  <div class="position-relative d-inline-block">
-                    <img
-                      src="<%= user.avatarUrl %>"
-                      alt="Avatar"
-                      class="rounded-circle"
-                      width="120"
-                      height="120"
-                      style="object-fit: cover; border: 3px solid #ccc"
-                    />
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-light position-absolute bottom-0 end-0"
-                      data-bs-toggle="modal"
-                      data-bs-target="#avatarModal"
-                    >
-                      <i class="fas fa-edit"></i>
-                    </button>
-                  </div>
-                </div>
 
+              <!-- Avatar -->
+              <div class="text-center mb-4">
+                <div class="position-relative d-inline-block">
+                  <img
+                    src="<%= user.avatarUrl %>"
+                    alt="Avatar"
+                    class="rounded-circle"
+                    width="120"
+                    height="120"
+                    style="object-fit: cover; border: 3px solid #ccc"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-light position-absolute bottom-0 end-0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#avatarModal"
+                  >
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </div>
+              </div>
+              <form id="accountForm" method="POST" action="/updateAccount">
                 <!-- Full Name -->
                 <div class="mb-3">
                   <label>Full Name</label>
@@ -136,10 +131,6 @@
                     value="<%= user.phone || '' %>"
                     disabled
                   />
-                </div>
-                <div class="mb-3">
-                  <label>Số dư ví</label>
-                  <input type="text" class="form-control" value="<%= user.balance?.toLocaleString() || 0 %> VND" disabled />
                 </div>
                 <div class="mb-3">
                   <label>Address</label>
@@ -243,8 +234,14 @@
             <div class="tab-pane" id="wallet">
               <h5 class="mb-3">Wallet Balance</h5>
               <div class="d-flex align-items-center mb-4">
-                <span class="badge bg-success fs-5 me-3">Balance: <%= user.balance?.toLocaleString() || 0 %> VND</span>
-                <button class="btn btn-warning fw-bold" data-bs-toggle="modal" data-bs-target="#depositModal">
+                <span class="badge bg-success fs-5 me-3"
+                  >Balance: <%= user.balance?.toLocaleString() || 0 %> VND</span
+                >
+                <button
+                  class="btn btn-warning fw-bold"
+                  data-bs-toggle="modal"
+                  data-bs-target="#depositModal"
+                >
                   <i class="fas fa-plus-circle me-1"></i> Deposit
                 </button>
               </div>
@@ -260,27 +257,34 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <% if (transactions && transactions.length > 0) { %>
-                      <% transactions.forEach(tx => { %>
-                        <tr>
-                          <td><%= tx.createdAt ? tx.createdAt.toLocaleString() : '' %></td>
-                          <td>
-                            <% if (tx.type === 'deposit') { %>
-                              <span class="badge bg-success">Deposit</span>
-                            <% } else if (tx.type === 'payment') { %>
-                              <span class="badge bg-danger">Payment</span>
-                            <% } else { %>
-                              <span class="badge bg-secondary"><%= tx.type %></span>
-                            <% } %>
-                          </td>
-                          <td class="fw-bold <%= tx.type === 'deposit' ? 'text-success' : 'text-danger' %>">
-                            <%= tx.amount.toLocaleString() %> VND
-                          </td>
-                          <td><%= tx.description || '' %></td>
-                        </tr>
-                      <% }) %>
-                    <% } else { %>
-                      <tr><td colspan="4" class="text-center">No transactions yet.</td></tr>
+                    <% if (transactions && transactions.length > 0) { %> <%
+                    transactions.forEach(tx => { %>
+                    <tr>
+                      <td>
+                        <%= tx.createdAt ? tx.createdAt.toLocaleString() : '' %>
+                      </td>
+                      <td>
+                        <% if (tx.type === 'deposit') { %>
+                        <span class="badge bg-success">Deposit</span>
+                        <% } else if (tx.type === 'payment') { %>
+                        <span class="badge bg-danger">Payment</span>
+                        <% } else { %>
+                        <span class="badge bg-secondary"><%= tx.type %></span>
+                        <% } %>
+                      </td>
+                      <td
+                        class="fw-bold <%= tx.type === 'deposit' ? 'text-success' : 'text-danger' %>"
+                      >
+                        <%= tx.amount.toLocaleString() %> VND
+                      </td>
+                      <td><%= tx.description || '' %></td>
+                    </tr>
+                    <% }) %> <% } else { %>
+                    <tr>
+                      <td colspan="4" class="text-center">
+                        No transactions yet.
+                      </td>
+                    </tr>
                     <% } %>
                   </tbody>
                 </table>
@@ -301,7 +305,7 @@
       <div class="modal-dialog">
         <form
           method="POST"
-          action="/profile/uploadAvatar"
+          action="/uploadAvatar"
           enctype="multipart/form-data"
           class="modal-content"
         >
@@ -342,6 +346,8 @@
       const saveBtn = document.getElementById("saveChanges");
       const cancelBtn = document.getElementById("cancelChanges");
       const inputs = document.querySelectorAll("#accountForm input");
+      const originalValues = {};
+      inputs.forEach((input) => (originalValues[input.name] = input.value));
 
       editBtn.addEventListener("click", () => {
         inputs.forEach((input) => (input.disabled = false));
@@ -351,7 +357,10 @@
       });
 
       cancelBtn.addEventListener("click", () => {
-        inputs.forEach((input) => (input.disabled = true));
+        inputs.forEach((input) => {
+          input.disabled = true;
+          input.value = originalValues[input.name]; // reset
+        });
         saveBtn.classList.add("d-none");
         cancelBtn.classList.add("d-none");
         editBtn.classList.remove("d-none");
@@ -371,7 +380,11 @@
 
           const targetId = tab.getAttribute("data-tab");
           panes.forEach((pane) => {
-            pane.classList.remove("active", "animate__animated", "animate__fadeIn");
+            pane.classList.remove(
+              "active",
+              "animate__animated",
+              "animate__fadeIn"
+            );
             if (pane.id === targetId) {
               pane.classList.add("active");
               setTimeout(() => {
@@ -384,22 +397,51 @@
     </script>
 
     <!-- Deposit Modal (moved outside tab-content for proper Bootstrap behavior) -->
-    <div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="depositModal"
+      tabindex="-1"
+      aria-labelledby="depositModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="depositModalLabel">Deposit to Wallet</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title" id="depositModalLabel">
+              Deposit to Wallet
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
           <form action="/wallet/deposit" method="POST">
             <div class="modal-body">
               <div class="mb-3">
-                <label for="depositAmount" class="form-label">Amount (VND)</label>
-                <input type="number" class="form-control" id="depositAmount" name="amount" min="1000" step="1000" required />
+                <label for="depositAmount" class="form-label"
+                  >Amount (VND)</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="depositAmount"
+                  name="amount"
+                  min="1000"
+                  step="1000"
+                  required
+                />
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
               <button type="submit" class="btn btn-success">Deposit</button>
             </div>
           </form>
@@ -407,16 +449,29 @@
       </div>
     </div>
     <% if (typeof depositSuccess !== 'undefined') { %>
-      <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 3000;">
-        <div class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="d-flex">
-            <div class="toast-body">
-              <i class="fas fa-check-circle me-2"></i> Nạp tiền thành công!
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    <div
+      class="toast-container position-fixed top-0 end-0 p-3"
+      style="z-index: 3000"
+    >
+      <div
+        class="toast align-items-center text-bg-success border-0 show"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="fas fa-check-circle me-2"></i> Nạp tiền thành công!
           </div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
         </div>
       </div>
+    </div>
     <% } %>
   </body>
 </html>

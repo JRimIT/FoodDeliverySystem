@@ -61,10 +61,24 @@
           <img src="<%= food.imageUrl%>" alt="<%= food.name %>" />
           <div class="card-body text-center">
             <h5 class="card-title"><%= food.name %></h5>
-            <p class="card-text"><%= food.price %> VND</p>
+            <p class="card-text">
+              <%= food.price.toLocaleString('vi-VN') %> VND
+            </p>
             <div class="d-flex justify-content-center align-items-center mb-2">
-              <input type="number" min="1" value="1" class="form-control me-2" style="width: 70px;" id="order-qty-<%= food._id %>" />
-              <button class="btn btn-order" onclick="orderNow('<%= food._id %>')">Order Now</button>
+              <input
+                type="number"
+                min="1"
+                value="1"
+                class="form-control me-2"
+                style="width: 70px"
+                id="order-qty-<%= food._id %>"
+              />
+              <button
+                class="btn btn-order"
+                onclick="orderNow('<%= food._id %>')"
+              >
+                Order Now
+              </button>
             </div>
           </div>
         </div>
@@ -79,7 +93,7 @@
 
 <script>
   function orderNow(productId) {
-    var qtyInput = document.getElementById('order-qty-' + productId);
+    var qtyInput = document.getElementById("order-qty-" + productId);
     var quantity = qtyInput ? qtyInput.value : 1;
     window.location.href = `/order/${productId}?quantity=${quantity}`;
   }

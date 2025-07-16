@@ -49,7 +49,12 @@
       </ul>
 
       <!-- Search bar -->
-      <form class="d-flex search-bar me-4" role="search" method="get" action="/Menu/listFoods">
+      <form
+        class="d-flex search-bar me-4"
+        role="search"
+        method="get"
+        action="/Menu/listFoods"
+      >
         <input
           class="form-control me-2"
           type="search"
@@ -79,7 +84,10 @@
       <!-- Hiển thị số dư ví user (balance) trên navbar nếu đã đăng nhập -->
       <% if (user) { %>
       <div class="d-flex align-items-center me-3">
-        <span class="badge bg-success me-2">Số dư: <%= user.balance ? user.balance.toLocaleString() : 0 %> VND</span>
+        <span class="badge bg-success me-2"
+          >Balance: <%= user.balance ? user.balance.toLocaleString() : 0 %>
+          VND</span
+        >
       </div>
       <% } %>
 

@@ -34,14 +34,15 @@
       <!-- Filter Buttons -->
       <div class="text-center mb-4">
         <a
-          class="btn filter-btn <%= selectedCategory === 'All' ? 'btn-danger' : 'btn-outline-danger' %>"
+          class="btn filter-btn <%= selectedCategory === 'All' ? 'active' : '' %>"
           href="/Menu/listFoods?page=1&category=All"
-          >All</a
         >
+          All
+        </a>
 
         <% listCategory.forEach(category => { %>
         <a
-          class="btn filter-btn <%= selectedCategory === category.category ? 'btn-danger' : 'btn-outline-danger' %>"
+          class="btn filter-btn <%= selectedCategory === category.category ? 'active' : '' %>"
           href="/Menu/listFoods?page=1&category=<%= category.category %>"
         >
           <%= category.category %>
@@ -50,10 +51,22 @@
       </div>
 
       <!-- Search Form -->
-      <form class="d-flex justify-content-center mb-4" method="get" action="/Menu/listFoods">
+      <form
+        class="d-flex justify-content-center mb-4"
+        method="get"
+        action="/Menu/listFoods"
+      >
         <input type="hidden" name="category" value="<%= selectedCategory %>" />
-        <input type="text" class="form-control w-50 me-2" name="search" placeholder="Tìm kiếm món ăn..." value="<%= typeof search !== 'undefined' ? search : '' %>" />
-        <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i> Tìm kiếm</button>
+        <input
+          type="text"
+          class="form-control w-50 me-2"
+          name="search"
+          placeholder="Tìm kiếm món ăn..."
+          value="<%= typeof search !== 'undefined' ? search : '' %>"
+        />
+        <button class="btn btn-outline-primary" type="submit">
+          <i class="fas fa-search"></i> Tìm kiếm
+        </button>
       </form>
 
       <!-- Product List -->
@@ -69,7 +82,9 @@
             <img src="<%= product.imageUrl %>" alt="<%= product.name %>" />
             <div class="card-body text-center">
               <h5 class="card-title"><%= product.name %></h5>
-              <p class="card-text"><%= product.price %> VND</p>
+              <p class="card-text">
+                <%= product.price.toLocaleString('vi-VN') %> VND
+              </p>
               <a
                 href="/detail/<%= product._id %>?category=<%= selectedCategory %>&page=<%= currentPage %>"
                 class="btn btn-order"

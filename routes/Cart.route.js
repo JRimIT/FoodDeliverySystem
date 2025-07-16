@@ -9,6 +9,7 @@ import { verifyUser } from "../config/jwtConfig.js";
 import Cart from "../models/cart.model.js";
 import { countProduct } from "../controllers/countCart.js";
 import Transaction from "../models/transaction.model.js";
+import sendMail from "../utils/mailer.js";
 
 const router = express.Router();
 const axiosInstance = axios.create({
@@ -17,7 +18,7 @@ const axiosInstance = axios.create({
 
 router.get("/view/cart", verifyUser, async (req, res) => {
   try {
-    const User = (await import('../models/user.model.js')).default;
+    const User = (await import("../models/user.model.js")).default;
     const user = await User.findById(req.user.userId);
     const cart = await Cart.findOne({ userId: req.user.userId }).populate({
       path: "items",
@@ -151,7 +152,7 @@ router.get("/checkout", verifyUser, async (req, res) => {
     });
     const cartCount = await countProduct(userId);
     // Lấy user mới nhất từ DB để lấy balance đúng
-    const User = (await import('../models/user.model.js')).default;
+    const User = (await import("../models/user.model.js")).default;
     const user = await User.findById(userId);
     // Render trang checkout
     res.render("pages/Checkout", {
@@ -177,12 +178,15 @@ router.post("/checkout", verifyUser, async (req, res) => {
       return res.status(400).send("Giỏ hàng trống!");
     }
     // Tính tổng tiền
-    const totalPrice = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    const totalPrice = cart.items.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0
+    );
     // Lấy user
-    const User = (await import('../models/user.model.js')).default;
+    const User = (await import("../models/user.model.js")).default;
     const user = await User.findById(userId);
     // Xử lý thanh toán
-    if (paymentMethod === 'wallet') {
+    if (paymentMethod === "wallet") {
       if (user.balance < totalPrice) {
         // Không đủ tiền, trả về trang checkout với popup lỗi
         const cartCount = await countProduct(userId);
@@ -190,36 +194,75 @@ router.post("/checkout", verifyUser, async (req, res) => {
           user,
           cart,
           cartCount,
-          error: `Số dư ví không đủ để thanh toán! Bạn cần nạp thêm tiền.`
+          error: `Số dư ví không đủ để thanh toán! Bạn cần nạp thêm tiền.`,
         });
       }
       user.balance -= totalPrice;
       await user.save();
       await Transaction.create({
         userId: user._id,
-        type: 'payment',
+        type: "payment",
         amount: totalPrice,
         balanceAfter: user.balance,
         description: `Thanh toán đơn hàng: -${totalPrice.toLocaleString()} VND`,
       });
     }
     // Tạo order mới
-    const orderItems = cart.items.map(item => ({
+    const orderItems = cart.items.map((item) => ({
       productId: item.product._id,
       quantity: item.quantity,
-      price: item.product.price
+      price: item.product.price,
     }));
-    const Order = (await import('../models/order.model.js')).default;
+    const Order = (await import("../models/order.model.js")).default;
     await Order.create({
       userId,
       items: orderItems,
       totalPrice,
       address,
       note,
-      status: 'Pending',
+      status: "Pending",
       createdAt: new Date(),
-      paymentMethod: paymentMethod || 'cod',
+      paymentMethod: paymentMethod || "cod",
     });
+    const htmlContent = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: auto;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="https://i.pinimg.com/736x/0f/27/7f/0f277f5f07a6399788894bc1062b5308.jpg" alt="Foodie Express" style="width: 120px;" />
+            <h2 style="color: #ff6600;">🍽️ Foodie Express - Xác nhận đơn hàng</h2>
+          </div>
+
+          <div style="background-color: #fdfdfd; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <p>Xin chào <strong>${
+              user.username || user.name || "khách hàng"
+            }</strong>,</p>
+            <p>Đây là thông tin đơn hàng của bạn:</p>
+            <ul>
+              ${cart.items
+                .map(
+                  (item) =>
+                    `<li>${item.product.name} - ${
+                      item.quantity
+                    } x ${item.product.price.toLocaleString()}đ</li>`
+                )
+                .join("")}
+            </ul>
+            <p><strong>Tổng cộng:</strong> ${totalPrice.toLocaleString()}đ</p>
+            <p>Chúng tôi sẽ sớm giao hàng cho bạn.</p>
+            <hr/>
+          </div>
+
+          <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #aaa;">
+            © ${new Date().getFullYear()} Foodie Express. All rights reserved.
+          </div>
+        </div>
+        `;
+
+    await sendMail(
+      user.email,
+      `Xác nhận đơn hàng từ Foodie Express`,
+      htmlContent
+    );
+
     // Xóa giỏ hàng sau khi đặt hàng thành công
     cart.items = [];
     await cart.save();
@@ -241,9 +284,9 @@ router.get("/order/:productId", verifyUser, async (req, res) => {
   try {
     const productId = req.params.productId;
     const quantity = parseInt(req.query.quantity) || 1;
-    const Product = (await import('../models/product.model.js')).default;
+    const Product = (await import("../models/product.model.js")).default;
     const product = await Product.findById(productId);
-    const User = (await import('../models/user.model.js')).default;
+    const User = (await import("../models/user.model.js")).default;
     const user = await User.findById(req.user.userId);
     const cartCount = await countProduct(req.user.userId);
     if (!product) return res.status(404).send("Không tìm thấy sản phẩm!");
@@ -252,7 +295,7 @@ router.get("/order/:productId", verifyUser, async (req, res) => {
       product,
       quantity,
       cartCount,
-      error: undefined
+      error: undefined,
     });
   } catch (error) {
     console.error("Error loading order now page:", error);
@@ -265,45 +308,45 @@ router.post("/order/:productId", verifyUser, async (req, res) => {
     const productId = req.params.productId;
     const quantity = parseInt(req.query.quantity) || 1;
     const { address, note, paymentMethod } = req.body;
-    const Product = (await import('../models/product.model.js')).default;
+    const Product = (await import("../models/product.model.js")).default;
     const product = await Product.findById(productId);
-    const User = (await import('../models/user.model.js')).default;
+    const User = (await import("../models/user.model.js")).default;
     const user = await User.findById(req.user.userId);
     const cartCount = await countProduct(req.user.userId);
     if (!product) return res.status(404).send("Không tìm thấy sản phẩm!");
     const totalPrice = product.price * quantity;
     // Xử lý thanh toán
-    if (paymentMethod === 'wallet') {
+    if (paymentMethod === "wallet") {
       if (user.balance < totalPrice) {
         return res.render("pages/OrderNow", {
           user,
           product,
           quantity,
           cartCount,
-          error: `Số dư ví không đủ để thanh toán! Bạn cần nạp thêm tiền.`
+          error: `Số dư ví không đủ để thanh toán! Bạn cần nạp thêm tiền.`,
         });
       }
       user.balance -= totalPrice;
       await user.save();
       await Transaction.create({
         userId: user._id,
-        type: 'payment',
+        type: "payment",
         amount: totalPrice,
         balanceAfter: user.balance,
         description: `Thanh toán đơn hàng: -${totalPrice.toLocaleString()} VND`,
       });
     }
     // Tạo order mới
-    const Order = (await import('../models/order.model.js')).default;
+    const Order = (await import("../models/order.model.js")).default;
     await Order.create({
       userId: user._id,
       items: [{ productId: product._id, quantity, price: product.price }],
       totalPrice,
       address,
       note,
-      status: 'Pending',
+      status: "Pending",
       createdAt: new Date(),
-      paymentMethod: paymentMethod || 'cod',
+      paymentMethod: paymentMethod || "cod",
     });
     res.redirect("/checkout/success");
   } catch (error) {

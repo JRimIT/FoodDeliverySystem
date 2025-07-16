@@ -16,7 +16,7 @@
 .navbar-brand img {
   height: 48px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(255,99,71,0.08);
+  box-shadow: 0 2px 8px rgba(255, 99, 71, 0.08);
   transition: transform 0.2s;
 }
 .navbar-brand img:hover {
@@ -31,15 +31,16 @@
   padding: 8px 16px;
   transition: background 0.2s, color 0.2s;
 }
-.nav-link:hover, .nav-link.active {
-  background: rgba(255,99,71,0.08);
+.nav-link:hover,
+.nav-link.active {
+  background: rgba(255, 99, 71, 0.08);
   color: #e5533d !important;
 }
 
 .search-bar {
   max-width: 350px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(255,99,71,0.06);
+  box-shadow: 0 2px 8px rgba(255, 99, 71, 0.06);
   overflow: hidden;
 }
 .search-bar .form-control {
@@ -72,14 +73,18 @@
   color: #e5533d;
 }
 .cart-icon .badge {
-  font-size: 0.8rem;
-  padding: 4px 7px;
+  position: absolute;
+  top: -6px;
+  right: -30px;
+  transform: translate(50%, -50%);
+  font-size: 0.75rem;
+  padding: 4px 6px;
   border-radius: 50%;
   background: linear-gradient(135deg, #ff6347, #fbc02d);
   color: #fff;
-  box-shadow: 0 2px 8px rgba(255,99,71,0.15);
-  top: -8px !important;
-  right: -8px !important;
+  line-height: 1;
+  min-width: 20px;
+  text-align: center;
 }
 
 /* Wallet badge */
@@ -90,7 +95,7 @@
   font-size: 1rem;
   padding: 7px 14px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(67,233,123,0.10);
+  box-shadow: 0 2px 8px rgba(67, 233, 123, 0.1);
 }
 
 /* Avatar Dropdown */
@@ -100,16 +105,16 @@
   display: inline-block;
   border-radius: 50%;
   border: 2px solid #ff6347;
-  box-shadow: 0 2px 8px rgba(255,99,71,0.10);
+  box-shadow: 0 2px 8px rgba(255, 99, 71, 0.1);
   transition: border 0.2s, box-shadow 0.2s;
 }
 .dropdown img:hover {
   border: 2px solid #fbc02d;
-  box-shadow: 0 4px 16px rgba(255,193,7,0.15);
+  box-shadow: 0 4px 16px rgba(255, 193, 7, 0.15);
 }
 .dropdown-menu {
   border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(31,38,135,0.10);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
   min-width: 180px;
   padding: 0.5rem 0;
   background: #fff;

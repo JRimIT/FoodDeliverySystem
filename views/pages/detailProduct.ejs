@@ -55,7 +55,10 @@
         <div class="col-md-6">
           <h2 class="product-title"><%= product.name %></h2>
           <p><strong>Category:</strong> <%= product.category %></p>
-          <p><strong>Price:</strong> $<%= product.price %></p>
+          <p>
+            <strong>Price:</strong> <%= product.price.toLocaleString('vi-VN') %>
+            VND
+          </p>
           <p><%= product.description %></p>
 
           <div class="mt-4">

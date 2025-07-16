@@ -37,7 +37,7 @@
         </div>
         <div class="col-md-4">
           <h5><%= item.product.name %></h5>
-          <p>$<%= item.product.price.toFixed(2) %></p>
+          <p><%= item.product.price.toLocaleString('vi-VN') %> VND</p>
         </div>
         <div class="col-md-2">
           <form
@@ -58,7 +58,8 @@
           </form>
         </div>
         <div class="col-md-2 text-end">
-          $<%= (item.product.price * item.quantity).toFixed(2) %>
+          <%= (item.product.price * item.quantity).toLocaleString('vi-VN') %>
+          VND
         </div>
         <div class="col-md-2 text-end">
           <form action="/cart/remove/<%= item.product._id %>" method="POST">
@@ -71,7 +72,9 @@
       <% }) %>
 
       <hr />
-      <div class="total-section mt-4">Total: $<%= total.toFixed(2) %></div>
+      <div class="total-section mt-4">
+        Total:<%= total.toLocaleString('vi-VN') %> VND
+      </div>
 
       <div class="text-end mt-4">
         <a href="/checkout" class="btn btn-checkout">Proceed to Checkout</a>
