@@ -34,18 +34,19 @@
       <!-- Filter Buttons -->
       <div class="text-center mb-4">
         <a
-          class="btn btn-outline-danger filter-btn"
+          class="btn filter-btn <%= selectedCategory === 'All' ? 'btn-danger' : 'btn-outline-danger' %>"
           href="/Menu/listFoods?page=1&category=All"
           >All</a
         >
+
         <% listCategory.forEach(category => { %>
         <a
-          class="btn btn-outline-danger filter-btn"
+          class="btn filter-btn <%= selectedCategory === category.category ? 'btn-danger' : 'btn-outline-danger' %>"
           href="/Menu/listFoods?page=1&category=<%= category.category %>"
-          ><%= category.category %></a
         >
-
-        <%}) %>
+          <%= category.category %>
+        </a>
+        <% }) %>
       </div>
 
       <!-- Product List -->

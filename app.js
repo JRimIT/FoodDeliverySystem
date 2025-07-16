@@ -18,6 +18,7 @@ import staticRoute from "./routes/static.route.js";
 import profileRoute from "./routes/profile.routes.js";
 import reviewRoute from "./routes/review.route.js";
 import contactRoutes from "./routes/contact.route.js";
+import discountRoute from "./routes/discount.route.js";
 
 import { connectToMongoDB } from "./db/connectToMongoDB.js";
 
@@ -47,6 +48,7 @@ app.use("/", staticRoute);
 app.use("/", verifyUser, profileRoute);
 app.use("/", verifyUser, reviewRoute);
 app.use("/", contactRoutes);
+app.use("/", verifyUser, discountRoute);
 
 app.use("/", verifyAdmin, adminRoute);
 

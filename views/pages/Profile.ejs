@@ -28,10 +28,7 @@
             alt="Avatar"
           />
           <h3><%= user.fullName || user.username %></h3>
-          <p>
-            <i class="fas fa-envelope me-1"></i> <%= user.email || "No email
-            provided" %>
-          </p>
+          <p><i class="fas fa-envelope me-1"></i> <%= user.email || "..." %></p>
         </div>
         <hr />
         <ul class="list-group list-group-flush">
@@ -39,19 +36,19 @@
             <strong>Username:</strong> <%= user.username %>
           </li>
           <li class="list-group-item">
-            <strong>Phone:</strong> <%= user.phone || 'Not provided' %>
+            <strong>Phone:</strong> <%= user.phone || '...' %>
           </li>
           <li class="list-group-item">
-            <strong>Address:</strong> <%= user.address || 'Not provided' %>
+            <strong>Address:</strong> <%= user.address || '...' %>
           </li>
           <li class="list-group-item">
-            <strong>Post Code:</strong> <%= user.postCode || 'Not provided' %>
+            <strong>Post Code:</strong> <%= user.postCode || '...' %>
           </li>
           <li class="list-group-item">
             <strong>Date of Birth:</strong>
-            <%= user.dateOfBirth ? user.dateOfBirth.toDateString() : 'Not
-            provided' %>
+            <%= user.dateOfBirth ? user.dateOfBirth.toDateString() : '...' %>
           </li>
+
           <li class="list-group-item">
             <strong>Role:</strong> <%= user.role %>
           </li>

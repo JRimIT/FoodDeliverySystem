@@ -59,87 +59,138 @@
           <div class="tab-content">
             <div class="tab-pane active" id="account">
               <h5>Account Details</h5>
-              <form id="accountForm">
+              <form
+                id="accountForm"
+                method="POST"
+                action="/profile/updateAccount"
+                enctype="multipart/form-data"
+              >
+                <!-- Avatar -->
+                <div class="text-center mb-4">
+                  <div class="position-relative d-inline-block">
+                    <img
+                      src="<%= user.avatarUrl %>"
+                      alt="Avatar"
+                      class="rounded-circle"
+                      width="120"
+                      height="120"
+                      style="object-fit: cover; border: 3px solid #ccc"
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-light position-absolute bottom-0 end-0"
+                      data-bs-toggle="modal"
+                      data-bs-target="#avatarModal"
+                    >
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Full Name -->
+                <div class="mb-3">
+                  <label>Full Name</label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    class="form-control"
+                    value="<%= user.fullName || '' %>"
+                    disabled
+                  />
+                </div>
+
+                <!-- Email -->
                 <div class="mb-3">
                   <label>Email</label>
                   <input
                     type="email"
+                    name="email"
                     class="form-control"
-                    value="foodgood@gmail.com"
+                    value="<%= user.email || '' %>"
                     disabled
                   />
                 </div>
+
+                <!-- Password -->
                 <div class="mb-3">
                   <label>Password</label>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <input
-                      type="password"
-                      class="form-control me-3"
-                      value="password123"
-                      disabled
-                    />
-                    <button type="button" class="btn btn-link edit-btn">
-                      Edit
-                    </button>
-                  </div>
+                  <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="••••••••"
+                    disabled
+                  />
                 </div>
+
+                <!-- Phone -->
                 <div class="mb-3">
-                  <label>Phone Number</label>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <input
-                      type="text"
-                      class="form-control me-3"
-                      value="0905544987"
-                      disabled
-                    />
-                    <button type="button" class="btn btn-link edit-btn">
-                      Edit
-                    </button>
-                  </div>
+                  <label>Phone</label>
+                  <input
+                    type="text"
+                    name="phone"
+                    class="form-control"
+                    value="<%= user.phone || '' %>"
+                    disabled
+                  />
                 </div>
+
+                <!-- Address -->
+                <div class="mb-3">
+                  <label>Address</label>
+                  <input
+                    type="text"
+                    name="address"
+                    class="form-control"
+                    value="<%= user.address || '' %>"
+                    disabled
+                  />
+                </div>
+
+                <!-- Post Code -->
+                <div class="mb-3">
+                  <label>Post Code</label>
+                  <input
+                    type="text"
+                    name="postCode"
+                    class="form-control"
+                    value="<%= user.postCode || '' %>"
+                    disabled
+                  />
+                </div>
+
+                <!-- Date of Birth -->
                 <div class="mb-3">
                   <label>Date of Birth</label>
                   <input
                     type="date"
+                    name="dateOfBirth"
                     class="form-control"
-                    value="2025-07-14"
+                    value="<%= user.dateOfBirth ? user.dateOfBirth.toISOString().split('T')[0] : '' %>"
                     disabled
                   />
                 </div>
-                <div class="mb-3">
-                  <label>Location</label>
-                  <select class="form-select mb-2" disabled>
-                    <option selected>Vietnam</option>
-                  </select>
-                  <input
-                    type="text"
-                    class="form-control mb-2"
-                    value="Da Nang"
-                    disabled
-                  />
-                  <input
-                    type="text"
-                    class="form-control mb-2"
-                    value="Da Nang"
-                    disabled
-                  />
-                  <input
-                    type="text"
-                    class="form-control mb-2"
-                    placeholder="Postcode"
-                    disabled
-                  />
-                </div>
-                <div class="d-none" id="accountActions">
-                  <button type="submit" class="btn btn-success">Save</button>
+
+                <!-- Buttons -->
+                <div class="mt-4 d-flex justify-content-end">
                   <button
                     type="button"
-                    class="btn btn-secondary ms-2"
-                    id="cancelEdit"
+                    id="editAll"
+                    class="btn btn-outline-primary me-2"
+                  >
+                    Edit All
+                  </button>
+                  <button
+                    type="submit"
+                    id="saveChanges"
+                    class="btn btn-success d-none"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    type="button"
+                    id="cancelChanges"
+                    class="btn btn-secondary d-none"
                   >
                     Cancel
                   </button>
@@ -187,8 +238,73 @@
         </div>
       </div>
     </div>
+    <!-- Modal Upload Avatar -->
+    <div
+      class="modal fade"
+      id="avatarModal"
+      tabindex="-1"
+      aria-labelledby="avatarModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <form
+          method="POST"
+          action="/profile/uploadAvatar"
+          enctype="multipart/form-data"
+          class="modal-content"
+        >
+          <div class="modal-header">
+            <h5 class="modal-title" id="avatarModalLabel">Update Avatar</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <input
+              type="file"
+              name="avatar"
+              accept="image/*"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <%- include('../partials/footer.ejs') %>
+    <script>
+      const editBtn = document.getElementById("editAll");
+      const saveBtn = document.getElementById("saveChanges");
+      const cancelBtn = document.getElementById("cancelChanges");
+      const inputs = document.querySelectorAll("#accountForm input");
+
+      editBtn.addEventListener("click", () => {
+        inputs.forEach((input) => (input.disabled = false));
+        saveBtn.classList.remove("d-none");
+        cancelBtn.classList.remove("d-none");
+        editBtn.classList.add("d-none");
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        inputs.forEach((input) => (input.disabled = true));
+        saveBtn.classList.add("d-none");
+        cancelBtn.classList.add("d-none");
+        editBtn.classList.remove("d-none");
+      });
+    </script>
 
     <script>
       const tabs = document.querySelectorAll(".settings-menu .list-group-item");
