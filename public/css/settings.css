@@ -1,42 +1,71 @@
-/* Đảm bảo phần nội dung không bị che bởi navbar */
+/* Modern Settings/Wallet */
 .settings-wrapper {
-  margin-top: 100px; /* đủ để tránh navbar cao khoảng 60–80px */
+  margin-top: 100px;
   padding-bottom: 50px;
 }
-
-/* Phần menu bên trái */
-.settings-wrapper h4 {
-  font-weight: 600;
-}
-
-/* Menu tab trái */
 .settings-menu .list-group-item {
   border: none;
   background: none;
-  padding: 12px 0;
+  padding: 14px 0;
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #222;
+  gap: 14px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: #ff6347;
   cursor: pointer;
-  transition: all 0.2s;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  transition: background 0.2s, color 0.2s;
 }
-
 .settings-menu .list-group-item:hover,
 .settings-menu .list-group-item.active {
-  color: #000;
-  font-weight: 600;
-  background-color: #f2f2f2;
-  border-radius: 8px;
+  color: #fff;
+  background: linear-gradient(90deg, #ff6347 60%, #fbc02d 100%);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(255,99,71,0.10);
 }
-
-/* Nội dung từng tab */
 .tab-pane {
   display: none;
+  background: rgba(255,255,255,0.92);
+  border-radius: 22px;
+  box-shadow: 0 8px 32px rgba(255,99,71,0.10);
+  padding: 32px 24px 24px 24px;
+  margin-bottom: 18px;
+  animation: fadeInUp 0.8s cubic-bezier(.39,.575,.56,1) both;
 }
-
 .tab-pane.active {
   display: block;
+}
+.tab-pane h5 {
+  color: #ff6347;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+input[disabled], select[disabled] {
+  background: #f8f8f8;
+  color: #aaa;
+}
+input.form-control, select.form-select {
+  border-radius: 10px;
+  border: 1px solid #ffe5ec;
+  box-shadow: none;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+input.form-control:focus, select.form-select:focus {
+  border-color: #ff4d4f;
+  box-shadow: 0 0 0 2px #ffe5ec;
+}
+/* Animations */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: none; }
+}
+.modal-backdrop {
+  z-index: 2000 !important;
+  opacity: 0.5 !important;
+}
+.modal {
+  z-index: 2050 !important;
 }

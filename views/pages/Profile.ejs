@@ -53,7 +53,10 @@
             <strong>Role:</strong> <%= user.role %>
           </li>
           <li class="list-group-item">
-            <strong>Joined:</strong> <%= user.createdAt.toDateString() %>
+            <strong>Joined:</strong> <%= user.createdAt ? user.createdAt.toDateString() : 'Not provided' %>
+          </li>
+          <li class="list-group-item">
+            <strong>Số dư ví:</strong> <%= user.balance ? user.balance.toLocaleString() : 0 %> VND
           </li>
         </ul>
       </div>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đặt hàng thành công - Foodie Express</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/Cart.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <style>
+    .success-icon {
+      font-size: 70px;
+      color: #28a745;
+      margin-bottom: 20px;
+    }
+    .success-container {
+      max-width: 500px;
+      margin: 120px auto 0 auto;
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      text-align: center;
+    }
+    .btn-back {
+      background-color: #ff4d4f;
+      color: #fff;
+      border-radius: 50px;
+      padding: 12px 32px;
+      font-size: 18px;
+      margin-top: 24px;
+    }
+    .btn-back:hover {
+      background-color: #e63c3f;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/navbar.ejs') %>
+  <div class="success-container">
+    <div class="success-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+    <h2 class="mb-3">Đặt hàng thành công!</h2>
+    <p>Cảm ơn <strong><%= user?.username || 'bạn' %></strong> đã đặt hàng tại Foodie Express.<br>Đơn hàng của bạn sẽ được xử lý và giao trong thời gian sớm nhất.</p>
+    <a href="/Menu/listFoods" class="btn btn-back mt-3"><i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm</a>
+  </div>
+  <%- include('../partials/footer.ejs') %>
+</body>
+</html> 

@@ -15,13 +15,16 @@ const axiosInstance = axios.create({
 router.get("/Menu/listFoods", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const category = req.query.category || "All";
+  const search = req.query.search || "";
   const perPage = 6;
 
   try {
     let query = {};
-
     if (category !== "All") {
-      query = { category: category };
+      query.category = category;
+    }
+    if (search.trim() !== "") {
+      query.name = { $regex: search, $options: "i" };
     }
 
     const products = await Product.find(query)
@@ -35,8 +38,10 @@ router.get("/Menu/listFoods", async (req, res) => {
     const categories = await Product.distinct("category");
     const listCategory = categories.map((category) => ({ category }));
 
-    if (req.user.userId) {
+    if (req.user && req.user.userId) {
       const cartCount = await countProduct(req.user.userId);
+      const User = (await import('../models/user.model.js')).default;
+      const user = await User.findById(req.user.userId);
       res.render("pages/Menu", {
         products,
         totalPages,
@@ -44,7 +49,8 @@ router.get("/Menu/listFoods", async (req, res) => {
         currentPage: page,
         listCategory,
         cartCount: cartCount,
-        user: req.user,
+        user,
+        search,
       });
     } else {
       res.render("pages/Menu", {
@@ -55,6 +61,7 @@ router.get("/Menu/listFoods", async (req, res) => {
         listCategory,
         cartCount: 0,
         user: req.user,
+        search,
       });
     }
   } catch (error) {

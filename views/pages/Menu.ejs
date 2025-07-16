@@ -49,6 +49,13 @@
         <% }) %>
       </div>
 
+      <!-- Search Form -->
+      <form class="d-flex justify-content-center mb-4" method="get" action="/Menu/listFoods">
+        <input type="hidden" name="category" value="<%= selectedCategory %>" />
+        <input type="text" class="form-control w-50 me-2" name="search" placeholder="Tìm kiếm món ăn..." value="<%= typeof search !== 'undefined' ? search : '' %>" />
+        <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i> Tìm kiếm</button>
+      </form>
+
       <!-- Product List -->
       <div class="row row-cols-1 row-cols-md-3 g-4" id="product-list">
         <% products.forEach(product=> { %>

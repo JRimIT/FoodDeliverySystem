@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lịch sử giao dịch ví - Foodie Express</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/profile.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <%- include('../partials/navbar.ejs') %>
+  <div class="container mt-5 pt-5" style="max-width: 700px;">
+    <div class="card shadow p-4">
+      <h3 class="mb-4 text-center">Lịch sử giao dịch ví</h3>
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Thời gian</th>
+            <th>Loại</th>
+            <th>Số tiền</th>
+            <th>Số dư sau GD</th>
+            <th>Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (transactions.length === 0) { %>
+            <tr><td colspan="5" class="text-center">Chưa có giao dịch nào.</td></tr>
+          <% } %>
+          <% transactions.forEach(tx => { %>
+            <tr>
+              <td><%= tx.createdAt ? tx.createdAt.toLocaleString() : '' %></td>
+              <td>
+                <% if (tx.type === 'deposit') { %>
+                  <span class="badge bg-success">Nạp tiền</span>
+                <% } else if (tx.type === 'withdraw') { %>
+                  <span class="badge bg-warning text-dark">Rút tiền</span>
+                <% } else { %>
+                  <span class="badge bg-info text-dark">Thanh toán</span>
+                <% } %>
+              </td>
+              <td class="fw-bold <%= tx.type === 'deposit' ? 'text-success' : 'text-danger' %>">
+                <%= tx.type === 'deposit' ? '+' : '-' %><%= tx.amount.toLocaleString() %> VND
+              </td>
+              <td><%= tx.balanceAfter.toLocaleString() %> VND</td>
+              <td><%= tx.description || '' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <%- include('../partials/footer.ejs') %>
+</body>
+</html> 
