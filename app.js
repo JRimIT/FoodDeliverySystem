@@ -26,6 +26,7 @@ const app = express();
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 app.use(methodOverride("_method"));
 
 app.use(session(sessionConfig));

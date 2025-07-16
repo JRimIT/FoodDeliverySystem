@@ -44,6 +44,7 @@ router.get("/settings", verifyUser, async (req, res) => {
 
 // Update account info
 router.post("/updateAccount", verifyUser, async (req, res) => {
+  console.log("BODY:", req.body);
   const { fullName, email, password, phone, address, postCode, dateOfBirth } =
     req.body;
 
@@ -79,12 +80,23 @@ router.post(
   upload.single("avatar"),
   async (req, res) => {
     try {
-      const imageUrl = req.file.path; // Cloudinary trả về đường dẫn URL
-      await User.findByIdAndUpdate(req.user.userId, { avatarUrl: imageUrl });
+      console.log("FILE RECEIVED:", req.file);
+
+      const file = req.file;
+      const userId = req.user.userId || req.user._id;
+
+      console.log("File:", file);
+      console.log("User ID:", userId);
+
+      if (!file) return res.status(400).send("No file uploaded");
+      if (!userId) return res.status(400).send("User not authenticated");
+
+      await User.findByIdAndUpdate(userId, { avatarUrl: file.path });
+
       res.redirect("/settings");
     } catch (err) {
-      console.error("Upload avatar error:", err);
-      res.status(500).send("Upload failed");
+      console.error("Cloudinary upload error:", JSON.stringify(err, null, 2));
+      res.status(500).send("Error uploading avatar");
     }
   }
 );
