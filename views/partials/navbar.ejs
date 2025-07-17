@@ -27,34 +27,32 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item"><a class="nav-link" href="/Home">Home</a></li>
-        <li class="nav-item">
-          <a class="nav-link" href="/Menu/listFoods">Menu</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="/Menu/listFoods">Menu</a></li>
         <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
-        <li class="nav-item">
-          <a class="nav-link" href="/contact">Contact</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/help">Help</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="/help">Help</a></li>
 
-        <!-- Hiển thị icon admin nếu là admin -->
+        <!-- Admin -->
         <% if (user && user.role === 'admin') { %>
-        <li class="nav-item">
-          <a class="nav-link" href="/admin/Home">
-            <i class="fas fa-user-shield"></i> Admin
-          </a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/Home">
+              <i class="fas fa-user-shield"></i> Admin
+            </a>
+          </li>
+        <% } %>
+
+        <!-- Shipper -->
+        <% if (user && user.role === 'shipper') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/shipper/dashboard">
+              <i class="fas fa-truck"></i> Shipper Dashboard
+            </a>
+          </li>
         <% } %>
       </ul>
 
       <!-- Search bar -->
-      <form
-        class="d-flex search-bar me-4"
-        role="search"
-        method="get"
-        action="/Menu/listFoods"
-      >
+      <form class="d-flex search-bar me-4" role="search" method="get" action="/Menu/listFoods">
         <input
           class="form-control me-2"
           type="search"
@@ -67,64 +65,59 @@
       </form>
 
       <!-- Cart Icon -->
-      <div class="cart-icon position-relative me-3">
-        <a
-          href="/view/cart"
-          class="position-relative text-decoration-none text-dark"
-        >
-          <i class="fas fa-shopping-cart fa-lg"></i>
-          <span
-            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+      <% if (typeof cartCount !== 'undefined') { %>
+        <div class="cart-icon position-relative me-3">
+          <a
+            href="/view/cart"
+            class="position-relative text-decoration-none text-dark"
           >
-            <%= cartCount || 0 %>
-          </span>
-        </a>
-      </div>
-
-      <!-- Hiển thị số dư ví user (balance) trên navbar nếu đã đăng nhập -->
-      <% if (user) { %>
-      <div class="d-flex align-items-center me-3">
-        <span class="badge bg-success me-2"
-          >Balance: <%= user.balance ? user.balance.toLocaleString() : 0 %>
-          VND</span
-        >
-      </div>
+            <i class="fas fa-shopping-cart fa-lg"></i>
+            <span
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            >
+              <%= cartCount %>
+            </span>
+          </a>
+        </div>
       <% } %>
 
-      <!-- Avatar Dropdown -->
+      <!-- Balance -->
       <% if (user) { %>
-      <div class="dropdown">
-        <a
-          href="#"
-          class="d-flex align-items-center text-decoration-none dropdown-toggle"
-          id="dropdownUser"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <img
-            src="<%= user.avatarUrl || 'https://i.pinimg.com/1200x/dc/6c/b0/dc6cb0521d182f959da46aaee82e742f.jpg' %>"
-            alt="avatar"
-            width="40"
-            height="40"
-            class="rounded-circle"
-          />
-        </a>
-        <ul
-          class="dropdown-menu dropdown-menu-end"
-          aria-labelledby="dropdownUser"
-        >
-          <li><a class="dropdown-item" href="/profile">👤 Profile</a></li>
-          <li><a class="dropdown-item" href="/settings">⚙️ Settings</a></li>
-          <li><a class="dropdown-item" href="/orders">📦 Orders</a></li>
-          <li><hr class="dropdown-divider" /></li>
-          <li>
-            <a class="dropdown-item text-danger" href="/">🚪 Logout</a>
-          </li>
-        </ul>
-      </div>
+        <div class="d-flex align-items-center me-3">
+          <span class="badge bg-success me-2">
+            Balance: <%= user.balance ? user.balance.toLocaleString() : 0 %> VND
+          </span>
+        </div>
+      <% } %>
+
+      <!-- Avatar or Login -->
+      <% if (user) { %>
+        <div class="dropdown">
+          <a
+            href="#"
+            class="d-flex align-items-center text-decoration-none dropdown-toggle"
+            id="dropdownUser"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="<%= user.avatarUrl || 'https://i.pinimg.com/1200x/dc/6c/b0/dc6cb0521d182f959da46aaee82e742f.jpg' %>"
+              alt="avatar"
+              width="40"
+              height="40"
+              class="rounded-circle"
+            />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+            <li><a class="dropdown-item" href="/profile">👤 Profile</a></li>
+            <li><a class="dropdown-item" href="/settings">⚙️ Settings</a></li>
+            <li><a class="dropdown-item" href="/orders">📦 Orders</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item text-danger" href="/">🚪 Logout</a></li>
+          </ul>
+        </div>
       <% } else { %>
-      <!-- Đăng nhập nếu chưa có user -->
-      <a href="/login" class="btn btn-outline-primary">Login</a>
+        <a href="/login" class="btn btn-outline-primary">Login</a>
       <% } %>
     </div>
   </div>

@@ -99,6 +99,7 @@
                                 <select name="status" class="form-select form-select-sm">
                                     <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
                                     <option value="Processing" <%= order.status === 'Processing' ? 'selected' : '' %>>Processing</option>
+                                    <option value="Shipping" <%= order.status === 'Shipping' ? 'selected' : '' %>>Shipping</option>
                                     <option value="Completed" <%= order.status === 'Completed' ? 'selected' : '' %>>Completed</option>
                                     <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
                                 </select>

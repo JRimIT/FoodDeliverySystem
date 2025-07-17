@@ -1,0 +1,67 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container" style="padding-top: 100px;">
+  <div class="text-center mb-4">
+    <h2><i class="fas fa-truck text-primary"></i> Shipper Dashboard</h2>
+    <p class="text-muted">Manage your assigned delivery orders here.</p>
+  </div>
+
+  <% if (orders.length === 0) { %>
+    <div class="alert alert-info text-center">You have no delivery orders assigned.</div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light text-center">
+          <tr>
+            <th>Order ID</th>
+            <th>Delivery Address</th>
+            <th>Items</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% orders.forEach(o => { %>
+            <tr>
+              <td class="text-center"><%= o._id %></td>
+              <td><%= o.address %></td>
+              <td>
+                <% o.items.forEach(item => { %>
+                  <div class="d-flex align-items-center mb-2">
+                    <img src="<%= item.productId?.imageUrl || '/default.jpg' %>" width="50" height="50" class="me-2 rounded" />
+                    <div>
+                      <strong><%= item.productId?.name %></strong><br>
+                      x <%= item.quantity %> – 
+                      <%= (item.productId?.price || 0).toLocaleString() %> VND
+                    </div>
+                  </div>
+                <% }) %>
+              </td>
+              <td class="text-center">
+                <% if (o.status === 'Shipping') { %>
+                  <span class="badge bg-warning text-dark">Shipping</span>
+                <% } else { %>
+                  <span class="badge bg-success">Delivered</span>
+                <% } %>
+              </td>
+              <td class="text-center">
+                <% if (o.status === 'Shipping') { %>
+                  <form action="/shipper/delivered/<%= o._id %>" method="POST" class="d-inline">
+                    <button class="btn btn-sm btn-success">
+                      <i class="fas fa-check-circle"></i> Mark Delivered
+                    </button>
+                  </form>
+                <% } else { %>
+                  <span class="text-muted">✓ Done</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>
