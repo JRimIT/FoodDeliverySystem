@@ -235,7 +235,9 @@ router.post("/checkout", verifyUser, async (req, res) => {
             <p>Xin chào <strong>${
               user.username || user.name || "khách hàng"
             }</strong>,</p>
-            <p>Đây là thông tin đơn hàng của bạn:</p>
+            <p>Cảm ơn bạn đã đặt hàng tại <strong>Foodie Express</strong>!</p>
+
+         <p><strong>Thông tin đơn hàng của bạn:</strong></p>
             <ul>
               ${cart.items
                 .map(
@@ -247,6 +249,13 @@ router.post("/checkout", verifyUser, async (req, res) => {
                 .join("")}
             </ul>
             <p><strong>Tổng cộng:</strong> ${totalPrice.toLocaleString()}đ</p>
+            <p><strong>Phương thức thanh toán:</strong> ${
+              paymentMethod === "wallet"
+                ? "Ví điện tử"
+                : "Thanh toán khi nhận hàng (COD)"
+            }</p>
+            <p><strong>Ghi chú:</strong> ${note || "Không có"}</p>
+    
             <p>Chúng tôi sẽ sớm giao hàng cho bạn.</p>
             <hr/>
           </div>
@@ -308,13 +317,19 @@ router.post("/order/:productId", verifyUser, async (req, res) => {
     const productId = req.params.productId;
     const quantity = parseInt(req.query.quantity) || 1;
     const { address, note, paymentMethod } = req.body;
+
     const Product = (await import("../models/product.model.js")).default;
     const product = await Product.findById(productId);
+
     const User = (await import("../models/user.model.js")).default;
     const user = await User.findById(req.user.userId);
+
     const cartCount = await countProduct(req.user.userId);
+
     if (!product) return res.status(404).send("Không tìm thấy sản phẩm!");
+
     const totalPrice = product.price * quantity;
+
     // Xử lý thanh toán
     if (paymentMethod === "wallet") {
       if (user.balance < totalPrice) {
@@ -326,8 +341,10 @@ router.post("/order/:productId", verifyUser, async (req, res) => {
           error: `Số dư ví không đủ để thanh toán! Bạn cần nạp thêm tiền.`,
         });
       }
+
       user.balance -= totalPrice;
       await user.save();
+
       await Transaction.create({
         userId: user._id,
         type: "payment",
@@ -336,6 +353,7 @@ router.post("/order/:productId", verifyUser, async (req, res) => {
         description: `Thanh toán đơn hàng: -${totalPrice.toLocaleString()} VND`,
       });
     }
+
     // Tạo order mới
     const Order = (await import("../models/order.model.js")).default;
     await Order.create({
@@ -348,6 +366,53 @@ router.post("/order/:productId", verifyUser, async (req, res) => {
       createdAt: new Date(),
       paymentMethod: paymentMethod || "cod",
     });
+
+    // Nội dung email xác nhận đơn hàng (ĐÃ SỬA)
+    const htmlContent = `
+    <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: auto;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://i.pinimg.com/736x/0f/27/7f/0f277f5f07a6399788894bc1062b5308.jpg" alt="Foodie Express" style="width: 120px;" />
+        <h2 style="color: #ff6600;">🍽️ Foodie Express - Xác nhận đơn hàng</h2>
+      </div>
+
+      <div style="background-color: #fdfdfd; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <p>Xin chào <strong>${
+          user.username || user.name || "khách hàng"
+        }</strong>,</p>
+        <p>Cảm ơn bạn đã đặt hàng tại <strong>Foodie Express</strong>!</p>
+
+        <p><strong>Thông tin đơn hàng của bạn:</strong></p>
+        <ul>
+          <li><strong>Sản phẩm:</strong> ${product.name}</li>
+          <li><strong>Số lượng:</strong> ${quantity}</li>
+          <li><strong>Giá mỗi sản phẩm:</strong> ${product.price.toLocaleString()}đ</li>
+        </ul>
+
+        <p><strong>Tổng cộng:</strong> ${totalPrice.toLocaleString()}đ</p>
+        <p><strong>Địa chỉ giao hàng:</strong> ${address}</p>
+        <p><strong>Phương thức thanh toán:</strong> ${
+          paymentMethod === "wallet"
+            ? "Ví điện tử"
+            : "Thanh toán khi nhận hàng (COD)"
+        }</p>
+        <p><strong>Ghi chú:</strong> ${note || "Không có"}</p>
+
+        <p>Chúng tôi sẽ xử lý đơn hàng của bạn và giao hàng trong thời gian sớm nhất.</p>
+        <hr/>
+      </div>
+
+      <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #aaa;">
+        © ${new Date().getFullYear()} Foodie Express. All rights reserved.
+      </div>
+    </div>
+    `;
+
+    await sendMail(
+      user.email,
+      `Xác nhận đơn hàng từ Foodie Express`,
+      htmlContent
+    );
+
     res.redirect("/checkout/success");
   } catch (error) {
     console.error("Error placing order now:", error);
