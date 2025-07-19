@@ -59,7 +59,7 @@
           <div class="col-md-4">
             <h6 class="mb-1"><%= item.product.name %></h6>
             <div class="text-muted">
-              Đơn giá: $<%= item.product.price.toFixed(2) %>
+              Đơn giá: <%= item.product.price.toFixed(2) %> VND
             </div>
           </div>
           <div class="col-md-3">
@@ -67,7 +67,7 @@
           </div>
           <div class="col-md-3 text-end">
             <span class="fw-bold"
-              >$<%= (item.product.price * item.quantity).toFixed(2) %></span
+              ><%= (item.product.price * item.quantity).toFixed(2) %> VND</span
             >
           </div>
         </div>
