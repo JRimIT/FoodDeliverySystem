@@ -20,6 +20,7 @@ import reviewRoute from "./routes/review.route.js";
 import contactRoutes from "./routes/contact.route.js";
 import discountRoute from "./routes/discount.route.js";
 import shipperRoutes from "./routes/shipper.route.js";
+import orderRoutes from './routes/order.route.js';
 
 import { connectToMongoDB } from "./db/connectToMongoDB.js";
 
@@ -52,6 +53,7 @@ app.use("/", verifyUser, reviewRoute);
 app.use("/", contactRoutes);
 app.use("/", verifyUser, discountRoute);
 app.use("/shipper", shipperRoutes);
+app.use('/orders', orderRoutes);
 
 app.use("/", verifyAdmin, adminRoute);
 

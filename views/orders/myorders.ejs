@@ -1,0 +1,68 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-5 pt-5" style="max-width: 1000px;">
+  <div class="card shadow-sm p-4">
+    <h3 class="mb-4 text-center text-primary">📦 Xác nhận đơn hàng đã giao</h3>
+
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light text-center">
+        <tr>
+          <th>Mã đơn</th>
+          <th>Thời gian</th>
+          <th>Sản phẩm</th>
+          <th>Trạng thái</th>
+          <th>Tổng tiền</th>
+          <th>Xác nhận</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% 
+          const deliveredOrders = orders.filter(o => o.status === 'Delivered');
+        %>
+
+        <% if (deliveredOrders.length === 0) { %>
+          <tr><td colspan="6" class="text-center text-muted">Không có đơn hàng nào cần xác nhận.</td></tr>
+        <% } else { %>
+          <% deliveredOrders.forEach(order => { %>
+            <tr>
+              <td class="text-center"><span class="text-secondary"><%= order._id %></span></td>
+              <td class="text-center"><%= new Date(order.createdAt).toLocaleString("vi-VN") %></td>
+              <td>
+                <% order.items.forEach(item => { %>
+                  <div class="d-flex align-items-center mb-2">
+                    <img 
+                      src="<%= item.productId?.imageUrl || '/default.jpg' %>" 
+                      alt="product image"
+                      width="80" height="80"
+                      class="rounded mb-2 mx-auto d-block"
+                      style="object-fit: contain; display: block; background-color: transparent;"
+                    />
+                    <div>
+                      <strong><%= item.productId?.name || 'Sản phẩm đã xoá' %></strong><br>
+                      SL: <%= item.quantity %> – 
+                      <%= (item.price || 0).toLocaleString("vi-VN") %> VND
+                    </div>
+                  </div>
+                <% }) %>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-info text-dark">Đã giao</span>
+              </td>
+              <td class="text-end fw-bold text-danger"><%= order.totalPrice.toLocaleString("vi-VN") %> VND</td>
+              <td class="text-center">
+                <form action="/orders/confirm/<%= order._id %>" method="POST" class="d-inline">
+                  <button class="btn btn-sm btn-success">
+                    <i class="fas fa-check-circle"></i> Đã nhận hàng
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
