@@ -57,7 +57,7 @@
 
             <hr />
             <div class="total-section mt-4">
-              Tổng cộng: <%= cart.items.reduce((sum, item)=> sum + item.product.price * item.quantity,
+              Tổng cộng: <%= items.reduce((sum, item)=> sum + item.product.price * item.quantity,
                 0).toLocaleString('vi-VN') %> VND
             </div>
 
