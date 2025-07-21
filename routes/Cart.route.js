@@ -202,7 +202,7 @@ router.post('/checkout', verifyUser, async (req, res) => {
                 vnp_Amount: totalPrice,
                 vnp_TxnRef: txnRef,
                 vnp_OrderInfo: orderInfo,
-                vnp_ReturnUrl: `http://localhost:4000/callback-vnpay`,
+                vnp_ReturnUrl: `https://localhost:4000/callback-vnpay`,
                 vnp_OrderType: ProductCode.Other,
                 vnp_Locale: VnpLocale.VN,
                 vnp_CreateDate: dateFormat(new Date()),
@@ -263,15 +263,14 @@ router.post('/checkout', verifyUser, async (req, res) => {
          <p><strong>Thông tin đơn hàng của bạn:</strong></p>
             <ul>
               ${cart.items
-                  .map(
-                      (item) =>
-                          `<li>${item.product.name} - ${item.quantity} x ${item.product.price.toLocaleString()}đ</li>`,
-                  )
-                  .join('')}
+                .map(
+                    (item) =>
+                        `<li>${item.product.name} - ${item.quantity} x ${item.product.price.toLocaleString()}đ</li>`,
+                )
+                .join('')}
             </ul>
             <p><strong>Tổng cộng:</strong> ${totalPrice.toLocaleString()}đ</p>
-            <p><strong>Phương thức thanh toán:</strong> ${
-                paymentMethod === 'wallet' ? 'Ví điện tử' : 'Thanh toán khi nhận hàng (COD)'
+            <p><strong>Phương thức thanh toán:</strong> ${paymentMethod === 'wallet' ? 'Ví điện tử' : 'Thanh toán khi nhận hàng (COD)'
             }</p>
             <p><strong>Ghi chú:</strong> ${note || 'Không có'}</p>
     
@@ -299,30 +298,30 @@ router.post('/checkout', verifyUser, async (req, res) => {
 });
 
 router.get('/callback-vnpay', verifyUser, async (req, res) => {
-  const { vnp_TransactionStatus, order, productId, quantity, address, note } = req.query;
-  if (vnp_TransactionStatus === '00') {
-    if (order === '1' && productId && quantity) {
-      // Xử lý đặt hàng trực tiếp (Order Now) thanh toán VNPay
-      const Product = (await import('../models/product.model.js')).default;
-      const product = await Product.findById(productId);
-      const User = (await import('../models/user.model.js')).default;
-      const user = await User.findById(req.user.userId);
-      if (!product) return res.status(404).send('Không tìm thấy sản phẩm!');
-      const totalPrice = product.price * parseInt(quantity);
-      const Order = (await import('../models/order.model.js')).default;
-      await Order.create({
-        userId: user._id,
-        items: [{ productId: product._id, quantity: parseInt(quantity), price: product.price }],
-        totalPrice,
-        address,
-        note,
-        status: 'Paid',
-        createdAt: new Date(),
-        paymentMethod: 'vnpay',
-      });
-      // Gửi mail xác nhận
-      if (user.email) {
-        const htmlContent = `
+    const { vnp_TransactionStatus, order, productId, quantity, address, note } = req.query;
+    if (vnp_TransactionStatus === '00') {
+        if (order === '1' && productId && quantity) {
+            // Xử lý đặt hàng trực tiếp (Order Now) thanh toán VNPay
+            const Product = (await import('../models/product.model.js')).default;
+            const product = await Product.findById(productId);
+            const User = (await import('../models/user.model.js')).default;
+            const user = await User.findById(req.user.userId);
+            if (!product) return res.status(404).send('Không tìm thấy sản phẩm!');
+            const totalPrice = product.price * parseInt(quantity);
+            const Order = (await import('../models/order.model.js')).default;
+            await Order.create({
+                userId: user._id,
+                items: [{ productId: product._id, quantity: parseInt(quantity), price: product.price }],
+                totalPrice,
+                address,
+                note,
+                status: 'Paid',
+                createdAt: new Date(),
+                paymentMethod: 'vnpay',
+            });
+            // Gửi mail xác nhận
+            if (user.email) {
+                const htmlContent = `
         <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: auto;">
           <div style="text-align: center; margin-bottom: 20px;">
             <img src="https://i.pinimg.com/736x/0f/27/7f/0f277f5f07a6399788894bc1062b5308.jpg" alt="Foodie Express" style="width: 120px;" />
@@ -348,18 +347,18 @@ router.get('/callback-vnpay', verifyUser, async (req, res) => {
           </div>
         </div>
         `;
-        await sendMail(user.email, `Xác nhận đơn hàng từ Foodie Express`, htmlContent);
-      }
+                await sendMail(user.email, `Xác nhận đơn hàng từ Foodie Express`, htmlContent);
+            }
+        }
+        // Nếu là thanh toán giỏ hàng thì xóa giỏ hàng như cũ
+        else {
+            const userId = req.user.userId;
+            await Cart.findOneAndDelete({ userId });
+        }
+        return res.redirect('/checkout/success');
+    } else {
+        return res.send('Thanh toán VNPay thất bại hoặc bị hủy. Vui lòng thử lại!');
     }
-    // Nếu là thanh toán giỏ hàng thì xóa giỏ hàng như cũ
-    else {
-      const userId = req.user.userId;
-      await Cart.findOneAndDelete({ userId });
-    }
-    return res.redirect('/checkout/success');
-  } else {
-    return res.send('Thanh toán VNPay thất bại hoặc bị hủy. Vui lòng thử lại!');
-  }
 });
 
 router.get('/checkout/success', verifyUser, async (req, res) => {
@@ -428,7 +427,7 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
                 vnp_Amount: totalPrice,
                 vnp_TxnRef: txnRef,
                 vnp_OrderInfo: orderInfo,
-                vnp_ReturnUrl: `http://localhost:4000/callback-vnpay?order=1&productId=${productId}&quantity=${quantity}&address=${encodeURIComponent(address)}&note=${encodeURIComponent(note || '')}`,
+                vnp_ReturnUrl: `https://localhost:4000/callback-vnpay?order=1&productId=${productId}&quantity=${quantity}&address=${encodeURIComponent(address)}&note=${encodeURIComponent(note || '')}`,
                 vnp_OrderType: ProductCode.Other,
                 vnp_Locale: VnpLocale.VN,
                 vnp_CreateDate: dateFormat(new Date()),
@@ -495,9 +494,8 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
 
         <p><strong>Tổng cộng:</strong> ${totalPrice.toLocaleString()}đ</p>
         <p><strong>Địa chỉ giao hàng:</strong> ${address}</p>
-        <p><strong>Phương thức thanh toán:</strong> ${
-            paymentMethod === 'wallet' ? 'Ví điện tử' : 'Thanh toán khi nhận hàng (COD)'
-        }</p>
+        <p><strong>Phương thức thanh toán:</strong> ${paymentMethod === 'wallet' ? 'Ví điện tử' : 'Thanh toán khi nhận hàng (COD)'
+            }</p>
         <p><strong>Ghi chú:</strong> ${note || 'Không có'}</p>
 
         <p>Chúng tôi sẽ xử lý đơn hàng của bạn và giao hàng trong thời gian sớm nhất.</p>
