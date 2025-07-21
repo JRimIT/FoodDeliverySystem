@@ -55,9 +55,24 @@ app.use("/shipper", shipperRoutes);
 
 app.use("/", verifyAdmin, adminRoute);
 
-// Server start
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  connectToMongoDB();
-  console.log(`Server started on port http://localhost:${PORT}`);
+
+// catch 404
+app.use((req, res, next) => {
+  next(createError(404));
 });
+
+// error handler
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+export default app;
+// Server start
+// const PORT = process.env.PORT || 4000;
+// app.listen(PORT, () => {
+//   connectToMongoDB();
+//   console.log(`Server started on port http://localhost:${PORT}`);
+// });

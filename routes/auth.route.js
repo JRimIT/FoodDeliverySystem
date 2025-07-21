@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt';
 import axios from 'axios';
 import https from 'https';
 import User from '../models/user.model.js';
+import passport from 'passport';
+import { generateJWT } from '../config/jwtConfig.js';
 
 const router = express.Router();
 
@@ -75,5 +77,25 @@ router.post('/auth/login', async (req, res) => {
         res.status(500).send("Login failed");
     }
 });
+
+
+// auth facebook
+
+router.get('/auth/facebook', passport.authenticate('facebook'));
+
+router.get('/auth/facebook/callback',
+    passport.authenticate('facebook', { session: false, failureRedirect: '/login' }),
+    (req, res) => {
+        const token = generateJWT(req.user);
+        const user = req.user;
+        console.log("User /auth/facebook/callback: ", user);
+
+        req.session.token = token;
+        req.session.user = user;
+        res.redirect('/listFeatureFood');
+        // res.json({ token }); // Gửi JWT về client
+    }
+);
+
 
 export default router;

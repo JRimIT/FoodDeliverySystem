@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  facebookId: { type: String, unique: true },
   username: {
     type: String,
     required: true,
@@ -9,7 +10,6 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
   },
   fullName: {
     type: String,

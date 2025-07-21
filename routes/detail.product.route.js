@@ -23,6 +23,8 @@ router.get("/detail/:productId", async (req, res) => {
         select: "username",
       },
     });
+    console.log("/detail/:productId: ", product);
+
     // res.json(product)
     if (req.user && req.user.userId) {
       const cartCount = await countProduct(req.user.userId);
