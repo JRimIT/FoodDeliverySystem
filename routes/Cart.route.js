@@ -168,45 +168,47 @@ router.post('/checkout', verifyUser, async (req, res) => {
     try {
         const userId = req.user.userId;
         const { address, note, paymentMethod } = req.body;
-        // const cart = await Cart.findOne({ userId }).populate({
-        //     path: 'items',
-        //     populate: { path: 'product', select: 'name price imageUrl' },
-        // });
-        // if (!cart || !cart.items.length) {
-        //     return res.status(400).send('Giỏ hàng trống!');
-        // }
-        // // Tính tổng tiền
-        // const totalPrice = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-        // // Lấy user
-        // const User = (await import('../models/user.model.js')).default;
-        // const user = await User.findById(userId);
+        const cart = await Cart.findOne({ userId }).populate({
+            path: 'items',
+            populate: { path: 'product', select: 'name price imageUrl' },
+        });
+        if (!cart || !cart.items.length) {
+            return res.status(400).send('Giỏ hàng trống!');
+        }
+        // Tính tổng tiền
+        const totalPrice = cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+        // Lấy user
+        const User = (await import('../models/user.model.js')).default;
+        const user = await User.findById(userId);
+        //TxnRef-OrderInfo
+        const txnRef = `${Date.now()}-${userId}`;
+        const orderInfo = `Thanh toan don hang #${txnRef}`;
         // Xử lý thanh toán
         if (paymentMethod === 'vnpay') {
+            const txnRef = `${Date.now()}-${userId}`;
+            const orderInfo = `Thanh toan don hang #${txnRef}`;
             const vnpay = new VNPay({
                 tmnCode: 'DH2F13SW',
                 secureSecret: '7VJPG70RGPOWFO47VSBT29WPDYND0EJG',
                 vnpayHost: 'https://sandbox.vnpayment.vn',
-                testMode: true, // tùy chọn
-                hashAlgorithm: 'SHA512', // tùy chọn
-                loggerFn: ignoreLogger, // tùy chọn
+                testMode: true,
+                hashAlgorithm: 'SHA512',
+                loggerFn: ignoreLogger,
             });
-
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
-            const vnpayResponse = await vnpay.buildPaymentUrl({
-                vnp_IpAddr: '127.0.0.1', //
-                vnp_Amount: '100000', // chỗ này cần thay đổi  || tổng giá tiền đơn hàng
-                vnp_TxnRef: `1234567`, /// mô tả hoá đơn hàng
-                vnp_OrderInfo: `1234567`, /// mô tả hoá đơn hàng
-                vnp_ReturnUrl: `http://localhost:4000/callback-vnpay`, // mở api để nhận kết quả thanh toán
+            const vnpayUrl = await vnpay.buildPaymentUrl({
+                vnp_IpAddr: '127.0.0.1',
+                vnp_Amount: totalPrice,
+                vnp_TxnRef: txnRef,
+                vnp_OrderInfo: orderInfo,
+                vnp_ReturnUrl: `http://localhost:4000/callback-vnpay`,
                 vnp_OrderType: ProductCode.Other,
-                vnp_Locale: VnpLocale.VN, // 'vn' hoặc 'en'
-                vnp_CreateDate: dateFormat(new Date()), // tùy chọn, mặc định là hiện tại
-                vnp_ExpireDate: dateFormat(tomorrow), // tùy chọn
+                vnp_Locale: VnpLocale.VN,
+                vnp_CreateDate: dateFormat(new Date()),
+                vnp_ExpireDate: dateFormat(tomorrow),
             });
-            return res.status(200).json({
-                vnpayResponse,
-            });
+            return res.redirect(vnpayUrl);
         }
 
         if (paymentMethod === 'wallet') {
@@ -296,9 +298,68 @@ router.post('/checkout', verifyUser, async (req, res) => {
     }
 });
 
-router.get('/callback-vnpay', async (req, res) => {
-    console.log('Callback VNPAY:', req.query);
-    const { vnp_Amount, vnp_OrderInfo, vnp_TransactionStatus } = req.query;
+router.get('/callback-vnpay', verifyUser, async (req, res) => {
+  const { vnp_TransactionStatus, order, productId, quantity, address, note } = req.query;
+  if (vnp_TransactionStatus === '00') {
+    if (order === '1' && productId && quantity) {
+      // Xử lý đặt hàng trực tiếp (Order Now) thanh toán VNPay
+      const Product = (await import('../models/product.model.js')).default;
+      const product = await Product.findById(productId);
+      const User = (await import('../models/user.model.js')).default;
+      const user = await User.findById(req.user.userId);
+      if (!product) return res.status(404).send('Không tìm thấy sản phẩm!');
+      const totalPrice = product.price * parseInt(quantity);
+      const Order = (await import('../models/order.model.js')).default;
+      await Order.create({
+        userId: user._id,
+        items: [{ productId: product._id, quantity: parseInt(quantity), price: product.price }],
+        totalPrice,
+        address,
+        note,
+        status: 'Paid',
+        createdAt: new Date(),
+        paymentMethod: 'vnpay',
+      });
+      // Gửi mail xác nhận
+      if (user.email) {
+        const htmlContent = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: auto;">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <img src="https://i.pinimg.com/736x/0f/27/7f/0f277f5f07a6399788894bc1062b5308.jpg" alt="Foodie Express" style="width: 120px;" />
+            <h2 style="color: #ff6600;">🍽️ Foodie Express - Xác nhận đơn hàng</h2>
+          </div>
+          <div style="background-color: #fdfdfd; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <p>Xin chào <strong>${user.username || user.name || 'khách hàng'}</strong>,</p>
+            <p>Cảm ơn bạn đã đặt hàng tại <strong>Foodie Express</strong>!</p>
+            <ul>
+              <li><strong>Sản phẩm:</strong> ${product.name}</li>
+              <li><strong>Số lượng:</strong> ${quantity}</li>
+              <li><strong>Giá mỗi sản phẩm:</strong> ${product.price.toLocaleString()}đ</li>
+            </ul>
+            <p><strong>Tổng cộng:</strong> ${totalPrice.toLocaleString()}đ</p>
+            <p><strong>Phương thức thanh toán:</strong> VNPay</p>
+            <p><strong>Trạng thái:</strong> Đã thanh toán</p>
+            <p><strong>Ghi chú:</strong> ${note || 'Không có'}</p>
+            <p>Chúng tôi sẽ sớm giao hàng cho bạn.</p>
+            <hr/>
+          </div>
+          <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #aaa;">
+            © ${new Date().getFullYear()} Foodie Express. All rights reserved.
+          </div>
+        </div>
+        `;
+        await sendMail(user.email, `Xác nhận đơn hàng từ Foodie Express`, htmlContent);
+      }
+    }
+    // Nếu là thanh toán giỏ hàng thì xóa giỏ hàng như cũ
+    else {
+      const userId = req.user.userId;
+      await Cart.findOneAndDelete({ userId });
+    }
+    return res.redirect('/checkout/success');
+  } else {
+    return res.send('Thanh toán VNPay thất bại hoặc bị hủy. Vui lòng thử lại!');
+  }
 });
 
 router.get('/checkout/success', verifyUser, async (req, res) => {
@@ -348,7 +409,35 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
 
         const totalPrice = product.price * quantity;
 
-        // Xử lý thanh toán
+        // Xử lý thanh toán VNPay
+        if (paymentMethod === 'vnpay') {
+            const txnRef = `${Date.now()}-${user._id}`;
+            const orderInfo = `Thanh toan don hang #${txnRef}`;
+            const vnpay = new VNPay({
+                tmnCode: 'DH2F13SW',
+                secureSecret: '7VJPG70RGPOWFO47VSBT29WPDYND0EJG',
+                vnpayHost: 'https://sandbox.vnpayment.vn',
+                testMode: true,
+                hashAlgorithm: 'SHA512',
+                loggerFn: ignoreLogger,
+            });
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const vnpayUrl = await vnpay.buildPaymentUrl({
+                vnp_IpAddr: '127.0.0.1',
+                vnp_Amount: totalPrice,
+                vnp_TxnRef: txnRef,
+                vnp_OrderInfo: orderInfo,
+                vnp_ReturnUrl: `http://localhost:4000/callback-vnpay?order=1&productId=${productId}&quantity=${quantity}&address=${encodeURIComponent(address)}&note=${encodeURIComponent(note || '')}`,
+                vnp_OrderType: ProductCode.Other,
+                vnp_Locale: VnpLocale.VN,
+                vnp_CreateDate: dateFormat(new Date()),
+                vnp_ExpireDate: dateFormat(tomorrow),
+            });
+            return res.redirect(vnpayUrl);
+        }
+
+        // Xử lý thanh toán wallet
         if (paymentMethod === 'wallet') {
             if (user.balance < totalPrice) {
                 return res.render('pages/OrderNow', {

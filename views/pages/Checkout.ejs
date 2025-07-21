@@ -1,140 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Checkout - Foodie Express</title>
-    <link rel="stylesheet" href="/css/navbar.css" />
-    <link rel="stylesheet" href="/css/Cart.css" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-  </head>
-  <body>
-    <%- include('../partials/navbar.ejs') %>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - Foodie Express</title>
+  <link rel="stylesheet" href="/css/navbar.css" />
+  <link rel="stylesheet" href="/css/Cart.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+
+<body>
+  <%- include('../partials/navbar.ejs') %>
     <div class="cart-container">
       <h2 class="mb-4 text-center">
         <i class="fas fa-credit-card text-danger me-2"></i>Checkout
       </h2>
-      <% if (typeof error !== 'undefined') { %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <%= error %>
-        <a href="/wallet/deposit" class="btn btn-sm btn-primary ms-2"
-          >Nạp tiền ngay</a
-        >
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-          aria-label="Close"
-        ></button>
-      </div>
-      <% } %>
-      <div class="mb-4">
-        <h5 class="mb-3">👤 Thông tin khách hàng</h5>
-        <div class="ps-2">
-          <p><strong>Tên:</strong> <%= user?.username || 'User' %></p>
-          <% if (user?.email) { %>
-          <p><strong>Email:</strong> <%= user.email %></p>
-          <% } %>
+      <% if (typeof error !=='undefined' ) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= error %>
+            <a href="/wallet/deposit" class="btn btn-sm btn-primary ms-2">Nạp tiền ngay</a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-      </div>
-      <div class="mb-4">
-        <h5 class="mb-3">🛒 Sản phẩm trong giỏ hàng</h5>
-        <% if (cart && cart.items && cart.items.length > 0) { %> <%
-        cart.items.forEach(item => { %>
-        <div class="row cart-item align-items-center">
-          <div class="col-md-2">
-            <img
-              src="<%= item.product.imageUrl %>"
-              alt="<%= item.product.name %>"
-              class="product-image"
-            />
-          </div>
-          <div class="col-md-4">
-            <h6 class="mb-1"><%= item.product.name %></h6>
-            <div class="text-muted">
-              Đơn giá: <%= item.product.price.toFixed(2) %> VND
+        <% } %>
+          <div class="mb-4">
+            <h5 class="mb-3">👤 Thông tin khách hàng</h5>
+            <div class="ps-2">
+              <p><strong>Tên:</strong>
+                <%= user?.username || 'User' %>
+              </p>
+              <% if (user?.email) { %>
+                <p><strong>Email:</strong>
+                  <%= user.email %>
+                </p>
+                <% } %>
             </div>
           </div>
-          <div class="col-md-3">
-            <span>Số lượng: <strong><%= item.quantity %></strong></span>
+          <div class="mb-4">
+            <h5 class="mb-3">🛒 Sản phẩm trong giỏ hàng</h5>
+            <% if (cart && cart.items && cart.items.length> 0) { %> <% cart.items.forEach(item=> { %>
+                <div class="row cart-item align-items-center">
+                  <div class="col-md-2">
+                    <img src="<%= item.product.imageUrl %>" alt="<%= item.product.name %>" class="product-image" />
+                  </div>
+                  <div class="col-md-4">
+                    <h6 class="mb-1">
+                      <%= item.product.name %>
+                    </h6>
+                    <div class="text-muted">
+                      Đơn giá: <%= item.product.price.toFixed(2) %> VND
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <span>Số lượng: <strong>
+                        <%= item.quantity %>
+                      </strong></span>
+                  </div>
+                  <div class="col-md-3 text-end">
+                    <span class="fw-bold">
+                      <%= (item.product.price * item.quantity).toFixed(2) %> VND
+                    </span>
+                  </div>
+                </div>
+                <% }) %>
+                  <hr />
+                  <div class="total-section mt-4">
+                    Tổng cộng: $ <%= cart.items.reduce((sum, item)=> sum +
+                      item.product.price * item.quantity, 0).toFixed(2) %>
+                  </div>
+                  <% } else { %>
+                    <p>Giỏ hàng của bạn đang trống.</p>
+                    <% } %>
           </div>
-          <div class="col-md-3 text-end">
-            <span class="fw-bold"
-              ><%= (item.product.price * item.quantity).toFixed(2) %> VND</span
-            >
-          </div>
-        </div>
-        <% }) %>
-        <hr />
-        <div class="total-section mt-4">
-          Tổng cộng: $ <%= cart.items.reduce((sum, item) => sum +
-          item.product.price * item.quantity, 0).toFixed(2) %>
-        </div>
-        <% } else { %>
-        <p>Giỏ hàng của bạn đang trống.</p>
-        <% } %>
-      </div>
-      <form class="mt-4" method="POST" action="/checkout">
-        <h5 class="mb-3">🚚 Địa chỉ giao hàng</h5>
-        <div class="mb-3">
-          <input
-            type="text"
-            class="form-control"
-            name="address"
-            placeholder="Nhập địa chỉ nhận hàng..."
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <textarea
-            class="form-control"
-            name="note"
-            rows="2"
-            placeholder="Ghi chú cho shipper (tuỳ chọn)"
-          ></textarea>
-        </div>
-        <h5 class="mb-3">💳 Phương thức thanh toán</h5>
-        <div class="mb-3">
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="paymentMethod"
-              id="payWallet"
-              value="wallet"
-              checked
-            />
-            <label class="form-check-label" for="payWallet"
-              >Ví nội bộ (<%= user.balance?.toLocaleString() || 0 %> VND)</label
-            >
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="paymentMethod"
-              id="payCOD"
-              value="cod"
-            />
-            <label class="form-check-label" for="payCOD"
-              >Thanh toán khi nhận hàng (COD)</label
-            >
-          </div>
-        </div>
-        <div class="text-end">
-          <button type="submit" class="btn btn-checkout px-5 py-2">
-            <i class="fas fa-check-circle me-2"></i>Xác nhận đặt hàng
-          </button>
-        </div>
-      </form>
+          <form class="mt-4" method="POST" action="/checkout">
+            <h5 class="mb-3">🚚 Địa chỉ giao hàng</h5>
+            <div class="mb-3">
+              <input type="text" class="form-control" name="address" placeholder="Nhập địa chỉ nhận hàng..." required />
+            </div>
+            <div class="mb-3">
+              <textarea class="form-control" name="note" rows="2"
+                placeholder="Ghi chú cho shipper (tuỳ chọn)"></textarea>
+            </div>
+            <h5 class="mb-3">💳 Phương thức thanh toán</h5>
+            <div class="mb-3">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="payWallet" value="wallet"
+                  checked />
+                <label class="form-check-label" for="payWallet">Ví nội bộ (<%= user.balance?.toLocaleString() || 0 %>
+                    VND)</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="payCOD" value="cod" />
+                <label class="form-check-label" for="payCOD">Thanh toán khi nhận hàng (COD)</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="payVNPay" value="vnpay" />
+                <label class="form-check-label" for="payVNPay">
+                  <img src="https://sandbox.vnpayment.vn/paymentv2/images/logo.png" alt="VNPay"
+                    style="height: 24px; vertical-align: middle; margin-right: 4px;">
+                  Thanh toán qua VNPay
+                </label>
+              </div>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-checkout px-5 py-2">
+                <i class="fas fa-check-circle me-2"></i>Xác nhận đặt hàng
+              </button>
+            </div>
+          </form>
     </div>
     <%- include('../partials/footer.ejs') %>
-  </body>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const form = document.querySelector('form[action="/checkout"]');
+          if (!form) return;
+          form.addEventListener('submit', function (e) {
+            const paymentMethod = form.querySelector('input[name="paymentMethod"]:checked').value;
+            if (paymentMethod === 'vnpay') {
+              e.preventDefault();
+              // Tạo form ẩn để submit sang tab mới
+              const newForm = form.cloneNode(true);
+              newForm.target = '_blank';
+              newForm.style.display = 'none';
+              document.body.appendChild(newForm);
+              // Copy lại giá trị các input
+              Array.from(form.elements).forEach(el => {
+                if (el.name && newForm.elements[el.name]) {
+                  newForm.elements[el.name].value = el.value;
+                }
+              });
+              newForm.submit();
+              document.body.removeChild(newForm);
+            }
+            // Nếu không phải vnpay thì submit bình thường
+          });
+        });
+      </script>
+</body>
+
 </html>

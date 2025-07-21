@@ -107,34 +107,8 @@ router.get('/wallet/deposit', verifyUser, async (req, res) => {
 
 // Xử lý nạp tiền
 router.post('/wallet/deposit', verifyUser, async (req, res) => {
-    const vnpay = new VNPay({
-        tmnCode: 'DH2F13SW',
-        secureSecret: '7VJPG70RGPOWFO47VSBT29WPDYND0EJG',
-        vnpayHost: 'https://sandbox.vnpayment.vn',
-        testMode: true, // tùy chọn
-        hashAlgorithm: 'SHA512', // tùy chọn
-        loggerFn: ignoreLogger, // tùy chọn
-    });
-
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const vnpayResponse = await vnpay.buildPaymentUrl({
-        vnp_IpAddr: '127.0.0.1', //
-        vnp_Amount: '100000', // chỗ này cần thay đổi  || tổng giá tiền đơn hàng
-        vnp_TxnRef: `1234567`, /// mô tả hoá đơn hàng
-        vnp_OrderInfo: `1234567`, /// mô tả hoá đơn hàng
-        vnp_ReturnUrl: `http://localhost:4000/callback-vnpay-deposit`, // mở api để nhận kết quả thanh toán
-        vnp_OrderType: ProductCode.Other,
-        vnp_Locale: VnpLocale.VN, // 'vn' hoặc 'en'
-        vnp_CreateDate: dateFormat(new Date()), // tùy chọn, mặc định là hiện tại
-        vnp_ExpireDate: dateFormat(tomorrow), // tùy chọn
-    });
-    return res.status(200).json({
-        vnpayResponse,
-    });
-
-    const user = await User.findById(req.user.userId);
     const amount = parseInt(req.body.amount);
+    const user = await User.findById(req.user.userId);
     if (isNaN(amount) || amount <= 0) {
         return res.render('pages/Deposit', {
             user,
@@ -142,17 +116,30 @@ router.post('/wallet/deposit', verifyUser, async (req, res) => {
             error: 'Số tiền nạp không hợp lệ!',
         });
     }
-    user.balance += amount;
-    await user.save();
-    await Transaction.create({
-        userId: user._id,
-        type: 'deposit',
-        amount,
-        balanceAfter: user.balance,
-        description: `Nạp tiền vào ví: +${amount.toLocaleString()} VND`,
+    const txnRef = `${Date.now()}-deposit-${user._id}`;
+    const orderInfo = `Nap tien vi #${txnRef}`;
+    const vnpay = new VNPay({
+        tmnCode: 'DH2F13SW',
+        secureSecret: '7VJPG70RGPOWFO47VSBT29WPDYND0EJG',
+        vnpayHost: 'https://sandbox.vnpayment.vn',
+        testMode: true,
+        hashAlgorithm: 'SHA512',
+        loggerFn: ignoreLogger,
     });
-    // Redirect to settings with success message
-    res.redirect(`/settings?depositSuccess=${amount}`);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const vnpayUrl = await vnpay.buildPaymentUrl({
+        vnp_IpAddr: '127.0.0.1',
+        vnp_Amount: amount,
+        vnp_TxnRef: txnRef,
+        vnp_OrderInfo: orderInfo,
+        vnp_ReturnUrl: `http://localhost:4000/callback-vnpay-deposit?amount=${amount}`,
+        vnp_OrderType: ProductCode.Other,
+        vnp_Locale: VnpLocale.VN,
+        vnp_CreateDate: dateFormat(new Date()),
+        vnp_ExpireDate: dateFormat(tomorrow),
+    });
+    return res.redirect(vnpayUrl);
 });
 
 // Lịch sử giao dịch
@@ -171,6 +158,34 @@ router.get('/orders', verifyUser, async (req, res) => {
     const cartCount = await countProduct(req.user.userId);
     const orders = await Order.find({ userId: user._id }).sort({ createdAt: -1 }).populate('items.productId');
     res.render('pages/OrderHistory', { user, cartCount, orders });
+});
+
+router.get('/callback-vnpay-deposit', verifyUser, async (req, res) => {
+    const { vnp_TransactionStatus, amount } = req.query;
+    const user = await User.findById(req.user.userId);
+    if (vnp_TransactionStatus === '00' && amount && user) {
+        const depositAmount = parseInt(amount);
+        user.balance += depositAmount;
+        await user.save();
+        await Transaction.create({
+            userId: user._id,
+            type: 'deposit',
+            amount: depositAmount,
+            balanceAfter: user.balance,
+            description: `Nạp tiền vào ví: +${depositAmount.toLocaleString()} VND`,
+        });
+        return res.redirect(`/deposit-success?amount=${depositAmount}`);
+    } else {
+        return res.redirect('/settings?depositError=1');
+    }
+});
+
+// Trang thông báo nạp tiền thành công
+router.get('/deposit-success', verifyUser, async (req, res) => {
+    const amount = parseInt(req.query.amount);
+    // Lấy user để truyền vào navbar
+    const user = await User.findById(req.user.userId);
+    res.render('pages/DepositSuccess', { amount, user });
 });
 
 export default router;
