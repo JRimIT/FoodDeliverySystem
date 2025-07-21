@@ -49,7 +49,7 @@
                       <%= item.product.name %>
                     </h6>
                     <div class="text-muted">
-                      Đơn giá: <%= item.product.price.toFixed(2) %> VND
+                      Đơn giá: <%= item.product.price.toLocaleString('vi-VN') %> VND
                     </div>
                   </div>
                   <div class="col-md-3">
@@ -59,15 +59,15 @@
                   </div>
                   <div class="col-md-3 text-end">
                     <span class="fw-bold">
-                      <%= (item.product.price * item.quantity).toFixed(2) %> VND
+                      <%= (item.product.price * item.quantity).toLocaleString('vi-VN') %> VND
                     </span>
                   </div>
                 </div>
                 <% }) %>
                   <hr />
                   <div class="total-section mt-4">
-                    Tổng cộng: $ <%= cart.items.reduce((sum, item)=> sum +
-                      item.product.price * item.quantity, 0).toFixed(2) %>
+                    Tổng cộng: <%= cart.items.reduce((sum, item)=> sum + item.product.price * item.quantity,
+                      0).toLocaleString('vi-VN') %> VND
                   </div>
                   <% } else { %>
                     <p>Giỏ hàng của bạn đang trống.</p>
@@ -97,8 +97,6 @@
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="paymentMethod" id="payVNPay" value="vnpay" />
                 <label class="form-check-label" for="payVNPay">
-                  <img src="https://sandbox.vnpayment.vn/paymentv2/images/logo.png" alt="VNPay"
-                    style="height: 24px; vertical-align: middle; margin-right: 4px;">
                   Thanh toán qua VNPay
                 </label>
               </div>

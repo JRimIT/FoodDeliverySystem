@@ -35,7 +35,7 @@
                   <%= product.name %>
                 </h6>
                 <div class="text-muted">
-                  Đơn giá: $<%= product.price.toFixed(2) %>
+                  Đơn giá: <%= product.price.toLocaleString('vi-VN') %> VND
                 </div>
               </div>
               <div class="col-md-3">
@@ -44,12 +44,14 @@
                   </strong></span>
               </div>
               <div class="col-md-3 text-end">
-                <span class="fw-bold">$<%= (product.price.toLocaleString('vi-VN') * quantity) %></span>
+                <span class="fw-bold">
+                  <%= (product.price * quantity).toLocaleString('vi-VN') %> VND
+                </span>
               </div>
             </div>
             <hr />
             <div class="total-section mt-4">
-              Tổng cộng: $<%= (product.price.toLocaleString('vi-VN') * quantity) %>
+              Tổng cộng: <%= (product.price * quantity).toLocaleString('vi-VN') %> VND
             </div>
           </div>
           <form class="mt-4" method="POST" action="/order/<%= product._id %>?quantity=<%= quantity %>">
@@ -76,8 +78,6 @@
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="paymentMethod" id="payVNPay" value="vnpay" />
                 <label class="form-check-label" for="payVNPay">
-                  <img src="https://sandbox.vnpayment.vn/paymentv2/images/logo.png" alt="VNPay"
-                    style="height: 24px; vertical-align: middle; margin-right: 4px;">
                   Thanh toán qua VNPay
                 </label>
               </div>
