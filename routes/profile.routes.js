@@ -21,7 +21,7 @@ router.get('/profile', verifyUser, async (req, res) => {
         const userId = req.user.userId;
         const user = await User.findById(userId);
         const cartCount = await countProduct(userId);
-        console.log("user /profile: ", req.user);
+        console.log('user /profile: ', req.user);
 
         res.render('pages/Profile', { user, cartCount });
     } catch (err) {
@@ -133,7 +133,7 @@ router.post('/wallet/deposit', verifyUser, async (req, res) => {
         vnp_Amount: amount,
         vnp_TxnRef: txnRef,
         vnp_OrderInfo: orderInfo,
-        vnp_ReturnUrl: `http://localhost:4000/callback-vnpay-deposit?amount=${amount}`,
+        vnp_ReturnUrl: `https://localhost:4000/callback-vnpay-deposit?amount=${amount}`,
         vnp_OrderType: ProductCode.Other,
         vnp_Locale: VnpLocale.VN,
         vnp_CreateDate: dateFormat(new Date()),
