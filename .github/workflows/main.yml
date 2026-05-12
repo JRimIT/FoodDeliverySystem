@@ -14,17 +14,17 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 24700
           script: |
-            cd /root/portfolio_be
+            cd FoodDeliverySystem
             git fetch origin
             git checkout main
             git pull origin main
             
             # 1. Build image (BẮT BUỘC có dấu chấm ở cuối)
-            docker build -t portfolio .
+            docker build -t online-food-app .
             
             # 2. Dọn dẹp container cũ
-            docker stop portfolio-container || true
-            docker rm portfolio-container || true
+            docker stop online-food-app || true
+            docker rm online-food-app || true
             
             # 3. Chạy container mới
-            docker run -d --name portfolio-container -p 8080:4000 portfolio
+            docker run -d --name online-food-app -p 8080:4000 online-food-app
