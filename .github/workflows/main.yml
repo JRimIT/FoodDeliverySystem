@@ -27,4 +27,4 @@ jobs:
             docker rm online-food-app || true
             
             # 3. Chạy container mới
-            docker run -d --name online-food-app -p 8080:4000 online-food-app
+            docker run -d --name food-app --env-file .env -p 8080:4000 online-food-app
