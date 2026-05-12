@@ -11,7 +11,7 @@ const router = express.Router();
 
 // Khởi tạo axios với HTTPS (bỏ kiểm tra SSL cho môi trường dev)
 const axiosInstance = axios.create({
-    httpsAgent: new https.Agent({ rejectUnauthorized: false })
+    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
 });
 
 // ==== Giao diện ====
@@ -44,8 +44,8 @@ router.post('/auth/register', async (req, res) => {
 
         res.redirect('/goToLoginPage');
     } catch (err) {
-        console.error("Register error:", err);
-        res.status(500).send("Registration failed");
+        console.error('Register error:', err);
+        res.status(500).send('Registration failed');
     }
 });
 
@@ -53,7 +53,7 @@ router.post('/auth/register', async (req, res) => {
 
 router.post('/auth/login', async (req, res) => {
     const { username, password } = req.body;
-    console.log("Login attempt:", username);
+    console.log('Login attempt:', username);
 
     try {
         const user = await User.findOne({ username });
@@ -62,40 +62,35 @@ router.post('/auth/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.redirect('/login?error=InvalidPassword');
 
-        const token = jwt.sign(
-            { userId: user._id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '3h' }
-        );
+        const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '3h' });
 
         req.session.token = token;
         req.session.user = user; // ✅ Cho phép dùng user trong EJS như navbar
 
         res.redirect('/listFeatureFood');
     } catch (err) {
-        console.error("Login error:", err);
-        res.status(500).send("Login failed");
+        console.error('Login error:', err);
+        res.status(500).send('Login failed');
     }
 });
-
 
 // auth facebook
 
 router.get('/auth/facebook', passport.authenticate('facebook'));
 
-router.get('/auth/facebook/callback',
+router.get(
+    '/auth/facebook/callback',
     passport.authenticate('facebook', { session: false, failureRedirect: '/login' }),
     (req, res) => {
         const token = generateJWT(req.user);
         const user = req.user;
-        console.log("User /auth/facebook/callback: ", user);
+        console.log('User /auth/facebook/callback: ', user);
 
         req.session.token = token;
         req.session.user = user;
         res.redirect('/listFeatureFood');
         // res.json({ token }); // Gửi JWT về client
-    }
+    },
 );
-
 
 export default router;

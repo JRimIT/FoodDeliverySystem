@@ -263,14 +263,15 @@ router.post('/checkout', verifyUser, async (req, res) => {
          <p><strong>Thông tin đơn hàng của bạn:</strong></p>
             <ul>
               ${cart.items
-                .map(
-                    (item) =>
-                        `<li>${item.product.name} - ${item.quantity} x ${item.product.price.toLocaleString()}đ</li>`,
-                )
-                .join('')}
+                  .map(
+                      (item) =>
+                          `<li>${item.product.name} - ${item.quantity} x ${item.product.price.toLocaleString()}đ</li>`,
+                  )
+                  .join('')}
             </ul>
             <p><strong>Tổng cộng:</strong> ${totalPrice.toLocaleString()}đ</p>
-            <p><strong>Phương thức thanh toán:</strong> ${paymentMethod === 'wallet' ? 'Ví điện tử' : 'Thanh toán khi nhận hàng (COD)'
+            <p><strong>Phương thức thanh toán:</strong> ${
+                paymentMethod === 'wallet' ? 'Ví điện tử' : 'Thanh toán khi nhận hàng (COD)'
             }</p>
             <p><strong>Ghi chú:</strong> ${note || 'Không có'}</p>
     
@@ -427,7 +428,9 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
                 vnp_Amount: totalPrice,
                 vnp_TxnRef: txnRef,
                 vnp_OrderInfo: orderInfo,
-                vnp_ReturnUrl: `https://localhost:4000/callback-vnpay?order=1&productId=${productId}&quantity=${quantity}&address=${encodeURIComponent(address)}&note=${encodeURIComponent(note || '')}`,
+                vnp_ReturnUrl: `https://localhost:4000/callback-vnpay?order=1&productId=${productId}&quantity=${quantity}&address=${encodeURIComponent(
+                    address,
+                )}&note=${encodeURIComponent(note || '')}`,
                 vnp_OrderType: ProductCode.Other,
                 vnp_Locale: VnpLocale.VN,
                 vnp_CreateDate: dateFormat(new Date()),
@@ -494,8 +497,9 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
 
         <p><strong>Tổng cộng:</strong> ${totalPrice.toLocaleString()}đ</p>
         <p><strong>Địa chỉ giao hàng:</strong> ${address}</p>
-        <p><strong>Phương thức thanh toán:</strong> ${paymentMethod === 'wallet' ? 'Ví điện tử' : 'Thanh toán khi nhận hàng (COD)'
-            }</p>
+        <p><strong>Phương thức thanh toán:</strong> ${
+            paymentMethod === 'wallet' ? 'Ví điện tử' : 'Thanh toán khi nhận hàng (COD)'
+        }</p>
         <p><strong>Ghi chú:</strong> ${note || 'Không có'}</p>
 
         <p>Chúng tôi sẽ xử lý đơn hàng của bạn và giao hàng trong thời gian sớm nhất.</p>
