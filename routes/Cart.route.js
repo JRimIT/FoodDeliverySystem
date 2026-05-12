@@ -180,12 +180,54 @@ router.post('/checkout', verifyUser, async (req, res) => {
         // Lấy user
         const User = (await import('../models/user.model.js')).default;
         const user = await User.findById(userId);
-        //TxnRef-OrderInfo
-        const txnRef = `${Date.now()}-${userId}`;
-        const orderInfo = `Thanh toan don hang #${txnRef}`;
-        // Xử lý thanh toán
+
+        if (paymentMethod === 'wallet') {
+            if (user.balance < totalPrice) {
+                // Không đủ tiền, trả về trang checkout với popup lỗi
+                const cartCount = await countProduct(userId);
+                return res.render('pages/Checkout', {
+                    user,
+                    cart,
+                    cartCount,
+                    error: `Số dư ví không đủ để thanh toán! Bạn cần nạp thêm tiền.`,
+                });
+            }
+            user.balance -= totalPrice;
+            await user.save();
+            await Transaction.create({
+                userId: user._id,
+                type: 'payment',
+                amount: totalPrice,
+                balanceAfter: user.balance,
+                description: `Thanh toán đơn hàng: -${totalPrice.toLocaleString()} VND`,
+            });
+        }
+
+        // Luôn tạo order mới trước tiên
+        const orderItems = cart.items.map((item) => ({
+            productId: item.product._id,
+            quantity: item.quantity,
+            price: item.product.price,
+        }));
+        const Order = (await import('../models/order.model.js')).default;
+        const newOrder = await Order.create({
+            userId,
+            items: orderItems,
+            totalPrice,
+            address,
+            note,
+            status: paymentMethod === 'wallet' ? 'Paid' : 'Pending',
+            createdAt: new Date(),
+            paymentMethod: paymentMethod || 'cod',
+        });
+
+        // Xóa giỏ hàng vì đã tạo order
+        cart.items = [];
+        await cart.save();
+
+        // Xử lý thanh toán VNPay
         if (paymentMethod === 'vnpay') {
-            const txnRef = `${Date.now()}-${userId}`;
+            const txnRef = newOrder._id.toString();
             const orderInfo = `Thanh toan don hang #${txnRef}`;
             const vnpay = new VNPay({
                 tmnCode: 'DH2F13SW',
@@ -211,44 +253,7 @@ router.post('/checkout', verifyUser, async (req, res) => {
             return res.redirect(vnpayUrl);
         }
 
-        if (paymentMethod === 'wallet') {
-            if (user.balance < totalPrice) {
-                // Không đủ tiền, trả về trang checkout với popup lỗi
-                const cartCount = await countProduct(userId);
-                return res.render('pages/Checkout', {
-                    user,
-                    cart,
-                    cartCount,
-                    error: `Số dư ví không đủ để thanh toán! Bạn cần nạp thêm tiền.`,
-                });
-            }
-            user.balance -= totalPrice;
-            await user.save();
-            await Transaction.create({
-                userId: user._id,
-                type: 'payment',
-                amount: totalPrice,
-                balanceAfter: user.balance,
-                description: `Thanh toán đơn hàng: -${totalPrice.toLocaleString()} VND`,
-            });
-        }
-        // Tạo order mới
-        const orderItems = cart.items.map((item) => ({
-            productId: item.product._id,
-            quantity: item.quantity,
-            price: item.product.price,
-        }));
-        const Order = (await import('../models/order.model.js')).default;
-        await Order.create({
-            userId,
-            items: orderItems,
-            totalPrice,
-            address,
-            note,
-            status: 'Pending',
-            createdAt: new Date(),
-            paymentMethod: paymentMethod || 'cod',
-        });
+        // Gửi email cho các phương thức khác
         const htmlContent = `
         <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: auto;">
           <div style="text-align: center; margin-bottom: 20px;">
@@ -262,10 +267,10 @@ router.post('/checkout', verifyUser, async (req, res) => {
 
          <p><strong>Thông tin đơn hàng của bạn:</strong></p>
             <ul>
-              ${cart.items
+              ${orderItems
                   .map(
                       (item) =>
-                          `<li>${item.product.name} - ${item.quantity} x ${item.product.price.toLocaleString()}đ</li>`,
+                          `<li>Sản phẩm ID: ${item.productId} - ${item.quantity} x ${item.price.toLocaleString()}đ</li>`,
                   )
                   .join('')}
             </ul>
@@ -285,11 +290,12 @@ router.post('/checkout', verifyUser, async (req, res) => {
         </div>
         `;
 
-        await sendMail(user.email, `Xác nhận đơn hàng từ Foodie Express`, htmlContent);
+        try {
+            await sendMail(user.email, `Xác nhận đơn hàng từ Foodie Express`, htmlContent);
+        } catch (mailError) {
+            console.error('Lỗi gửi mail xác nhận (không làm gián đoạn thanh toán):', mailError);
+        }
 
-        // Xóa giỏ hàng sau khi đặt hàng thành công
-        cart.items = [];
-        await cart.save();
         // Chuyển hướng sang trang thông báo thành công
         res.redirect('/checkout/success');
     } catch (error) {
@@ -299,73 +305,67 @@ router.post('/checkout', verifyUser, async (req, res) => {
 });
 
 router.get('/callback-vnpay', verifyUser, async (req, res) => {
-    const { vnp_TransactionStatus, order, productId, quantity, address, note } = req.query;
-    if (vnp_TransactionStatus === '00') {
-        if (order === '1' && productId && quantity) {
-            // Xử lý đặt hàng trực tiếp (Order Now) thanh toán VNPay
-            const Product = (await import('../models/product.model.js')).default;
-            const product = await Product.findById(productId);
-            const User = (await import('../models/user.model.js')).default;
-            const user = await User.findById(req.user.userId);
-            if (!product) return res.status(404).send('Không tìm thấy sản phẩm!');
-            const totalPrice = product.price * parseInt(quantity);
+    try {
+        const { vnp_TransactionStatus, vnp_TxnRef } = req.query;
+        if (vnp_TransactionStatus === '00') {
             const Order = (await import('../models/order.model.js')).default;
-            await Order.create({
-                userId: user._id,
-                items: [{ productId: product._id, quantity: parseInt(quantity), price: product.price }],
-                totalPrice,
-                address,
-                note,
-                status: 'Paid',
-                createdAt: new Date(),
-                paymentMethod: 'vnpay',
-            });
-            // Gửi mail xác nhận
-            if (user.email) {
-                const htmlContent = `
-        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: auto;">
-          <div style="text-align: center; margin-bottom: 20px;">
-            <img src="https://i.pinimg.com/736x/0f/27/7f/0f277f5f07a6399788894bc1062b5308.jpg" alt="Foodie Express" style="width: 120px;" />
-            <h2 style="color: #ff6600;">🍽️ Foodie Express - Xác nhận đơn hàng</h2>
-          </div>
-          <div style="background-color: #fdfdfd; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-            <p>Xin chào <strong>${user.username || user.name || 'khách hàng'}</strong>,</p>
-            <p>Cảm ơn bạn đã đặt hàng tại <strong>Foodie Express</strong>!</p>
-            <ul>
-              <li><strong>Sản phẩm:</strong> ${product.name}</li>
-              <li><strong>Số lượng:</strong> ${quantity}</li>
-              <li><strong>Giá mỗi sản phẩm:</strong> ${product.price.toLocaleString()}đ</li>
-            </ul>
-            <p><strong>Tổng cộng:</strong> ${totalPrice.toLocaleString()}đ</p>
-            <p><strong>Phương thức thanh toán:</strong> VNPay</p>
-            <p><strong>Trạng thái:</strong> Đã thanh toán</p>
-            <p><strong>Ghi chú:</strong> ${note || 'Không có'}</p>
-            <p>Chúng tôi sẽ sớm giao hàng cho bạn.</p>
-            <hr/>
-          </div>
-          <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #aaa;">
-            © ${new Date().getFullYear()} Foodie Express. All rights reserved.
-          </div>
-        </div>
-        `;
-                await sendMail(user.email, `Xác nhận đơn hàng từ Foodie Express`, htmlContent);
+            const order = await Order.findById(vnp_TxnRef).populate('userId');
+            
+            if (order && order.status === 'Pending') {
+                order.status = 'Paid';
+                await order.save();
+
+                // Gửi mail xác nhận thanh toán thành công
+                if (order.userId && order.userId.email) {
+                    const htmlContent = `
+            <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: auto;">
+              <div style="text-align: center; margin-bottom: 20px;">
+                <img src="https://i.pinimg.com/736x/0f/27/7f/0f277f5f07a6399788894bc1062b5308.jpg" alt="Foodie Express" style="width: 120px;" />
+                <h2 style="color: #ff6600;">🍽️ Foodie Express - Xác nhận đơn hàng</h2>
+              </div>
+              <div style="background-color: #fdfdfd; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <p>Xin chào <strong>${order.userId.username || order.userId.name || 'khách hàng'}</strong>,</p>
+                <p>Cảm ơn bạn đã đặt hàng tại <strong>Foodie Express</strong>!</p>
+                <p><strong>Tổng cộng:</strong> ${order.totalPrice.toLocaleString()}đ</p>
+                <p><strong>Phương thức thanh toán:</strong> VNPay</p>
+                <p><strong>Trạng thái:</strong> Đã thanh toán thành công</p>
+                <p><strong>Ghi chú:</strong> ${order.note || 'Không có'}</p>
+                <p>Chúng tôi sẽ sớm giao hàng cho bạn.</p>
+                <hr/>
+              </div>
+              <div style="text-align: center; margin-top: 30px; font-size: 12px; color: #aaa;">
+                © ${new Date().getFullYear()} Foodie Express. All rights reserved.
+              </div>
+            </div>
+            `;
+                    try {
+                        await sendMail(order.userId.email, `Xác nhận đơn hàng từ Foodie Express`, htmlContent);
+                    } catch (mailErr) {
+                        console.error("Error sending mail:", mailErr);
+                    }
+                }
             }
+            return res.redirect('/checkout/success');
+        } else {
+            return res.send('Thanh toán VNPay thất bại hoặc bị hủy. Vui lòng thử lại!');
         }
-        // Nếu là thanh toán giỏ hàng thì xóa giỏ hàng như cũ
-        else {
-            const userId = req.user.userId;
-            await Cart.findOneAndDelete({ userId });
-        }
-        return res.redirect('/checkout/success');
-    } else {
-        return res.send('Thanh toán VNPay thất bại hoặc bị hủy. Vui lòng thử lại!');
+    } catch (error) {
+        console.error('VNPay Callback Error:', error);
+        return res.status(500).send('Đã xảy ra lỗi hệ thống khi xử lý kết quả thanh toán. Vui lòng kiểm tra lại đơn hàng trong hồ sơ của bạn.');
     }
 });
 
 router.get('/checkout/success', verifyUser, async (req, res) => {
-    // Đếm lại số sản phẩm trong giỏ (sau khi đặt hàng là 0)
-    const cartCount = await countProduct(req.user.userId);
-    res.render('pages/CheckoutSuccess', { user: req.user, cartCount });
+    try {
+        const User = (await import('../models/user.model.js')).default;
+        const user = await User.findById(req.user.userId);
+        // Đếm lại số sản phẩm trong giỏ (sau khi đặt hàng là 0)
+        const cartCount = await countProduct(req.user.userId);
+        res.render('pages/CheckoutSuccess', { user: user, cartCount });
+    } catch (error) {
+        console.error('Error in /checkout/success:', error);
+        res.status(500).send('Lỗi máy chủ');
+    }
 });
 
 router.get('/order/:productId', verifyUser, async (req, res) => {
@@ -409,37 +409,6 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
 
         const totalPrice = product.price * quantity;
 
-        // Xử lý thanh toán VNPay
-        if (paymentMethod === 'vnpay') {
-            const txnRef = `${Date.now()}-${user._id}`;
-            const orderInfo = `Thanh toan don hang #${txnRef}`;
-            const vnpay = new VNPay({
-                tmnCode: 'DH2F13SW',
-                secureSecret: '7VJPG70RGPOWFO47VSBT29WPDYND0EJG',
-                vnpayHost: 'https://sandbox.vnpayment.vn',
-                testMode: true,
-                hashAlgorithm: 'SHA512',
-                loggerFn: ignoreLogger,
-            });
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const vnpayUrl = await vnpay.buildPaymentUrl({
-                vnp_IpAddr: '127.0.0.1',
-                vnp_Amount: totalPrice,
-                vnp_TxnRef: txnRef,
-                vnp_OrderInfo: orderInfo,
-                vnp_ReturnUrl: `https://localhost:4000/callback-vnpay?order=1&productId=${productId}&quantity=${quantity}&address=${encodeURIComponent(
-                    address,
-                )}&note=${encodeURIComponent(note || '')}`,
-                vnp_OrderType: ProductCode.Other,
-                vnp_Locale: VnpLocale.VN,
-                vnp_CreateDate: dateFormat(new Date()),
-                vnp_ExpireDate: dateFormat(tomorrow),
-            });
-            return res.redirect(vnpayUrl);
-        }
-
-        // Xử lý thanh toán wallet
         if (paymentMethod === 'wallet') {
             if (user.balance < totalPrice) {
                 return res.render('pages/OrderNow', {
@@ -463,20 +432,48 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
             });
         }
 
-        // Tạo order mới
+        // Luôn tạo order mới trước
         const Order = (await import('../models/order.model.js')).default;
-        await Order.create({
+        const newOrder = await Order.create({
             userId: user._id,
             items: [{ productId: product._id, quantity, price: product.price }],
             totalPrice,
             address,
             note,
-            status: 'Pending',
+            status: paymentMethod === 'wallet' ? 'Paid' : 'Pending',
             createdAt: new Date(),
             paymentMethod: paymentMethod || 'cod',
         });
 
-        // Nội dung email xác nhận đơn hàng (ĐÃ SỬA)
+        // Xử lý thanh toán VNPay
+        if (paymentMethod === 'vnpay') {
+            const txnRef = newOrder._id.toString();
+            const orderInfo = `Thanh toan don hang #${txnRef}`;
+            const vnpay = new VNPay({
+                tmnCode: 'DH2F13SW',
+                secureSecret: '7VJPG70RGPOWFO47VSBT29WPDYND0EJG',
+                vnpayHost: 'https://sandbox.vnpayment.vn',
+                testMode: true,
+                hashAlgorithm: 'SHA512',
+                loggerFn: ignoreLogger,
+            });
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const vnpayUrl = await vnpay.buildPaymentUrl({
+                vnp_IpAddr: '127.0.0.1',
+                vnp_Amount: totalPrice,
+                vnp_TxnRef: txnRef,
+                vnp_OrderInfo: orderInfo,
+                vnp_ReturnUrl: `https://localhost:4000/callback-vnpay`,
+                vnp_OrderType: ProductCode.Other,
+                vnp_Locale: VnpLocale.VN,
+                vnp_CreateDate: dateFormat(new Date()),
+                vnp_ExpireDate: dateFormat(tomorrow),
+            });
+            return res.redirect(vnpayUrl);
+        }
+
+        // Nội dung email xác nhận đơn hàng (cho COD và Wallet)
         const htmlContent = `
     <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; max-width: 600px; margin: auto;">
       <div style="text-align: center; margin-bottom: 20px;">
@@ -512,7 +509,11 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
     </div>
     `;
 
-        await sendMail(user.email, `Xác nhận đơn hàng từ Foodie Express`, htmlContent);
+        try {
+            await sendMail(user.email, `Xác nhận đơn hàng từ Foodie Express`, htmlContent);
+        } catch (mailError) {
+            console.error('Error sending mail:', mailError);
+        }
 
         res.redirect('/checkout/success');
     } catch (error) {
