@@ -1,0 +1,40 @@
+name: Deploy to VPS CI/CD
+
+on:
+  push:
+    branches:
+      - main      # Hoặc nhánh master của bạn
+
+jobs:
+  deploy:
+    name: Deploy Application to VPS
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Đợi và triển khai qua SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 24700
+          script: |
+            # 1. Đi tới thư mục chứa code trên VPS
+            cd ~/FoodDeliverySystem
+            
+            # 2. Lấy code mới nhất từ Github
+            git pull origin main
+            
+            # 3. Dừng và xoá container cũ nếu nó đang chạy
+            docker rm -f food-app || true
+            
+            # 4. Build lại Docker image với code mới
+            docker build --no-cache -t online-food-app .
+            
+            # 5. Chạy lại container
+            docker run -d \
+              --name food-app \
+              -p 8080:4000 \
+              --env-file .env \
+              --restart unless-stopped \
+              online-food-app
