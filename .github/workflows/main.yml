@@ -1,40 +1,30 @@
-name: Deploy to VPS CI/CD
-
+name: Dockerized App Deployment
 on:
   push:
-    branches:
-      - main      # Hoặc nhánh master của bạn
-
+    branches: [main]
 jobs:
   deploy:
-    name: Deploy Application to VPS
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Đợi và triển khai qua SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
         with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
-        port: 24700
-        script: |
-            # 1. Đi tới thư mục chứa code trên VPS
-            cd ~/FoodDeliverySystem
-            
-            # 2. Lấy code mới nhất từ Github
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 24700
+          script: |
+            cd /root/portfolio_be
+            git fetch origin
+            git checkout main
             git pull origin main
             
-            # 3. Dừng và xoá container cũ nếu nó đang chạy
-            docker rm -f food-app || true
+            # 1. Build image (BẮT BUỘC có dấu chấm ở cuối)
+            docker build -t portfolio .
             
-            # 4. Build lại Docker image với code mới
-            docker build --no-cache -t online-food-app .
+            # 2. Dọn dẹp container cũ
+            docker stop portfolio-container || true
+            docker rm portfolio-container || true
             
-            # 5. Chạy lại container
-            docker run -d \
-              --name food-app \
-              -p 8080:4000 \
-              --env-file .env \
-              --restart unless-stopped \
-              online-food-app
+            # 3. Chạy container mới
+            docker run -d --name portfolio-container -p 8080:4000 portfolio
