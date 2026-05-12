@@ -14,11 +14,11 @@ jobs:
       - name: Đợi và triển khai qua SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: 24700
-          script: |
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: 24700
+        script: |
             # 1. Đi tới thư mục chứa code trên VPS
             cd ~/FoodDeliverySystem
             
