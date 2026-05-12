@@ -23,8 +23,8 @@ jobs:
             docker build -t online-food-app .
             
             # 2. Dọn dẹp container cũ
-            docker stop online-food-app || true
-            docker rm online-food-app || true
+            docker stop food-app || true
+            docker rm food-app || true
             
             # 3. Chạy container mới
             docker run -d --name food-app --env-file .env -p 8080:4000 online-food-app
