@@ -1,49 +1,171 @@
-.bodyLogin {
+/* Ultra Minimalist Auth Styling */
+:root {
+    --auth-card-bg: rgba(255, 255, 255, 0.4);
+    --auth-card-border: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme="dark"] {
+    --auth-card-bg: rgba(15, 23, 42, 0.6);
+    --auth-card-border: rgba(255, 255, 255, 0.05);
+}
+
+.auth-wrapper {
+    min-height: 100vh;
+    width: 100%;
     background: url('https://static.vecteezy.com/system/resources/previews/003/823/542/non_2x/spices-for-use-as-cooking-ingredients-on-a-wooden-background-with-fresh-vegetables-healthy-food-herbs-organic-vegetables-on-the-table-raw-materials-of-cooking-preparation-tom-yum-free-photo.jpg') no-repeat center center fixed;
     background-size: cover;
-    height: 100vh;
+    position: relative;
+    padding: 1rem;
+}
+
+[data-theme="dark"] .auth-wrapper {
+    background-blend-mode: multiply;
+    background-color: #0f172a;
+}
+
+.theme-toggle-wrapper {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+}
+
+.btn-theme-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: var(--auth-card-bg);
+    backdrop-filter: blur(10px);
+    color: #ff6347;
     display: flex;
+    align-items: center;
     justify-content: center;
+    border: 1px solid var(--auth-card-border);
+}
+
+/* Ultra Compact Card */
+.auth-card-compact {
+    width: 100%;
+    max-width: 350px;
+    background: var(--auth-card-bg);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--auth-card-border);
+    border-radius: 2rem;
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.auth-title-compact {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+/* Compact Inputs */
+.input-group-compact {
+    position: relative;
+    display: flex;
     align-items: center;
 }
 
-.login-card {
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+.input-group-compact .icon {
+    position: absolute;
+    left: 12px;
+    color: #ff6347;
+    font-size: 0.85rem;
+}
+
+.form-control-compact {
     width: 100%;
-    max-width: 400px;
-    color: #fff;
-}
-
-.login-title {
-    font-weight: bold;
-    color: #ffebcd;
-    /* Màu sáng nổi bật trên nền trong */
-}
-
-.form-control {
+    padding: 0.6rem 1rem 0.6rem 2.4rem;
     background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: #333;
+    transition: all 0.2s;
+}
+
+[data-theme="dark"] .form-control-compact {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.form-control-compact:focus {
+    outline: none;
+    border-color: #ff6347;
+    background: white;
+}
+
+[data-theme="dark"] .form-control-compact:focus {
+    background: #0f172a;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: color 0.2s;
+}
+
+.password-toggle:hover {
+    color: #ff6347;
+}
+
+.bg-auth-compact {
+    background: transparent !important;
+    border-radius: 4px;
+}
+
+[data-theme="dark"] .bg-auth-compact {
+    background: transparent !important;
+}
+
+/* Compact Buttons */
+.btn-auth-compact {
+    background: #ff6347;
+    color: white;
     border: none;
+    border-radius: 10px;
+    padding: 0.7rem;
+    font-weight: 700;
+    transition: all 0.3s;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem !important;
 }
 
-.form-control:focus {
-    box-shadow: none;
-    border: 1px solid #ff6347;
+.btn-auth-compact:hover {
+    background: #e5533d;
+    transform: translateY(-1px);
 }
 
-.btn-login {
-    background-color: #ff6347;
+.btn-facebook-compact {
+    background: #1877f2;
+    color: white;
     border: none;
+    border-radius: 10px;
+    padding: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s;
 }
 
-.btn-login:hover {
-    background-color: #e5533d;
+.btn-facebook-compact:hover {
+    background: #166fe5;
+    color: white;
+    transform: translateY(-1px);
 }
 
-a {
-    color: #fce4ec;
+.auth-link {
+    color: #ff6347;
+    text-decoration: none;
 }

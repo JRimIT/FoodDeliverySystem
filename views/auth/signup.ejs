@@ -1,78 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>signup</title>
-    <link rel="stylesheet" href="../../publist/style.css" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sign Up - Foodie Express</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/css/theme.css" />
+        <link rel="stylesheet" href="/css/login.css" />
+        <script src="/js/theme-manager.js"></script>
+        <script>
+            (function() {
+                const theme = localStorage.getItem('theme') || 'light';
+                document.documentElement.setAttribute('data-theme', theme);
+            })();
+        </script>
+    </head>
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
-      crossorigin="anonymous"
-    />
+    <body>
+        <div class="auth-wrapper d-flex justify-content-center align-items-center">
+            <div class="theme-toggle-wrapper">
+                <button onclick="toggleTheme()" class="btn-theme-toggle">
+                    <i class="fas fa-moon theme-toggle-icon"></i>
+                </button>
+            </div>
 
-    <link rel="stylesheet" href="/css/login.css" />
-    <link rel="stylesheet" href="/css/signup.css" />
-  </head>
+            <div class="auth-card-compact">
+                <div class="text-center mb-3">
+                    <h2 class="auth-title-compact font-outfit mb-1">Sign Up</h2>
+                    <p class="small text-muted" style="font-size: 0.75rem;">Welcome to Foodie Express</p>
+                </div>
 
-  <body>
-    <div
-      class="bg-secondary w-100 vh-100 d-flex justify-content-center align-items-center bodyLogin"
-    >
-      <div class="signup-card text-center">
-        <h2 class="signup-title mb-4">Create Your Account</h2>
-        <form action="/auth/register" method="POST">
-          <div class="form-floating mb-3">
-            <input
-              type="text"
-              class="form-control"
-              id="username"
-              name="username"
-              placeholder="Username"
-              required
-            />
-            <label for="username">Username</label>
-          </div>
-          <div class="form-floating mb-3">
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              name="email"
-              placeholder="Email"
-              required
-            />
-            <label for="email">Email</label>
-          </div>
-          <div class="form-floating mb-4">
-            <input
-              type="password"
-              class="form-control"
-              id="password"
-              name="password"
-              placeholder="Password"
-              required
-            />
-            <label for="password">Password</label>
-          </div>
-          <button type="submit" class="btn btn-signup w-100 py-2">
-            Sign Up
-          </button>
-        </form>
-        <div class="mt-3">
-          <a href="/goToLoginPage" class="text-decoration-none"
-            >Already have an account? Login</a
-          >
+                <form action="/auth/register" method="POST">
+                    <div class="mb-3">
+                        <div class="input-group-compact">
+                            <i class="fas fa-user icon"></i>
+                            <input type="text" name="username" class="form-control-compact" placeholder="Username" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="input-group-compact">
+                            <i class="fas fa-envelope icon"></i>
+                            <input type="email" name="email" class="form-control-compact" placeholder="Email" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="input-group-compact">
+                            <i class="fas fa-lock icon"></i>
+                            <input type="password" id="password" name="password" class="form-control-compact" placeholder="Password" required />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-auth-compact w-100 mb-2">Create Account</button>
+
+                    <div class="text-center border-top pt-3 mt-3">
+                        <p class="small mb-0 text-muted">Already a member? <a href="/goToLoginPage" class="auth-link fw-bold">Login</a></p>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-      crossorigin="anonymous"
-    ></script>
-  </body>
+    </body>
 </html>

@@ -17,6 +17,16 @@
     <!-- AOS Animation -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
+    <!-- Theme Management -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <script src="/js/theme-manager.js"></script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/Cart.css" />
   </head>
