@@ -112,24 +112,12 @@
   </div>
 </div>
 
-<!-- AOS Animation Library -->
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-<%- include('../partials/footer.ejs') %>
-
 <script>
-  // Initialize AOS Animation
-  document.addEventListener("DOMContentLoaded", function() {
-    AOS.init({
-      once: true,
-      offset: 100
-    });
-  });
-
   function orderNow(productId) {
     var qtyInput = document.getElementById("order-qty-" + productId);
     var quantity = qtyInput ? qtyInput.value : 1;
     window.location.href = `/order/${productId}?quantity=${quantity}`;
   }
 </script>
+
+<%- include('../partials/footer.ejs') %>
