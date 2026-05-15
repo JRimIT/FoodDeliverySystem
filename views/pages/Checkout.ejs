@@ -1,140 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - Foodie Express</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout - Foodie Express</title>
-  <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/Cart.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-</head>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<body>
-  <%- include('../partials/navbar.ejs') %>
-    <div class="cart-container">
-      <h2 class="mb-4 text-center">
-        <i class="fas fa-credit-card text-danger me-2"></i>Checkout
-      </h2>
-      <% if (typeof error !=='undefined' ) { %>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          <%= error %>
-            <a href="/wallet/deposit" class="btn btn-sm btn-primary ms-2">Nạp tiền ngay</a>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/Checkout.css" />
+  </head>
+
+  <body class="bg-light">
+    <%- include('../partials/navbar.ejs') %>
+
+    <!-- Checkout Hero Section -->
+    <section class="checkout-hero position-relative d-flex align-items-center justify-content-center text-center mt-5">
+        <div class="overlay position-absolute w-100 h-100"></div>
+        <div class="container position-relative z-index-1 text-white py-4">
+            <h1 class="display-4 fw-bold mb-2 font-outfit text-white">Finalize Your Order</h1>
+            <p class="lead fw-light mx-auto" style="max-width: 600px;">
+                Secure checkout. Just a few more steps to enjoy your meal.
+            </p>
         </div>
-        <% } %>
-          <div class="mb-4">
-            <h5 class="mb-3">👤 Thông tin khách hàng</h5>
-            <div class="ps-2">
-              <p><strong>Tên:</strong>
-                <%= user?.username || 'User' %>
-              </p>
-              <% if (user?.email) { %>
-                <p><strong>Email:</strong>
-                  <%= user.email %>
-                </p>
-                <% } %>
-            </div>
-          </div>
-          <div class="mb-4">
-            <h5 class="mb-3">🛒 Sản phẩm trong giỏ hàng</h5>
-            <% if (cart && cart.items && cart.items.length> 0) { %> <% cart.items.forEach(item=> { %>
-                <div class="row cart-item align-items-center">
-                  <div class="col-md-2">
-                    <img src="<%= item.product.imageUrl %>" alt="<%= item.product.name %>" class="product-image" />
-                  </div>
-                  <div class="col-md-4">
-                    <h6 class="mb-1">
-                      <%= item.product.name %>
-                    </h6>
-                    <div class="text-muted">
-                      Đơn giá: <%= item.product.price.toLocaleString('vi-VN') %> VND
-                    </div>
-                  </div>
-                  <div class="col-md-3">
-                    <span>Số lượng: <strong>
-                        <%= item.quantity %>
-                      </strong></span>
-                  </div>
-                  <div class="col-md-3 text-end">
-                    <span class="fw-bold">
-                      <%= (item.product.price * item.quantity).toLocaleString('vi-VN') %> VND
-                    </span>
-                  </div>
-                </div>
-                <% }) %>
-                  <hr />
-                  <div class="total-section mt-4">
-                    Tổng cộng: <%= cart.items.reduce((sum, item)=> sum + item.product.price * item.quantity,
-                      0).toLocaleString('vi-VN') %> VND
-                  </div>
-                  <% } else { %>
-                    <p>Giỏ hàng của bạn đang trống.</p>
-                    <% } %>
-          </div>
-          <form class="mt-4" method="POST" action="/checkout">
-            <h5 class="mb-3">🚚 Địa chỉ giao hàng</h5>
-            <div class="mb-3">
-              <input type="text" class="form-control" name="address" placeholder="Nhập địa chỉ nhận hàng..." required />
-            </div>
-            <div class="mb-3">
-              <textarea class="form-control" name="note" rows="2"
-                placeholder="Ghi chú cho shipper (tuỳ chọn)"></textarea>
-            </div>
-            <h5 class="mb-3">💳 Phương thức thanh toán</h5>
-            <div class="mb-3">
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="paymentMethod" id="payWallet" value="wallet"
-                  checked />
-                <label class="form-check-label" for="payWallet">Ví nội bộ (<%= user.balance?.toLocaleString() || 0 %>
-                    VND)</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="paymentMethod" id="payCOD" value="cod" />
-                <label class="form-check-label" for="payCOD">Thanh toán khi nhận hàng (COD)</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="paymentMethod" id="payVNPay" value="vnpay" />
-                <label class="form-check-label" for="payVNPay">
-                  Thanh toán qua VNPay
-                </label>
-              </div>
-            </div>
-            <div class="text-end">
-              <button type="submit" class="btn btn-checkout px-5 py-2">
-                <i class="fas fa-check-circle me-2"></i>Xác nhận đặt hàng
-              </button>
-            </div>
-          </form>
-    </div>
-    <%- include('../partials/footer.ejs') %>
-      <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const form = document.querySelector('form[action="/checkout"]');
-          if (!form) return;
-          form.addEventListener('submit', function (e) {
-            const paymentMethod = form.querySelector('input[name="paymentMethod"]:checked').value;
-            if (paymentMethod === 'vnpay') {
-              e.preventDefault();
-              // Tạo form ẩn để submit sang tab mới
-              const newForm = form.cloneNode(true);
-              newForm.target = '_blank';
-              newForm.style.display = 'none';
-              document.body.appendChild(newForm);
-              // Copy lại giá trị các input
-              Array.from(form.elements).forEach(el => {
-                if (el.name && newForm.elements[el.name]) {
-                  newForm.elements[el.name].value = el.value;
-                }
-              });
-              newForm.submit();
-              document.body.removeChild(newForm);
-            }
-            // Nếu không phải vnpay thì submit bình thường
-          });
-        });
-      </script>
-</body>
+    </section>
 
-</html>
+    <div class="container my-5 pb-5">
+      <div class="row" style="margin-top: -60px; position: relative; z-index: 10;">
+        <div class="col-lg-10 mx-auto">
+            <% if (typeof error !=='undefined' ) { %>
+            <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4 p-3 d-flex align-items-center" role="alert" data-aos="fade-down">
+                <i class="fas fa-exclamation-circle me-3 fs-4"></i>
+                <div>
+                    <%= error %>
+                    <a href="/wallet/deposit" class="btn btn-sm btn-danger ms-3 rounded-pill px-3 fw-bold">Deposit Now</a>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+
+            <form method="POST" action="/checkout">
+                <div class="row g-4">
+                    <!-- Left Column: Shipping & Payment -->
+                    <div class="col-lg-7" data-aos="fade-right">
+                        <!-- User Info Card -->
+                        <div class="checkout-card p-4 p-md-5 shadow-sm mb-4">
+                            <h4 class="fw-bold font-outfit mb-4 d-flex align-items-center text-dark">
+                                <i class="fas fa-user-circle text-danger me-2"></i> 1. Customer Information
+                            </h4>
+                            <div class="bg-light p-3 rounded-4 d-flex align-items-center">
+                                <div class="bg-white rounded-circle d-flex align-items-center justify-content-center shadow-sm me-3" style="width: 50px; height: 50px;">
+                                    <i class="fas fa-user text-muted"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark"><%= user?.username || 'User' %></h6>
+                                    <p class="text-muted small mb-0"><%= user?.email || 'No email provided' %></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shipping Info Card -->
+                        <div class="checkout-card p-4 p-md-5 shadow-sm mb-4">
+                            <h4 class="fw-bold font-outfit mb-4 d-flex align-items-center text-dark">
+                                <i class="fas fa-map-marker-alt text-danger me-2"></i> 2. Delivery Address
+                            </h4>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Shipping Address</label>
+                                <div class="position-relative">
+                                    <i class="fas fa-location-arrow position-absolute text-muted" style="left: 15px; top: 18px;"></i>
+                                    <input type="text" class="form-control ps-5" name="address" placeholder="Enter your full delivery address..." required />
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Note for Shipper (Optional)</label>
+                                <textarea class="form-control" name="note" rows="2" placeholder="Example: Leave at the front gate, code is 1234..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Payment Method Card -->
+                        <div class="checkout-card p-4 p-md-5 shadow-sm mb-4">
+                            <h4 class="fw-bold font-outfit mb-4 d-flex align-items-center text-dark">
+                                <i class="fas fa-credit-card text-danger me-2"></i> 3. Payment Method
+                            </h4>
+                            <div class="payment-options">
+                                <div class="form-check p-0 mb-3">
+                                    <input class="form-check-input d-none" type="radio" name="paymentMethod" id="payWallet" value="wallet" checked />
+                                    <label class="payment-option d-flex align-items-center" for="payWallet">
+                                        <div class="icon-box me-3 fs-4 text-success"><i class="fas fa-wallet"></i></div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="fw-bold mb-0">Internal Wallet</h6>
+                                            <p class="text-muted small mb-0">Balance: <span class="fw-bold text-success"><%= user.balance?.toLocaleString('vi-VN') || 0 %>đ</span></p>
+                                        </div>
+                                        <i class="fas fa-check-circle check-icon text-success opacity-0"></i>
+                                    </label>
+                                </div>
+
+                                <div class="form-check p-0 mb-3">
+                                    <input class="form-check-input d-none" type="radio" name="paymentMethod" id="payCOD" value="cod" />
+                                    <label class="payment-option d-flex align-items-center" for="payCOD">
+                                        <div class="icon-box me-3 fs-4 text-warning"><i class="fas fa-truck-loading"></i></div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="fw-bold mb-0">Cash on Delivery (COD)</h6>
+                                            <p class="text-muted small mb-0">Pay when your food arrives.</p>
+                                        </div>
+                                        <i class="fas fa-check-circle check-icon text-success opacity-0"></i>
+                                    </label>
+                                </div>
+
+                                <div class="form-check p-0">
+                                    <input class="form-check-input d-none" type="radio" name="paymentMethod" id="payVNPay" value="vnpay" />
+                                    <label class="payment-option d-flex align-items-center" for="payVNPay">
+                                        <div class="icon-box me-3 fs-4 text-primary"><i class="fas fa-mobile-alt"></i></div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="fw-bold mb-0">VNPay / Banking</h6>
+                                            <p class="text-muted small mb-0">Pay securely via QR or Banking.</p>
+                                        </div>
+                                        <i class="fas fa-check-circle check-icon text-success opacity-0"></i>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Order Summary -->
+                    <div class="col-lg-5" data-aos="fade-left" data-aos-delay="100">
+                        <div class="checkout-card p-4 p-md-5 shadow-sm sticky-top" style="top: 100px;">
+                            <h4 class="fw-bold font-outfit mb-4 text-dark">Order Summary</h4>
+                            
+                            <% if (cart && cart.items && cart.items.length > 0) { %>
+                                <div class="order-items-list mb-4">
+                                    <% cart.items.forEach(item => { %>
+                                        <div class="d-flex align-items-center checkout-item">
+                                            <img src="<%= item.product.imageUrl %>" alt="<%= item.product.name %>" class="product-thumb me-3 shadow-sm" />
+                                            <div class="flex-grow-1">
+                                                <h6 class="fw-bold mb-0 text-dark text-truncate" style="max-width: 150px;"><%= item.product.name %></h6>
+                                                <span class="text-muted small">Qty: <%= item.quantity %></span>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="fw-bold text-dark"><%= (item.product.price * item.quantity).toLocaleString('vi-VN') %>đ</span>
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                </div>
+
+                                <div class="total-highlight shadow-inner mb-4">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="text-muted">Subtotal</span>
+                                        <span class="fw-bold"><%= cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0).toLocaleString('vi-VN') %>đ</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="text-muted">Delivery Fee</span>
+                                        <span class="text-success fw-bold">FREE</span>
+                                    </div>
+                                    <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+                                        <h5 class="fw-bold font-outfit mb-0">Total Amount</h5>
+                                        <h4 class="fw-bold font-outfit mb-0 text-danger">
+                                            <%= cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0).toLocaleString('vi-VN') %>đ
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <button type="submit" id="confirmBtn" class="btn btn-checkout-final w-100 shadow">
+                                    Confirm Order <i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                                <p class="text-center text-muted small mt-3 px-3">By placing your order, you agree to our Terms and Conditions.</p>
+                            <% } else { %>
+                                <div class="text-center py-5">
+                                    <i class="fas fa-shopping-basket fa-3x text-muted opacity-25 mb-3"></i>
+                                    <p class="text-muted">Your cart is empty.</p>
+                                    <a href="/Menu/listFoods" class="btn btn-outline-danger rounded-pill px-4">Browse Menu</a>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Animation Overlay -->
+    <div id="paymentOverlay" class="payment-overlay d-none">
+        <div class="payment-modal text-center p-5 rounded-5 shadow-lg bg-white" data-aos="zoom-in">
+            <div class="loader-wrapper mb-4">
+                <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;"></div>
+            </div>
+            <h4 class="fw-bold font-outfit mb-2">Processing Payment</h4>
+            <p class="text-muted small mb-4">Securing your transaction...</p>
+            
+            <div class="deduction-box position-relative">
+                <div class="current-balance fs-5 fw-bold text-dark mb-1">
+                    <%= user.balance?.toLocaleString('vi-VN') || 0 %>đ
+                </div>
+                <div id="deductionAmount" class="deduction-text fw-bold text-danger">
+                    - <%= cart.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0).toLocaleString('vi-VN') %>đ
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form[action="/checkout"]');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const overlay = document.getElementById('paymentOverlay');
+        const deduction = document.getElementById('deductionAmount');
+
+        if (!form) return;
+
+        form.addEventListener('submit', function (e) {
+          const paymentMethod = form.querySelector('input[name="paymentMethod"]:checked').value;
+          
+          if (paymentMethod === 'vnpay') {
+            e.preventDefault();
+            const newForm = form.cloneNode(true);
+            newForm.target = '_blank';
+            newForm.style.display = 'none';
+            document.body.appendChild(newForm);
+            Array.from(form.elements).forEach(el => {
+              if (el.name && newForm.elements[el.name]) {
+                newForm.elements[el.name].value = el.value;
+              }
+            });
+            newForm.submit();
+            document.body.removeChild(newForm);
+            return;
+          }
+
+          if (paymentMethod === 'wallet') {
+            e.preventDefault();
+            
+            // Show overlay
+            overlay.classList.remove('d-none');
+            overlay.classList.add('d-flex');
+            
+            // Trigger animation
+            setTimeout(() => {
+                deduction.classList.add('animate-deduct');
+            }, 100);
+
+            // Redirect after animation
+            setTimeout(() => {
+                form.submit();
+            }, 2000);
+          }
+        });
+      });
+    </script>
+    <style>
+        .payment-option {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .form-check-input:checked + .payment-option {
+            border-color: #ff6347 !important;
+            background-color: #fff5f5 !important;
+            box-shadow: 0 4px 12px rgba(255, 99, 71, 0.1);
+        }
+        .form-check-input:checked + .payment-option .check-icon {
+            opacity: 1 !important;
+        }
+    </style>
+    <%- include('../partials/footer.ejs') %>

@@ -3,133 +3,272 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lịch sử đơn hàng - Foodie Express</title>
+    <title>Order Management - Foodie Express</title>
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="/css/navbar.css" />
-    <link rel="stylesheet" href="/css/profile.css" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #444;
+        }
+        .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+        
+        .management-card {
+            background: #fff;
+            border-radius: 1.5rem;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            overflow: hidden;
+        }
+        
+        /* Premium Table Styles */
+        .table-premium {
+            margin-bottom: 0;
+        }
+        .table-premium thead th {
+            background-color: #fafafa;
+            color: #888;
+            font-weight: 700;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .table-premium tbody td {
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid #f8f9fa;
+            vertical-align: middle;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+        .table-premium tbody tr:hover td {
+            background-color: #fff9f8;
+        }
+        
+        /* Order ID & Meta */
+        .order-id-short {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: #2d3436;
+        }
+        .order-date {
+            font-size: 0.8rem;
+            color: #adb5bd;
+        }
+        
+        /* Status Badges - Compact */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 2px 10px;
+            border-radius: 4px;
+        }
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-pending { background: #fff8e1; color: #ffa000; }
+        .status-pending .dot { background: #ffa000; }
+        .status-completed { background: #e8f5e9; color: #2e7d32; }
+        .status-completed .dot { background: #2e7d32; }
+        .status-cancelled { background: #ffebee; color: #c62828; }
+        .status-cancelled .dot { background: #c62828; }
+        
+        /* Action Button */
+        .btn-action-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+            background: #fff;
+            color: #666;
+            transition: all 0.2s;
+        }
+        .btn-action-sm:hover {
+            background: #ff6347;
+            color: #fff;
+            border-color: #ff6347;
+        }
+        
+        /* Detail Pane - Compact */
+        .detail-well {
+            background-color: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            margin: 0.5rem 1rem 1rem 1rem;
+            padding: 1rem;
+        }
+        .item-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.8rem;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+    </style>
   </head>
   <body>
     <%- include('../partials/navbar.ejs') %>
-    <div class="container mt-5 pt-5" style="max-width: 900px">
-      <div class="card shadow p-4">
-        <h3 class="mb-4 text-center">Lịch sử đơn hàng</h3>
-        <table class="table table-bordered table-hover align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>Mã đơn</th>
-              <th>Thời gian</th>
-              <th>Trạng thái</th>
-              <th>Phương thức</th>
-              <th>Tổng tiền</th>
-              <th>Địa chỉ</th>
-              <th>Chi tiết</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% if (orders.length === 0) { %>
-            <tr>
-              <td colspan="7" class="text-center">Bạn chưa có đơn hàng nào.</td>
-            </tr>
-            <% } %> <% orders.forEach(order => { %>
-            <tr>
-              <td><%= order._id %></td>
-              <td>
-                <%= order.createdAt ? order.createdAt.toLocaleString() : '' %>
-              </td>
-              <td>
-                <% if (order.status === 'Pending') { %>
-                <span class="badge bg-warning text-dark">Đang xử lý</span>
-                <% } else if (order.status === 'Completed') { %>
-                <span class="badge bg-success">Hoàn thành</span>
-                <% } else if (order.status === 'Cancelled') { %>
-                <span class="badge bg-danger">Đã huỷ</span>
-                <% } else { %>
-                <span class="badge bg-secondary"><%= order.status %></span>
-                <% } %>
-              </td>
-              <td>
-                <%= order.paymentMethod === 'wallet' ? 'Ví nội bộ' : 'COD' %>
-              </td>
-              <td class="fw-bold text-danger">
-                <%= order.totalPrice.toLocaleString() %> VND
-              </td>
-              <td><%= order.address %></td>
-              <td>
-                <button
-                  class="btn btn-sm btn-outline-info"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#orderDetail<%= order._id %>"
-                >
-                  Xem
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="7" class="p-0">
-                <div class="collapse" id="orderDetail<%= order._id %>">
-                  <div class="p-3">
-                    <ul class="mb-0">
-                      <% order.items.forEach(item => { %>
-                      <li>
-                        <strong
-                          ><%= item.productId?.name || 'Sản phẩm đã xoá'
-                          %></strong
-                        >
-                        x <%= item.quantity %> - Đơn giá: <%=
-                        item.price.toLocaleString() %> VND
-                      </li>
-                      <% }) %> <% if (order.note) { %>
-                      <li><em>Ghi chú: <%= order.note %></em></li>
-                      <% } %>
-                    </ul>
-                  </div>
-                </div>
-              </td>
-            </tr>
 
-            <% }) %>
-          </tbody>
-        </table>
+    <div class="container my-5 pt-5">
+      <div class="d-flex align-items-center justify-content-between mb-4" data-aos="fade-down">
+          <div>
+              <h2 class="fw-bold font-outfit m-0">Quản lý Đơn hàng</h2>
+              <p class="text-muted small m-0">Xem và theo dõi các đơn hàng gần đây của bạn</p>
+          </div>
+          <a href="/Menu/listFoods" class="btn btn-outline-danger btn-sm rounded-pill px-4 fw-bold">Đặt món mới</a>
+      </div>
+
+      <div class="management-card" data-aos="fade-up">
+        <div class="table-responsive">
+            <table class="table table-premium align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Mã Đơn</th>
+                        <th>Ngày Đặt</th>
+                        <th>Trạng Thái</th>
+                        <th>Thanh Toán</th>
+                        <th class="text-end">Tổng Tiền</th>
+                        <th class="text-center">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (orders.length === 0) { %>
+                    <tr>
+                        <td colspan="6" class="p-0">
+                            <div class="empty-state">
+                                <i class="fas fa-box-open fa-3x text-muted opacity-25 mb-3"></i>
+                                <p class="text-muted m-0">Bạn chưa có lịch sử đơn hàng.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <% } %> 
+                    
+                    <% orders.forEach(order => { %>
+                    <tr>
+                        <td class="ps-4">
+                            <span class="order-id-short">#<%= order._id.toString().slice(-8).toUpperCase() %></span>
+                        </td>
+                        <td>
+                            <div class="text-dark fw-medium"><%= order.createdAt ? order.createdAt.toLocaleDateString('vi-VN') : '' %></div>
+                            <div class="order-date"><%= order.createdAt ? order.createdAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '' %></div>
+                        </td>
+                        <td>
+                            <% if (order.status === 'Pending') { %>
+                                <div class="status-indicator status-pending"><span class="dot"></span>Đang xử lý</div>
+                            <% } else if (order.status === 'Completed') { %>
+                                <div class="status-indicator status-completed"><span class="dot"></span>Hoàn thành</div>
+                            <% } else if (order.status === 'Cancelled') { %>
+                                <div class="status-indicator status-cancelled"><span class="dot"></span>Đã hủy</div>
+                            <% } else { %>
+                                <div class="status-indicator bg-light text-muted"><%= order.status %></div>
+                            <% } %>
+                        </td>
+                        <td>
+                            <span class="text-muted small">
+                                <i class="<%= order.paymentMethod === 'wallet' ? 'fas fa-wallet' : 'fas fa-money-bill-wave' %> me-1"></i>
+                                <%= order.paymentMethod === 'wallet' ? 'Ví nội bộ' : 'Tiền mặt' %>
+                            </span>
+                        </td>
+                        <td class="text-end fw-bold text-dark">
+                            <%= order.totalPrice.toLocaleString('vi-VN') %>đ
+                        </td>
+                        <td class="text-center">
+                            <button class="btn-action-sm shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#orderDet<%= order._id %>" title="Xem chi tiết">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Expandable Row -->
+                    <tr>
+                        <td colspan="6" class="p-0 border-0">
+                            <div class="collapse" id="orderDet<%= order._id %>">
+                                <div class="detail-well shadow-sm">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="small fw-bold text-muted text-uppercase mb-2">Thực đơn chi tiết</div>
+                                            <% order.items.forEach(item => { %>
+                                                <div class="item-line d-flex align-items-center mb-2">
+                                                    <img src="<%= item.productId?.imageUrl || 'https://via.placeholder.com/100' %>" class="rounded-3 me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                                    <div class="flex-grow-1">
+                                                        <div class="fw-bold text-dark" style="font-size: 0.8rem;"><%= item.productId?.name || 'Sản phẩm' %></div>
+                                                        <div class="text-muted" style="font-size: 0.7rem;"><%= item.quantity %>x - <%= (item.price).toLocaleString('vi-VN') %>đ</div>
+                                                    </div>
+                                                    <div class="text-end fw-bold text-dark" style="font-size: 0.8rem;">
+                                                        <%= (item.price * item.quantity).toLocaleString('vi-VN') %>đ
+                                                    </div>
+                                                </div>
+                                            <% }) %>
+                                        </div>
+                                        <div class="col-md-6 border-start ps-4">
+                                            <div class="small fw-bold text-muted text-uppercase mb-2">Thông tin giao hàng</div>
+                                            <div class="small mb-1"><i class="fas fa-map-marker-alt text-danger me-2"></i><strong>Địa chỉ:</strong> <%= order.address %></div>
+                                            <% if (order.note) { %>
+                                                <div class="small text-muted fst-italic mt-2">"<%= order.note %>"</div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
       </div>
     </div>
+
     <%- include('../partials/footer.ejs') %>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        document
-          .querySelectorAll('[data-bs-toggle="collapse"]')
-          .forEach((btn) => {
-            const targetId = btn.getAttribute("data-bs-target");
-            const target = document.querySelector(targetId);
-
-            btn.addEventListener("click", () => {
-              const isShown = target.classList.contains("show");
-
-              const collapseInstance =
-                bootstrap.Collapse.getOrCreateInstance(target);
-
-              if (isShown) {
-                collapseInstance.hide();
-                btn.textContent = "Xem";
-              } else {
-                collapseInstance.show();
-                btn.textContent = "Ẩn";
-              }
+      AOS.init({ once: true });
+      
+      // Toggle eye icon class when collapse is shown/hidden
+      document.addEventListener('DOMContentLoaded', function() {
+        const collapses = document.querySelectorAll('.collapse');
+        collapses.forEach(el => {
+            const btn = document.querySelector(`[data-bs-target="#${el.id}"]`);
+            el.addEventListener('show.bs.collapse', () => {
+                btn.classList.add('bg-danger', 'text-white');
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
             });
-
-            // Đảm bảo cập nhật lại text nếu người dùng click nhanh
-            target.addEventListener("hidden.bs.collapse", () => {
-              btn.textContent = "Xem";
+            el.addEventListener('hide.bs.collapse', () => {
+                btn.classList.remove('bg-danger', 'text-white');
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
             });
-
-            target.addEventListener("shown.bs.collapse", () => {
-              btn.textContent = "Ẩn";
-            });
-          });
+        });
       });
     </script>
   </body>

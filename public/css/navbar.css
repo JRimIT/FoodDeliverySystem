@@ -89,11 +89,19 @@
 
 .cart-badge {
   position: absolute;
-  top: -5px;
-  right: -5px;
-  font-size: 0.7rem;
-  padding: 0.35em 0.6em;
+  top: 0;
+  right: 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: 2px solid white;
+  transform: translate(25%, -25%);
+  line-height: 1;
 }
 
 /* Balance Badge */
