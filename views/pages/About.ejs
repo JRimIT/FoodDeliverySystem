@@ -15,6 +15,11 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- Custom Styles -->
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/About.css" />
@@ -23,106 +28,169 @@
   <body>
     <%- include('../partials/navbar.ejs') %>
 
-    <div class="container about-page mt-5 pt-5">
-      <h1 class="text-center mb-4">About Foodie Express</h1>
-      <p class="text-center">
-        Foodie Express is a fast and reliable food delivery platform created
-        with passion and dedication. Our mission is to connect hungry customers
-        with their favorite restaurants in the fastest, easiest way possible.
-        Whether it's breakfast, lunch, dinner, or a late-night snack — we’re
-        here to deliver.
-      </p>
-
-      <hr class="my-4" />
-
-      <h3 class="text-center mb-3">👨‍💻 Our Team</h3>
-      <div id="teamCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner text-center">
-          <div class="carousel-item active">
-            <div class="row justify-content-center">
-              <div class="col-md-4">
-                <img
-                  src="https://i.pinimg.com/736x/e8/86/27/e8862709fd7193e2c20930554a627e15.jpg"
-                  class="rounded-circle mb-2"
-                  alt="Member 1"
-                />
-                <p>Nguyễn Duy Rim</p>
-              </div>
-              <div class="col-md-4">
-                <img
-                  src="https://i.pinimg.com/736x/5b/e7/d4/5be7d474f77c7ecf26d50072049e435c.jpg"
-                  class="rounded-circle mb-2"
-                  alt="Member 2"
-                />
-                <p>Trần Nguyễn Hoàng Phúc</p>
-              </div>
-              <div class="col-md-4">
-                <img
-                  src="https://i.pinimg.com/736x/5f/78/fa/5f78faf0649bab7f7f2afd0fe284ced8.jpg"
-                  class="rounded-circle mb-2"
-                  alt="Member 3"
-                />
-                <p>Lê Quang Bách</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="carousel-item">
-            <div class="row justify-content-center">
-              <div class="col-md-4">
-                <img
-                  src="https://i.pinimg.com/736x/15/82/6c/15826c8fca27e18276bd2f0b25cbbc3c.jpg"
-                  class="rounded-circle mb-2"
-                  alt="Member 4"
-                />
-                <p>Nguyễn Thanh Tùng</p>
-              </div>
-              <div class="col-md-4">
-                <img
-                  src="https://i.pinimg.com/736x/af/f4/56/aff45698092ec2541d641407584d5fc0.jpg"
-                  class="rounded-circle mb-2"
-                  alt="Member 5"
-                />
-                <p>Nguyễn Quang Tâm</p>
-              </div>
-            </div>
-          </div>
+    <!-- Hero Section -->
+    <section class="about-hero position-relative d-flex align-items-center justify-content-center text-center pt-5">
+        <div class="overlay position-absolute w-100 h-100"></div>
+        <div class="container position-relative z-index-1 text-white">
+            <span class="badge bg-danger mb-3 px-3 py-2 rounded-pill shadow-sm">About Us</span>
+            <h1 class="display-4 fw-bold mb-4 font-outfit">Savor the Moment with <br><span class="text-warning">Foodie Express</span></h1>
+            <p class="lead mx-auto" style="max-width: 700px; font-weight: 300;">
+                Foodie Express is a fast and reliable food delivery platform created with passion and dedication. Our mission is to connect hungry customers with their favorite restaurants in the fastest, easiest way possible.
+            </p>
         </div>
+    </section>
 
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#teamCarousel"
-          data-bs-slide="prev"
-        >
-          <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#teamCarousel"
-          data-bs-slide="next"
-        >
-          <span class="carousel-control-next-icon"></span>
-        </button>
+    <div class="container my-5">
+      <!-- Story Section -->
+      <div class="row align-items-center my-5 py-lg-5">
+          <div class="col-lg-6 mb-5 mb-lg-0 pe-lg-5">
+              <div class="position-relative ps-4 pt-4">
+                  <!-- Decorative background block -->
+                  <div class="position-absolute top-0 start-0 w-75 h-75 bg-danger rounded-4 opacity-10"></div>
+                  <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=2070&auto=format&fit=crop" class="img-fluid rounded-4 shadow-lg position-relative" alt="Delicious Food">
+                  <div class="experience-badge position-absolute bg-white rounded-4 shadow-lg p-3 text-center border-bottom border-danger border-4">
+                      <h2 class="text-danger fw-bold mb-0 font-outfit">1+</h2>
+                      <p class="text-muted mb-0 small fw-bold text-uppercase">Years of<br>Excellence</p>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-6">
+              <h6 class="text-danger text-uppercase fw-bold letter-spacing-1 mb-2">Our Mission</h6>
+              <h2 class="fw-bold font-outfit mb-4 display-6">Delivering Happiness, <br>One Meal at a Time.</h2>
+              <p class="text-muted mb-4 fs-5" style="line-height: 1.8;">
+                  Whether it's breakfast, lunch, dinner, or a late-night snack — we’re here to deliver. We carefully curate our restaurant partners to ensure you get the highest quality food, piping hot, right to your doorstep.
+              </p>
+              <ul class="list-unstyled mb-0 feature-list">
+                  <li class="mb-3 d-flex align-items-center p-3 bg-white rounded-3 shadow-sm border-start border-danger border-4"><i class="fas fa-motorcycle text-danger me-3 fs-4"></i> <span class="fw-semibold">Fast & Reliable Delivery under 30 mins</span></li>
+                  <li class="mb-3 d-flex align-items-center p-3 bg-white rounded-3 shadow-sm border-start border-warning border-4"><i class="fas fa-store text-warning me-3 fs-4"></i> <span class="fw-semibold">100+ Local Premium Restaurant Partners</span></li>
+                  <li class="d-flex align-items-center p-3 bg-white rounded-3 shadow-sm border-start border-success border-4"><i class="fas fa-headset text-success me-3 fs-4"></i> <span class="fw-semibold">24/7 Dedicated Customer Support</span></li>
+              </ul>
+          </div>
       </div>
 
-      <h3 class="text-center mt-5">📈 Development Timeline</h3>
-      <div class="d-flex justify-content-center">
-        <ul class="timeline list-unstyled">
-          <li class="timeline-item">
-            <strong>2023:</strong> Ý tưởng được hình thành với tầm nhìn tạo ra
-            một nền tảng giao đồ ăn nhanh chóng và tiện lợi.
-          </li>
-          <li class="timeline-item">
-            <strong>2024:</strong> Bắt đầu phát triển ứng dụng với nhóm nhỏ, xây
-            dựng tính năng đặt món, theo dõi đơn hàng và đánh giá cửa hàng.
-          </li>
-          <li class="timeline-item">
-            <strong>2025:</strong> Ra mắt phiên bản chính thức, hợp tác với hơn
-            100 nhà hàng địa phương và mở rộng thị trường.
-          </li>
-        </ul>
+      <!-- Team Section -->
+      <div class="team-section text-center py-5 px-3 rounded-5 mb-5 shadow-sm mt-5">
+          <h6 class="text-danger text-uppercase fw-bold letter-spacing-1 mb-2">Our People</h6>
+          <h2 class="fw-bold font-outfit mb-5 display-6">Meet The Creators</h2>
+          
+          <div class="row justify-content-center g-4 px-lg-4">
+              <!-- Member 1 -->
+              <div class="col-6 col-md-4 col-lg-2">
+                  <div class="team-card text-center bg-white p-3 rounded-4 shadow-sm h-100">
+                      <div class="img-wrapper mb-3 mx-auto">
+                          <img src="https://i.pinimg.com/736x/e8/86/27/e8862709fd7193e2c20930554a627e15.jpg" class="rounded-circle shadow-sm" alt="Nguyễn Duy Rim" />
+                      </div>
+                      <h6 class="fw-bold mb-1">Nguyễn Duy Rim</h6>
+                      <p class="text-danger small mb-0 fw-semibold">Leader</p>
+                  </div>
+              </div>
+              <!-- Member 2 -->
+              <div class="col-6 col-md-4 col-lg-2">
+                  <div class="team-card text-center bg-white p-3 rounded-4 shadow-sm h-100">
+                      <div class="img-wrapper mb-3 mx-auto">
+                          <img src="https://i.pinimg.com/736x/5b/e7/d4/5be7d474f77c7ecf26d50072049e435c.jpg" class="rounded-circle shadow-sm" alt="Trần Nguyễn Hoàng Phúc" />
+                      </div>
+                      <h6 class="fw-bold mb-1">T. N. Hoàng Phúc</h6>
+                      <p class="text-danger small mb-0 fw-semibold">Developer</p>
+                  </div>
+              </div>
+              <!-- Member 3 -->
+              <div class="col-6 col-md-4 col-lg-2">
+                  <div class="team-card text-center bg-white p-3 rounded-4 shadow-sm h-100">
+                      <div class="img-wrapper mb-3 mx-auto">
+                          <img src="https://i.pinimg.com/736x/5f/78/fa/5f78faf0649bab7f7f2afd0fe284ced8.jpg" class="rounded-circle shadow-sm" alt="Lê Quang Bách" />
+                      </div>
+                      <h6 class="fw-bold mb-1">Lê Quang Bách</h6>
+                      <p class="text-danger small mb-0 fw-semibold">Developer</p>
+                  </div>
+              </div>
+              <!-- Member 4 -->
+              <div class="col-6 col-md-4 col-lg-2">
+                  <div class="team-card text-center bg-white p-3 rounded-4 shadow-sm h-100">
+                      <div class="img-wrapper mb-3 mx-auto">
+                          <img src="https://i.pinimg.com/736x/15/82/6c/15826c8fca27e18276bd2f0b25cbbc3c.jpg" class="rounded-circle shadow-sm" alt="Nguyễn Thanh Tùng" />
+                      </div>
+                      <h6 class="fw-bold mb-1">N. Thanh Tùng</h6>
+                      <p class="text-danger small mb-0 fw-semibold">Designer</p>
+                  </div>
+              </div>
+              <!-- Member 5 -->
+              <div class="col-6 col-md-4 col-lg-2">
+                  <div class="team-card text-center bg-white p-3 rounded-4 shadow-sm h-100">
+                      <div class="img-wrapper mb-3 mx-auto">
+                          <img src="https://i.pinimg.com/736x/af/f4/56/aff45698092ec2541d641407584d5fc0.jpg" class="rounded-circle shadow-sm" alt="Nguyễn Quang Tâm" />
+                      </div>
+                      <h6 class="fw-bold mb-1">N. Quang Tâm</h6>
+                      <p class="text-danger small mb-0 fw-semibold">Marketing</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- Timeline Section -->
+      <div class="timeline-section py-5 mb-4">
+          <div class="text-center mb-5">
+              <h6 class="text-danger text-uppercase fw-bold letter-spacing-1 mb-2">Our Journey</h6>
+              <h2 class="fw-bold font-outfit display-6">Development Timeline</h2>
+          </div>
+          
+          <div class="timeline-modern position-relative mx-auto mt-5" style="max-width: 800px;">
+              <!-- 2023 -->
+              <div class="timeline-item-modern d-flex mb-4">
+                  <div class="timeline-year text-end pe-4 w-25">
+                      <h3 class="fw-bold text-danger mb-0 font-outfit">2023</h3>
+                  </div>
+                  <div class="timeline-marker position-relative">
+                      <div class="marker-dot bg-danger border border-4 border-white rounded-circle shadow"></div>
+                      <div class="marker-line bg-light position-absolute h-100 start-50 translate-middle-x"></div>
+                  </div>
+                  <div class="timeline-content ps-4 w-75 pb-4">
+                      <div class="card border-0 shadow-sm rounded-4 bg-white">
+                          <div class="card-body p-4">
+                              <h5 class="fw-bold mb-2">Idea Generation</h5>
+                              <p class="text-muted mb-0">Ý tưởng được hình thành với tầm nhìn tạo ra một nền tảng giao đồ ăn nhanh chóng và tiện lợi cho mọi người.</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              
+              <!-- 2024 -->
+              <div class="timeline-item-modern d-flex mb-4">
+                  <div class="timeline-year text-end pe-4 w-25">
+                      <h3 class="fw-bold text-danger mb-0 font-outfit">2024</h3>
+                  </div>
+                  <div class="timeline-marker position-relative">
+                      <div class="marker-dot bg-danger border border-4 border-white rounded-circle shadow"></div>
+                      <div class="marker-line bg-light position-absolute h-100 start-50 translate-middle-x"></div>
+                  </div>
+                  <div class="timeline-content ps-4 w-75 pb-4">
+                      <div class="card border-0 shadow-sm rounded-4 bg-white">
+                          <div class="card-body p-4">
+                              <h5 class="fw-bold mb-2">Development Begins</h5>
+                              <p class="text-muted mb-0">Bắt đầu phát triển ứng dụng với nhóm nhỏ, xây dựng tính năng đặt món, theo dõi đơn hàng và đánh giá cửa hàng trực tuyến.</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              
+              <!-- 2025 -->
+              <div class="timeline-item-modern d-flex">
+                  <div class="timeline-year text-end pe-4 w-25">
+                      <h3 class="fw-bold text-danger mb-0 font-outfit">2025</h3>
+                  </div>
+                  <div class="timeline-marker position-relative">
+                      <div class="marker-dot bg-danger border border-4 border-white rounded-circle shadow"></div>
+                  </div>
+                  <div class="timeline-content ps-4 w-75">
+                      <div class="card border-0 shadow-sm rounded-4 bg-white border-bottom border-danger border-4">
+                          <div class="card-body p-4">
+                              <h5 class="fw-bold mb-2">Official Launch</h5>
+                              <p class="text-muted mb-0">Ra mắt phiên bản chính thức, hợp tác với hơn 100 nhà hàng địa phương và mở rộng thị trường ra toàn quốc.</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
     </div>
 

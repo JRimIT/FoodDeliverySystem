@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Help - Bookstore</title>
+    <title>Help Center - Foodie Express</title>
 
     <!-- Bootstrap -->
     <link
@@ -16,175 +16,251 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/Help.css" />
-    <link rel="stylesheet" href="/css/footer.css" />
   </head>
-  <body>
+  <body class="bg-light">
     <!-- Navbar -->
     <%- include('../partials/navbar.ejs') %>
 
-    <!-- Search Section -->
-    <div class="help-search-section text-center">
-      <h1 class="mb-3">GET HELP</h1>
-      <div class="search-box">
-        <input
-          type="text"
-          id="searchInput"
-          class="form-control"
-          placeholder="What can we help you with?"
-        />
+    <!-- Search Hero Section -->
+    <section class="help-search-section position-relative d-flex align-items-center justify-content-center text-center mt-5">
+      <div class="overlay position-absolute w-100 h-100"></div>
+      <div class="container position-relative z-index-1 text-white py-5">
+          <h1 class="display-5 fw-bold mb-3 font-outfit text-white">How can we help you?</h1>
+          <p class="lead fw-light mx-auto mb-4" style="max-width: 600px;">
+              Search our knowledge base or browse categories below to find the answers you need.
+          </p>
+          
+          <div class="search-box mx-auto position-relative" style="max-width: 600px;">
+            <i class="fas fa-search position-absolute text-muted fs-5" style="left: 20px; top: 50%; transform: translateY(-50%); z-index: 5;"></i>
+            <input
+              type="text"
+              id="searchInput"
+              class="form-control form-control-lg rounded-pill ps-5 py-3 border-0 shadow-lg"
+              placeholder="Type your question here..."
+            />
+          </div>
+      </div>
+    </section>
+
+    <!-- Help Content -->
+    <div class="help-content container my-5 pb-5">
+      <div class="text-center mb-5">
+          <h6 class="text-danger text-uppercase fw-bold letter-spacing-1 mb-2">Knowledge Base</h6>
+          <h2 class="fw-bold font-outfit text-dark">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="row g-4 justify-content-center" id="faqContainer">
+        <!-- Delivery Section -->
+        <div class="col-lg-10 faq-item" data-keywords="delivery shipping order fast time tracking">
+          <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+              <h4 class="fw-bold text-danger font-outfit d-flex align-items-center">
+                <i class="fas fa-motorcycle me-2"></i> Delivery & Tracking
+              </h4>
+            </div>
+            <div class="card-body p-4">
+              <div class="accordion accordion-flush" id="accordionDelivery">
+                
+                <div class="accordion-item mb-3 rounded-3 border">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#del1">
+                      What are your delivery options?
+                    </button>
+                  </h2>
+                  <div id="del1" class="accordion-collapse collapse" data-bs-parent="#accordionDelivery">
+                    <div class="accordion-body text-muted">
+                      We offer standard delivery (under 45 minutes) and express priority delivery (under 30 minutes) for a small additional fee.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item mb-3 rounded-3 border">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#del2">
+                      How do I get free delivery?
+                    </button>
+                  </h2>
+                  <div id="del2" class="accordion-collapse collapse" data-bs-parent="#accordionDelivery">
+                    <div class="accordion-body text-muted">
+                      Orders above 200,000 VND automatically qualify for free standard delivery within a 5km radius from the restaurant.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item rounded-3 border">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#del3">
+                      Where is my order?
+                    </button>
+                  </h2>
+                  <div id="del3" class="accordion-collapse collapse" data-bs-parent="#accordionDelivery">
+                    <div class="accordion-body text-muted">
+                      You can track your order in real-time. Simply login to your account and go to the "Order History" or "Track Order" page to see the rider's current location.
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders & Payment Section -->
+        <div class="col-lg-10 faq-item" data-keywords="cancel refund payment card money vnpay">
+          <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+              <h4 class="fw-bold text-warning font-outfit d-flex align-items-center">
+                <i class="fas fa-credit-card me-2"></i> Orders & Payment
+              </h4>
+            </div>
+            <div class="card-body p-4">
+              <div class="accordion accordion-flush" id="accordionPayment">
+                
+                <div class="accordion-item mb-3 rounded-3 border">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#pay1">
+                      Can I cancel or change my order?
+                    </button>
+                  </h2>
+                  <div id="pay1" class="accordion-collapse collapse" data-bs-parent="#accordionPayment">
+                    <div class="accordion-body text-muted">
+                      You can cancel or change your order within 3 minutes of placing it. Once the restaurant accepts and starts preparing your food, cancellations are no longer possible.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item mb-3 rounded-3 border">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#pay2">
+                      What payment methods do you accept?
+                    </button>
+                  </h2>
+                  <div id="pay2" class="accordion-collapse collapse" data-bs-parent="#accordionPayment">
+                    <div class="accordion-body text-muted">
+                      We accept Cash on Delivery (COD), VNPay, MoMo, ZaloPay, and all major Credit/Debit cards.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item rounded-3 border">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#pay3">
+                      Where is my refund?
+                    </button>
+                  </h2>
+                  <div id="pay3" class="accordion-collapse collapse" data-bs-parent="#accordionPayment">
+                    <div class="accordion-body text-muted">
+                      Refunds for cancelled or failed online transactions are processed automatically and will reflect in your bank account within 3–5 business days depending on your bank's policy.
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Section -->
+        <div class="col-lg-10 faq-item" data-keywords="account login password profile email">
+          <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+              <h4 class="fw-bold text-success font-outfit d-flex align-items-center">
+                <i class="fas fa-user-circle me-2"></i> Account Management
+              </h4>
+            </div>
+            <div class="card-body p-4">
+              <div class="accordion accordion-flush" id="accordionAccount">
+                
+                <div class="accordion-item mb-3 rounded-3 border">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#acc1">
+                      How do I reset my password?
+                    </button>
+                  </h2>
+                  <div id="acc1" class="accordion-collapse collapse" data-bs-parent="#accordionAccount">
+                    <div class="accordion-body text-muted">
+                      Click on "Forgot Password" on the login page. Enter your registered email address, and we will send you a secure link to reset your password.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="accordion-item rounded-3 border">
+                  <h2 class="accordion-header">
+                    <button class="accordion-button collapsed fw-bold rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#acc2">
+                      How do I update my delivery address?
+                    </button>
+                  </h2>
+                  <div id="acc2" class="accordion-collapse collapse" data-bs-parent="#accordionAccount">
+                    <div class="accordion-body text-muted">
+                      Go to "Profile" > "Settings" to add, edit, or delete your saved delivery addresses. You can also add a new address directly at checkout.
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- Help Content -->
-    <div class="help-content container py-5">
-      <h2 class="mb-4">Quick Assists</h2>
-      <div class="row" id="faqContainer">
-        <!-- FAQ Group 1 -->
-        <div
-          class="col-md-4 mb-4 faq-item"
-          data-keywords="return refund policy"
-        >
-          <h5>Returns</h5>
-          <ul class="list-unstyled">
-            <li
-              class="faq-question"
-              data-answer="You can return any book within 7 days of purchase."
-            >
-              What is your return policy?
-            </li>
-            <li
-              class="faq-question"
-              data-answer="Go to your account > Orders > Request Return."
-            >
-              How do I return an order?
-            </li>
-            <li
-              class="faq-question"
-              data-answer="Refunds are processed within 3–5 business days after approval."
-            >
-              Where is my refund?
-            </li>
-          </ul>
-        </div>
-
-        <!-- FAQ Group 2 -->
-        <div
-          class="col-md-4 mb-4 faq-item"
-          data-keywords="delivery shipping dispatch"
-        >
-          <h5>Dispatch & Delivery</h5>
-          <ul class="list-unstyled">
-            <li
-              class="faq-question"
-              data-answer="We offer standard (3-5 days) and express (1-2 days) delivery."
-            >
-              What are your delivery options?
-            </li>
-            <li
-              class="faq-question"
-              data-answer="Orders above $50 qualify for free standard delivery."
-            >
-              How do I get free delivery?
-            </li>
-            <li
-              class="faq-question"
-              data-answer="Yes, we support international shipping to selected countries."
-            >
-              Do you ship internationally?
-            </li>
-          </ul>
-        </div>
-
-        <!-- FAQ Group 3 -->
-        <div
-          class="col-md-4 mb-4 faq-item"
-          data-keywords="order cancel payment"
-        >
-          <h5>Orders & Payment</h5>
-          <ul class="list-unstyled">
-            <li
-              class="faq-question"
-              data-answer="Login to your account and view your recent orders."
-            >
-              Where is my order?
-            </li>
-            <li
-              class="faq-question"
-              data-answer="Contact support within 24 hours to cancel or change."
-            >
-              Can I cancel or change my order?
-            </li>
-            <li
-              class="faq-question"
-              data-answer="We accept Visa, MasterCard, PayPal, and bookstore gift cards."
-            >
-              What are your payment options?
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Answer Panel -->
-      <div id="faqAnswer" class="faq-answer-panel mt-4 d-none">
-        <div class="card">
-          <div class="card-body">
-            <p id="answerText" class="mb-0"></p>
+    <!-- Contact Support CTA -->
+    <div class="container mb-5 pb-5">
+      <div class="bg-danger text-white rounded-5 p-5 text-center shadow-lg position-relative overflow-hidden">
+          <div class="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-10"></div>
+          <div class="position-relative z-index-1">
+              <h2 class="fw-bold font-outfit mb-3">Still need help?</h2>
+              <p class="lead mb-4">Our customer support team is available 24/7 to assist you.</p>
+              <a href="/Contact" class="btn btn-light btn-lg rounded-pill fw-bold px-5 text-danger shadow">Contact Support</a>
           </div>
-        </div>
       </div>
     </div>
 
     <!-- Footer -->
-    <%- include('../partials/footer') %>
+    <%- include('../partials/footer.ejs') %>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Script -->
     <script>
-      // Show answer when question clicked
-      document.querySelectorAll(".faq-question").forEach((q) => {
-        q.addEventListener("click", () => {
-          const answer = q.getAttribute("data-answer");
-          document.getElementById("answerText").innerText = answer;
-          document.getElementById("faqAnswer").classList.remove("d-none");
-          window.scrollTo({
-            top: document.getElementById("faqAnswer").offsetTop - 100,
-            behavior: "smooth",
-          });
-        });
-      });
+      // Live Search filter for FAQ Accordions
+      document.getElementById("searchInput").addEventListener("input", function () {
+          const search = this.value.toLowerCase().trim();
+          const categories = document.querySelectorAll(".faq-item");
 
-      // Search filter
-      document
-        .getElementById("searchInput")
-        .addEventListener("input", function () {
-          const search = this.value.toLowerCase();
-          const items = document.querySelectorAll(".faq-item");
+          categories.forEach((category) => {
+            const keywords = category.getAttribute("data-keywords").toLowerCase();
+            const accordions = category.querySelectorAll(".accordion-item");
+            
+            let categoryMatchFound = false;
 
-          items.forEach((item) => {
-            const keywords = item.getAttribute("data-keywords").toLowerCase();
-            const questions = item.querySelectorAll(".faq-question");
-
-            let matchFound = false;
-
-            // Kiểm tra data-keywords
-            if (keywords.includes(search)) {
-              matchFound = true;
-            }
-
-            // Kiểm tra nội dung từng câu hỏi
-            questions.forEach((q) => {
-              if (q.textContent.toLowerCase().includes(search)) {
-                matchFound = true;
+            accordions.forEach((acc) => {
+              const question = acc.querySelector(".accordion-button").textContent.toLowerCase();
+              const answer = acc.querySelector(".accordion-body").textContent.toLowerCase();
+              
+              if (question.includes(search) || answer.includes(search) || keywords.includes(search)) {
+                  acc.style.display = "block";
+                  categoryMatchFound = true;
+              } else {
+                  acc.style.display = "none";
               }
             });
 
-            // Ẩn hoặc hiển thị item
-            item.style.display = matchFound || search === "" ? "block" : "none";
+            // If no accordions match in this category, hide the whole category card
+            category.style.display = categoryMatchFound || search === "" ? "block" : "none";
           });
-        });
+      });
     </script>
   </body>
 </html>

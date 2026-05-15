@@ -15,57 +15,107 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/Contact.css" />
   </head>
 
-  <body>
+  <body class="bg-light">
     <%- include('../partials/navbar.ejs') %>
 
-    <div class="container contact-container mt-5 pt-5">
-      <h1 class="text-center mb-4">📞 Contact Us</h1>
+    <!-- Hero Section for Contact -->
+    <section class="contact-hero position-relative d-flex align-items-center justify-content-center text-center mt-5">
+        <div class="overlay position-absolute w-100 h-100"></div>
+        <div class="container position-relative z-index-1 text-white py-5">
+            <h1 class="display-4 fw-bold mb-3 font-outfit text-white">Get in Touch</h1>
+            <p class="lead fw-light mx-auto" style="max-width: 600px;">
+                We'd love to hear from you. Our friendly team is always here to chat and help you with any issues.
+            </p>
+        </div>
+    </section>
 
-      <div class="row">
+    <div class="container contact-container my-5 pb-5">
+      <!-- Contact Info Cards -->
+      <div class="row g-4 mb-5 transform-up text-center px-lg-5" style="margin-top: -60px; position: relative; z-index: 10;">
+          <div class="col-md-4">
+              <div class="contact-card bg-white p-4 rounded-4 shadow-sm h-100 d-flex flex-column align-items-center">
+                  <div class="icon-wrapper bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                      <i class="fas fa-envelope fa-xl"></i>
+                  </div>
+                  <h5 class="fw-bold font-outfit mb-2">Email Us</h5>
+                  <p class="text-muted small mb-3">We'll respond within 24 hours.</p>
+                  <a href="mailto:support@foodie.com" class="fw-bold text-danger text-decoration-none mt-auto">support@foodie.com</a>
+              </div>
+          </div>
+          <div class="col-md-4">
+              <div class="contact-card bg-white p-4 rounded-4 shadow-sm h-100 d-flex flex-column align-items-center">
+                  <div class="icon-wrapper bg-warning-subtle text-warning rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                      <i class="fas fa-phone-alt fa-xl"></i>
+                  </div>
+                  <h5 class="fw-bold font-outfit mb-2">Call Us</h5>
+                  <p class="text-muted small mb-3">Mon-Fri from 8am to 5pm.</p>
+                  <a href="tel:+84123456789" class="fw-bold text-warning text-decoration-none mt-auto">+84 123 456 789</a>
+              </div>
+          </div>
+          <div class="col-md-4">
+              <div class="contact-card bg-white p-4 rounded-4 shadow-sm h-100 d-flex flex-column align-items-center">
+                  <div class="icon-wrapper bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                      <i class="fas fa-map-marker-alt fa-xl"></i>
+                  </div>
+                  <h5 class="fw-bold font-outfit mb-2">Visit Us</h5>
+                  <p class="text-muted small mb-3">Come say hello at our office HQ.</p>
+                  <span class="fw-bold text-success mt-auto">FPT University, Da Nang</span>
+              </div>
+          </div>
+      </div>
+
+      <div class="row align-items-stretch mt-5">
         <!-- Left: Contact Form -->
-        <div class="col-md-6 mb-4">
-          <form
-            action="/contact"
-            method="POST"
-            class="p-3 shadow rounded bg-light"
-          >
-            <div class="mb-3">
-              <label for="name" class="form-label">Your Name</label>
-              <input type="text" class="form-control" name="name" required />
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Your Email</label>
-              <input type="email" class="form-control" name="email" required />
-            </div>
-            <div class="mb-3">
-              <label for="message" class="form-label">Your Message</label>
-              <textarea
-                class="form-control"
-                name="message"
-                rows="5"
-                required
-              ></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">
-              Send Message
-            </button>
-          </form>
+        <div class="col-lg-6 mb-4 mb-lg-0 pe-lg-4">
+          <div class="bg-white p-5 rounded-4 shadow-sm h-100">
+              <div class="mb-4">
+                  <h6 class="text-danger text-uppercase fw-bold letter-spacing-1 mb-2">Send Message</h6>
+                  <h2 class="fw-bold font-outfit mb-2">Drop us a line</h2>
+                  <p class="text-muted">Fill out the form below and we will get back to you as soon as possible.</p>
+              </div>
+              <form action="/contact" method="POST">
+                <div class="mb-4">
+                  <label for="name" class="form-label fw-semibold text-dark">Your Name</label>
+                  <input type="text" class="form-control form-control-lg bg-light border-0 px-4 rounded-3" name="name" placeholder="John Doe" required />
+                </div>
+                <div class="mb-4">
+                  <label for="email" class="form-label fw-semibold text-dark">Your Email</label>
+                  <input type="email" class="form-control form-control-lg bg-light border-0 px-4 rounded-3" name="email" placeholder="john@example.com" required />
+                </div>
+                <div class="mb-4">
+                  <label for="message" class="form-label fw-semibold text-dark">Your Message</label>
+                  <textarea
+                    class="form-control form-control-lg bg-light border-0 px-4 py-3 rounded-3"
+                    name="message"
+                    rows="5"
+                    placeholder="How can we help you?"
+                    required
+                  ></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger btn-lg w-100 rounded-pill fw-bold btn-hover-scale shadow-sm">
+                  Send Message <i class="fas fa-paper-plane ms-2"></i>
+                </button>
+              </form>
+          </div>
         </div>
 
         <!-- Right: Google Map -->
-        <div class="col-md-6 mb-4">
-          <div class="map-responsive shadow rounded overflow-hidden">
+        <div class="col-lg-6">
+          <div class="map-responsive shadow-sm rounded-4 overflow-hidden h-100 bg-white p-2">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12902.0458854438!2d108.26236899536646!3d15.97175532142634!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3142116949840599%3A0x365b35580f52e8d5!2zxJDhuqFpIGjhu41jIEZQVCDEkMOgIE7hurVuZw!5e0!3m2!1svi!2s!4v1752421024080!5m2!1svi!2s"
-              width="600"
-              height="450"
-              style="border: 0"
+              class="w-100 h-100 rounded-3"
+              style="border: 0; min-height: 450px;"
               allowfullscreen=""
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"

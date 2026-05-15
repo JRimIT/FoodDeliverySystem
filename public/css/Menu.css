@@ -1,146 +1,117 @@
+/* Modern Menu Page Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: url('https://images.unsplash.com/photo-1604908811714-f8f1160a8c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa !important;
+}
+
+.font-outfit {
+    font-family: "Outfit", sans-serif;
+}
+
+.z-index-1 {
+    z-index: 1;
+}
+
+/* Hero Section */
+.menu-hero {
+    min-height: 300px;
+    background: url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
     background-size: cover;
+    margin-top: 60px; /* Offset for navbar */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-.menu-section {
-    background: rgba(255,255,255,0.85);
-    backdrop-filter: blur(12px) saturate(180%);
-    border-radius: 28px;
-    margin: 70px auto 40px auto;
-    max-width: 1240px;
-    padding: 48px 18px 36px 18px;
-    box-shadow: 0 8px 32px rgba(31,38,135,0.10);
-    animation: fadeInUp 0.8s cubic-bezier(.39,.575,.56,1) both;
-}
-.menu-section h2 {
-    font-size: 2.3rem;
-    font-weight: 700;
-    color: #ff6347;
-    letter-spacing: 1px;
-    margin-bottom: 2.5rem;
-    text-shadow: 0 2px 8px rgba(255,99,71,0.08);
-    animation: fadeInDown 0.7s cubic-bezier(.39,.575,.56,1) both;
+.menu-hero .overlay {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+    top: 0;
+    left: 0;
 }
 
-.filter-btn {
-    margin: 0 5px 15px 5px;
-    border-radius: 10px;
+/* Filter Pills */
+.filter-pill {
+    border-radius: 50px;
+    padding: 8px 20px;
     font-weight: 600;
-    padding: 8px 22px;
-    border: none;
-    background: #fff;
-    color: #ff6347;
-    box-shadow: 0 2px 8px rgba(255,99,71,0.06);
-    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-}
-.filter-btn.active, .filter-btn:focus, .filter-btn:hover {
-    background: linear-gradient(90deg, #ff6347 60%, #fbc02d 100%);
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(255,99,71,0.12);
+    font-size: 0.95rem;
+    color: #495057;
+    background-color: #f1f3f5;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
 }
 
-.card {
-    border-radius: 18px;
-    box-shadow: 0 4px 24px rgba(255,99,71,0.08);
-    border: none;
-    transition: transform 0.18s, box-shadow 0.18s;
-    background: rgba(255,255,255,0.98);
-    overflow: hidden;
-    position: relative;
-    animation: fadeInUp 0.7s cubic-bezier(.39,.575,.56,1) both;
+.filter-pill:hover {
+    background-color: #e9ecef;
+    color: #212529;
+    transform: translateY(-2px);
 }
-.card:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 8px 32px rgba(255,99,71,0.15);
+
+.filter-pill.active {
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+}
+
+/* Product Cards */
+.product-card {
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.product-card img {
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover img {
+    transform: scale(1.08);
+}
+
+.price-badge {
+    z-index: 2;
+    box-shadow: -2px 4px 10px rgba(0,0,0,0.1);
+}
+
+.category-badge {
     z-index: 2;
 }
-.card img {
-    height: 180px;
-    object-fit: cover;
-    border-radius: 18px 18px 0 0;
-    transition: filter 0.2s;
+
+/* Buttons */
+.btn-hover-scale {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
-.card-title {
-    color: #ff6347;
-    font-weight: bold;
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-}
-.card-text {
-    font-size: 1.1rem;
-    color: #444;
-    margin-bottom: 0.7rem;
-    font-weight: 500;
-    background: linear-gradient(90deg, #ff6347 60%, #fbc02d 100%);
-    color: #fff;
-    border-radius: 8px;
-    padding: 4px 14px;
-    display: inline-block;
-    box-shadow: 0 2px 8px rgba(255,99,71,0.08);
-}
-.btn-order {
-    background: linear-gradient(90deg, #ff6347 60%, #fbc02d 100%);
-    border: none;
-    color: #fff;
-    font-weight: 600;
-    border-radius: 10px;
-    padding: 8px 22px;
-    box-shadow: 0 2px 8px rgba(255,99,71,0.10);
-    transition: background 0.2s, box-shadow 0.2s;
-    letter-spacing: 0.5px;
-}
-.btn-order:hover {
-    background: linear-gradient(90deg, #e5533d 60%, #fbc02d 100%);
-    box-shadow: 0 4px 16px rgba(255,99,71,0.15);
+
+.btn-hover-scale:hover {
+    transform: translateY(-2px);
+    background-color: #dc3545;
+    color: white !important;
+    box-shadow: 0 0.5rem 1rem rgba(220, 53, 69, 0.2) !important;
 }
 
 /* Pagination */
 .pagination .page-link {
-    border-radius: 8px !important;
-    margin: 0 3px;
-    color: #ff6347;
-    font-weight: 600;
+    color: #495057;
     border: none;
-    transition: background 0.2s, color 0.2s;
-}
-.pagination .page-item.active .page-link, .pagination .page-link:hover {
-    background: linear-gradient(90deg, #ff6347 60%, #fbc02d 100%);
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(255,99,71,0.10);
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-/* Responsive grid */
-@media (max-width: 991px) {
-    .menu-section {
-        padding: 32px 6px 24px 6px;
-        max-width: 98vw;
-    }
-    .card img {
-        height: 140px;
-    }
-}
-@media (max-width: 576px) {
-    .menu-section {
-        padding: 18px 2px 12px 2px;
-        border-radius: 12px;
-    }
-    .card {
-        border-radius: 10px;
-    }
-    .card img {
-        border-radius: 10px 10px 0 0;
-        height: 100px;
-    }
+.pagination .page-link:hover {
+    background-color: #f8f9fa;
+    color: #dc3545;
+    transform: translateY(-2px);
 }
 
-/* Animations */
-@keyframes fadeInUp {
-    0% { opacity: 0; transform: translateY(40px); }
-    100% { opacity: 1; transform: none; }
+.pagination .page-item.active .page-link {
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
 }
-@keyframes fadeInDown {
-    0% { opacity: 0; transform: translateY(-40px); }
-    100% { opacity: 1; transform: none; }
+
+.pagination .page-item.disabled .page-link {
+    color: #adb5bd;
+    background-color: transparent;
+    pointer-events: none;
 }
