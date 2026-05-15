@@ -1,27 +1,152 @@
-.about-page {
-  font-family: "Segoe UI", sans-serif;
-  color: #333;
+/* Typography & Base */
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f8f9fa; /* slightly off-white for better contrast with white cards */
 }
 
-.about-page h2 {
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
+.font-outfit {
+  font-family: "Outfit", sans-serif;
 }
 
-.about-page .carousel-item img {
-  width: 120px;
-  height: 120px;
+.letter-spacing-1 {
+  letter-spacing: 1.5px;
+}
+
+.z-index-1 {
+  z-index: 1;
+}
+
+.opacity-10 {
+  opacity: 0.1;
+}
+
+/* Hero Section */
+.about-hero {
+  min-height: 450px;
+  background: url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1974&auto=format&fit=crop') no-repeat center center;
+  background-size: cover;
+  border-radius: 0 0 3rem 3rem;
+  overflow: hidden;
+}
+
+.about-hero .overlay {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.8));
+  top: 0;
+  left: 0;
+}
+
+/* Story Section */
+.experience-badge {
+  bottom: -25px;
+  right: -15px;
+  min-width: 130px;
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.feature-list li {
+  transition: transform 0.2s ease;
+}
+
+.feature-list li:hover {
+  transform: translateX(10px);
+}
+
+/* Team Section */
+.team-section {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+  border: 1px solid rgba(220, 53, 69, 0.08);
+}
+
+.team-card {
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.team-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(220, 53, 69, 0.1);
+  box-shadow: 0 1rem 3rem rgba(0,0,0,.1)!important;
+}
+
+.team-card .img-wrapper {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(45deg, #dc3545, #ffc107);
+}
+
+.team-card img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  margin: 0 auto;
+  border: 3px solid white;
 }
 
-.about-page .timeline {
-  border-left: 4px solid #dc3545;
-  padding-left: 20px;
-  margin-left: 200px;
+/* Modern Timeline */
+.timeline-modern {
+  padding: 20px 0;
 }
 
-.about-page .timeline-item {
-  margin-bottom: 20px;
+.timeline-year h3 {
+  margin-top: 5px;
+}
+
+.marker-dot {
+  width: 24px;
+  height: 24px;
+  z-index: 2;
+  position: relative;
+  margin-top: 8px;
+}
+
+.marker-line {
+  width: 3px;
+  top: 32px; /* starts below the dot */
+}
+
+.timeline-content .card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline-content .card:hover {
+  transform: translateX(5px);
+  box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.08)!important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .experience-badge {
+    right: 20px;
+    bottom: -20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .timeline-year {
+    width: 25% !important;
+  }
+  
+  .timeline-year h3 {
+    font-size: 1.2rem;
+  }
+  
+  .timeline-content {
+    width: 75% !important;
+  }
+  
+  .about-hero {
+    min-height: 350px;
+    border-radius: 0 0 1.5rem 1.5rem;
+  }
+
+  .experience-badge {
+    right: 10px;
+  }
 }

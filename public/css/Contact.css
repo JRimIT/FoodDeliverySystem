@@ -1,45 +1,68 @@
-.contact-page {
-  font-family: "Segoe UI", sans-serif;
-  color: #333;
+/* Modern Contact Page Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa !important;
 }
 
-.contact-page h2 {
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
+.font-outfit {
+    font-family: "Outfit", sans-serif;
 }
 
-.contact-page .contact-info i {
-  margin-right: 8px;
-  color: #dc3545;
+.letter-spacing-1 {
+    letter-spacing: 1.5px;
 }
 
-.contact-page .contact-form {
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 10px;
+.z-index-1 {
+    z-index: 1;
 }
 
-.contact-page .map-responsive {
-  overflow: hidden;
-  padding-bottom: 56.25%;
-  position: relative;
-  height: 0;
+/* Hero Section */
+.contact-hero {
+    min-height: 350px;
+    background: url('https://images.unsplash.com/photo-1596524430615-b46475ddff6e?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+    background-size: cover;
+    margin-top: 60px; /* Offset for navbar */
 }
 
-.contact-page .map-responsive iframe {
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  position: absolute;
+.contact-hero .overlay {
+    background: linear-gradient(to right, rgba(220, 53, 69, 0.8), rgba(0, 0, 0, 0.7));
+    top: 0;
+    left: 0;
 }
-.contact-container {
-  padding-bottom: 40px;
+
+/* Contact Cards */
+.contact-card {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.08) !important;
+    border-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Utilities */
+.btn-hover-scale {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-hover-scale:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(220, 53, 69, 0.2) !important;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    background-color: #fff !important;
+    border: 1px solid #dc3545 !important;
 }
 
 .map-responsive iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
+    transition: filter 0.3s ease;
+    filter: grayscale(20%);
+}
+
+.map-responsive iframe:hover {
+    filter: grayscale(0%);
 }

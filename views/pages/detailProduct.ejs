@@ -17,6 +17,10 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/DetailProduct.css" />
@@ -26,133 +30,156 @@
     <!-- Navbar -->
     <%- include('../partials/navbar.ejs') %>
 
-    <div class="container product-detail" data-aos="fade-up">
-      <div class="row">
+    <div class="container product-detail-wrapper" data-aos="fade-up">
+      <div class="row pt-5 mt-5 pb-3"> <!-- Increased margin top and added bottom padding for back button spacing -->
         <!-- Back Button -->
-        <% if (category) { %>
-        <a
-          href="/Menu/listFoods?category=<%= category %>"
-          class="btn btn-outline-secondary mb-4"
-        >
-          <i class="fas fa-arrow-left me-2"></i> Back to <%= category %> Menu
-        </a>
-        <% } else { %>
-        <a href="/Menu/listFoods" class="btn btn-outline-secondary mb-4">
-          <i class="fas fa-arrow-left me-2"></i> Back to Menu
-        </a>
-        <% } %>
-
-        <!-- Product Image -->
-        <div class="col-md-6">
-          <img
-            src="<%= product.imageUrl %>"
-            alt="<%= product.name %>"
-            class="product-image"
-          />
+        <div class="col-12 mb-4">
+            <a href="/Menu/listFoods" class="back-link">
+              <i class="fas fa-chevron-left me-2"></i> Trở lại thực đơn
+            </a>
         </div>
 
-        <!-- Product Info -->
-        <div class="col-md-6">
-          <h2 class="product-title"><%= product.name %></h2>
-          <p><strong>Category:</strong> <%= product.category %></p>
-          <p>
-            <strong>Price:</strong> <%= product.price.toLocaleString('vi-VN') %>
-            VND
-          </p>
-          <p><%= product.description %></p>
+        <!-- Product Container -->
+        <div class="product-main-card shadow-lg p-0 overflow-hidden rounded-5 border-0">
+            <div class="row g-0">
+                <!-- Image Side -->
+                <div class="col-lg-6">
+                    <div class="product-image-box">
+                        <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="img-fluid w-100 h-100 object-fit-cover">
+                        <div class="category-badge"><%= product.category %></div>
+                    </div>
+                </div>
 
-          <div class="mt-4">
-            <!-- Quantity Input -->
-            <div class="mb-3 d-flex align-items-center">
-              <label for="quantity" class="form-label me-3 mb-0"
-                ><strong>Quantity:</strong></label
-              >
-              <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                class="form-control"
-                value="1"
-                min="1"
-                style="width: 100px"
-              />
+                <!-- Info Side -->
+                <div class="col-lg-6">
+                    <div class="product-info-box p-4 p-md-5">
+                        <h1 class="product-name font-outfit mb-3"><%= product.name %></h1>
+                        
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="rating-stars text-warning me-2">
+                                <% 
+                                let avgRating = 0;
+                                if (product.reviews && product.reviews.length > 0) {
+                                    avgRating = product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length;
+                                }
+                                %>
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                    <i class="<%= i <= Math.round(avgRating) ? 'fas' : 'far' %> fa-star"></i>
+                                <% } %>
+                            </div>
+                            <span class="text-muted small fw-bold">(<%= product.reviews ? product.reviews.length : 0 %> nhận xét)</span>
+                        </div>
+
+                        <div class="price-box mb-4">
+                            <span class="price-value"><%= product.price.toLocaleString('vi-VN') %> <small>VND</small></span>
+                        </div>
+
+                        <p class="product-desc text-muted mb-5"><%= product.description %></p>
+
+                        <div class="order-actions pt-4">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-sm-4">
+                                    <div class="quantity-input-group d-flex align-items-center justify-content-between">
+                                        <button class="qty-btn" onclick="changeQty(-1)"><i class="fas fa-minus"></i></button>
+                                        <input type="number" id="quantity" value="1" min="1" class="qty-field">
+                                        <button class="qty-btn" onclick="changeQty(1)"><i class="fas fa-plus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-8 d-flex gap-2">
+                                    <button onclick="addToCart('<%= product._id %>')" class="btn-cart-custom flex-grow-1">
+                                        <i class="fas fa-shopping-cart me-2"></i> Thêm giỏ hàng
+                                    </button>
+                                    <button onclick="orderNow('<%= product._id %>')" class="btn-order-custom flex-grow-1">
+                                        Đặt ngay
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <a
-              href="#"
-              onclick="orderNow('<%= product._id %>')"
-              class="btn btn-order me-3"
-              >Order Now</a
-            >
-            <a
-              href="#"
-              onclick="addToCart('<%= product._id %>')"
-              class="btn btn-cart"
-              >Add to Cart</a
-            >
-          </div>
+        <!-- Reviews Section -->
+        <div class="col-12 mt-5">
+            <div class="row g-4">
+                <!-- Review List -->
+                <div class="col-lg-7">
+                    <div class="review-list-box p-4 p-md-5 rounded-5 shadow-sm">
+                        <h4 class="font-outfit fw-bold mb-4">Khách hàng nói gì?</h4>
+                        <% if (product.reviews && product.reviews.length > 0) { %> 
+                            <div class="review-scroll">
+                            <% product.reviews.forEach(review => { %>
+                                <div class="review-card-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="user-avatar-small"><%= review.userId.username.charAt(0).toUpperCase() %></div>
+                                            <span class="fw-bold ms-2"><%= review.userId.username %></span>
+                                        </div>
+                                        <div class="text-warning small">
+                                            <% for (let i = 1; i <= 5; i++) { %>
+                                                <i class="<%= i <= review.rating ? 'fas' : 'far' %> fa-star"></i>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted small mb-0 ps-5 italic-text">"<%= review.comment %>"</p>
+                                </div>
+                            <% }) %> 
+                            </div>
+                        <% } else { %>
+                            <p class="text-muted py-4">Chưa có nhận xét nào cho món ăn này.</p>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Review Form -->
+                <div class="col-lg-5">
+                    <div class="review-form-box p-4 p-md-5 rounded-5 shadow-sm">
+                        <h4 class="font-outfit fw-bold mb-4">Để lại đánh giá</h4>
+                        <% if (user) { %>
+                        <form action="/review/<%= product._id %>" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">Mức độ hài lòng</label>
+                                <select name="rating" class="form-select border-0 bg-light rounded-4 px-3 py-2" required>
+                                    <option value="5">⭐⭐⭐⭐⭐ Tuyệt vời</option>
+                                    <option value="4">⭐⭐⭐⭐ Rất ngon</option>
+                                    <option value="3">⭐⭐⭐ Tạm ổn</option>
+                                    <option value="2">⭐⭐ Kém</option>
+                                    <option value="1">⭐ Không hài lòng</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-muted">Nhận xét của bạn</label>
+                                <textarea name="comment" class="form-control border-0 bg-light rounded-4 px-3 py-3" rows="3" placeholder="Món ăn có vừa miệng bạn không?" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit-review w-100">Gửi đánh giá</button>
+                        </form>
+                        <% } else { %>
+                            <div class="alert alert-light border-0 rounded-4 p-4 text-center">
+                                <p class="mb-3">Vui lòng đăng nhập để gửi đánh giá món ăn.</p>
+                                <a href="/goToLoginPage" class="btn-login-small">Đăng nhập ngay</a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
         </div>
       </div>
-
-      <!-- Review Section -->
-      <div class="review-section" data-aos="fade-up" data-aos-delay="200">
-        <h4 class="mt-5 mb-4">Customer Reviews</h4>
-
-        <% if (product.reviews && product.reviews.length > 0) { %> <%
-        product.reviews.forEach(review => { %>
-        <div class="review-item">
-          <strong><%= review.userId.username %></strong>
-          <span class="text-warning">
-            <% for (let i = 1; i <= 5; i++) { %> <% if (i <= review.rating) { %>
-            <i class="fas fa-star"></i>
-            <% } else { %>
-            <i class="far fa-star"></i>
-            <% } %> <% } %>
-          </span>
-          <p><%= review.comment %></p>
-        </div>
-        <% }) %> <% } else { %>
-        <p>No reviews yet.</p>
-        <% } %>
-      </div>
-
-      <!-- Form Write Review -->
-      <% if (user) { %>
-      <div class="mt-5">
-        <h5>Write a Review</h5>
-        <form action="/review/<%= product._id %>" method="POST">
-          <div class="mb-3">
-            <label for="rating" class="form-label">Rating</label>
-            <select name="rating" id="rating" class="form-select" required>
-              <option value="">Select Rating</option>
-              <option value="5">5 - Excellent</option>
-              <option value="4">4 - Good</option>
-              <option value="3">3 - Average</option>
-              <option value="2">2 - Poor</option>
-              <option value="1">1 - Terrible</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="comment" class="form-label">Your Review</label>
-            <textarea
-              name="comment"
-              id="comment"
-              class="form-control"
-              rows="4"
-              required
-            ></textarea>
-          </div>
-          <button type="submit" class="btn btn-order">Submit Review</button>
-        </form>
-      </div>
-      <% } else { %>
-      <p class="text-danger mt-4">
-        You must <a href="/goToLoginPage">login</a> to write a review.
-      </p>
-      <% } %>
     </div>
 
+    <%- include('../partials/footer.ejs') %>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+      AOS.init({ once: true });
+
+      function changeQty(delta) {
+          const input = document.getElementById('quantity');
+          let val = parseInt(input.value) + delta;
+          if (val < 1) val = 1;
+          input.value = val;
+      }
+
       function orderNow(productId) {
         const quantity = document.getElementById("quantity").value || 1;
         window.location.href = `/order/${productId}?quantity=${quantity}`;
@@ -163,8 +190,5 @@
         window.location.href = `/cart/add/${productId}?quantity=${quantity}`;
       }
     </script>
-
-    <!-- Footer -->
-    <%- include('../partials/footer.ejs') %>
   </body>
 </html>

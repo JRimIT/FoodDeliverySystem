@@ -1,38 +1,91 @@
+/* Modern Help Page Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa !important;
+}
+
+.font-outfit {
+    font-family: "Outfit", sans-serif;
+}
+
+.letter-spacing-1 {
+    letter-spacing: 1.5px;
+}
+
+.z-index-1 {
+    z-index: 1;
+}
+
+.opacity-10 {
+    opacity: 0.1;
+}
+
+/* Hero Section */
 .help-search-section {
-  padding-top: 120px;
-  padding-bottom: 40px;
-  background-color: #fff;
+    min-height: 350px;
+    background: url('https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2069&auto=format&fit=crop') no-repeat center center;
+    background-size: cover;
+    margin-top: 60px; /* Offset for navbar */
 }
 
-.search-box input {
-  max-width: 500px;
-  margin: 0 auto;
-  border-radius: 10px;
-  padding: 12px 20px;
-  border: 1px solid #ccc;
+.help-search-section .overlay {
+    background: linear-gradient(to right, rgba(20, 20, 20, 0.8), rgba(40, 40, 40, 0.7));
+    top: 0;
+    left: 0;
 }
 
-.faq-item h5 {
-  font-weight: bold;
-  margin-bottom: 10px;
+/* Search Box Focus */
+.search-box input:focus {
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2) !important;
+    outline: none;
 }
 
-.faq-question {
-  cursor: pointer;
-  color: #0077cc;
-  margin-bottom: 5px;
+/* Accordion Customization */
+.accordion-item {
+    border-color: #e9ecef;
+    transition: all 0.3s ease;
+    background-color: #fff;
 }
 
-.faq-question:hover {
-  text-decoration: underline;
+.accordion-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-color: #dee2e6;
 }
 
-.faq-answer-panel {
-  max-width: 800px;
-  margin: 0 auto;
+.accordion-button {
+    color: #495057;
+    background-color: #fff;
+    padding: 1.2rem 1.5rem;
 }
 
-.faq-answer-panel .card {
-  background-color: #f8f9fa;
-  border-left: 5px solid #ff6347;
+.accordion-button:not(.collapsed) {
+    color: #dc3545;
+    background-color: #fff5f5;
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: rgba(220, 53, 69, 0.2);
+}
+
+.accordion-button::after {
+    background-size: 1rem;
+}
+
+.accordion-body {
+    padding: 1.2rem 1.5rem;
+    line-height: 1.6;
+}
+
+/* CTA Buttons */
+.btn-light {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-light:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15) !important;
+    background-color: #fff;
+    color: #c82333;
 }

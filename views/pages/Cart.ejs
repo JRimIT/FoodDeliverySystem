@@ -1,74 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Cart - Foodie Express</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Cart - Foodie Express</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="/css/navbar.css" />
-  <link rel="stylesheet" href="/css/Cart.css" />
-</head>
+    <link rel="stylesheet" href="/css/navbar.css" />
+    <link rel="stylesheet" href="/css/Cart.css" />
+  </head>
 
-<body>
-  <%- include('../partials/navbar.ejs') %>
+  <body class="bg-light">
+    <%- include('../partials/navbar.ejs') %>
 
-    <div class="cart-container">
-      <h2 class="mb-4">🛒 Your Shopping Cart</h2>
+    <!-- Cart Hero Section -->
+    <section class="cart-hero position-relative d-flex align-items-center justify-content-center text-center mt-5">
+        <div class="overlay position-absolute w-100 h-100"></div>
+        <div class="container position-relative z-index-1 text-white py-5">
+            <h1 class="display-4 fw-bold mb-3 font-outfit text-white">Your Shopping Cart</h1>
+            <p class="lead fw-light mx-auto" style="max-width: 600px;">
+                Review your items, update quantities, and get ready to enjoy your delicious meal.
+            </p>
+        </div>
+    </section>
 
-      <% if (items.length> 0) { %> <% items.forEach(item=> { %>
-          <div class="row cart-item align-items-center">
-            <div class="col-md-2">
-              <img src="<%= item.product.imageUrl %>" alt="<%= item.product.name %>" class="product-image" />
+    <div class="container cart-container my-5 pb-5">
+      <div class="row" style="margin-top: -60px; position: relative; z-index: 10;">
+        <div class="col-lg-8 mx-auto" data-aos="fade-up">
+            <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm border-0">
+                <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                    <h2 class="fw-bold font-outfit m-0">🛒 Cart Items</h2>
+                    <span class="badge bg-danger rounded-pill fs-6 px-3 py-2"><%= items.length %> items</span>
+                </div>
+
+                <% if (items.length > 0) { %> 
+                    <div class="cart-items-wrapper">
+                    <% items.forEach(item => { %>
+                        <div class="row align-items-center py-4 border-bottom cart-item">
+                            <!-- Product Image & Info -->
+                            <div class="col-12 col-md-6 d-flex align-items-center mb-3 mb-md-0">
+                                <img src="<%= item.product.imageUrl %>" alt="<%= item.product.name %>" class="rounded-4 shadow-sm object-fit-cover" style="width: 90px; height: 90px;" />
+                                <div class="ms-3">
+                                    <h5 class="fw-bold font-outfit mb-1"><%= item.product.name %></h5>
+                                    <p class="text-muted mb-0 fw-semibold"><%= item.product.price.toLocaleString('vi-VN') %>đ</p>
+                                </div>
+                            </div>
+
+                            <!-- Quantity Control -->
+                            <div class="col-6 col-md-3">
+                                <form action="/cart/update/<%= item._id %>" method="POST" class="d-flex align-items-center bg-light rounded-pill p-1">
+                                    <input type="number" name="quantity" value="<%= item.quantity %>" min="1" class="form-control text-center border-0 bg-transparent fw-bold" style="width: 60px;" />
+                                    <button type="submit" class="btn btn-sm btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Update Quantity">
+                                        <i class="fas fa-sync-alt small"></i>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Total & Remove -->
+                            <div class="col-6 col-md-3 d-flex justify-content-end align-items-center gap-3">
+                                <span class="fw-bold text-danger fs-5">
+                                    <%= (item.product.price * item.quantity).toLocaleString('vi-VN') %>đ
+                                </span>
+                                <form action="/cart/remove/<%= item.product._id %>" method="POST" class="m-0">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle d-flex align-items-center justify-content-center btn-hover-scale" style="width: 35px; height: 35px;" title="Remove Item">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    <% }) %>
+                    </div>
+
+                    <!-- Cart Summary Footer -->
+                    <div class="mt-5 p-4 bg-light rounded-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span class="text-muted fw-bold fs-5">Total Amount:</span>
+                            <span class="fw-bold font-outfit display-6 text-danger">
+                                <%= items.reduce((sum, item) => sum + item.product.price * item.quantity, 0).toLocaleString('vi-VN') %>đ
+                            </span>
+                        </div>
+                        <div class="d-flex gap-3 justify-content-end">
+                            <a href="/Menu/listFoods?page=1&category=All" class="btn btn-outline-dark btn-lg rounded-pill fw-bold px-4 btn-hover-scale">
+                                <i class="fas fa-arrow-left me-2"></i> Continue Shopping
+                            </a>
+                            <a href="/checkout" class="btn btn-danger btn-lg rounded-pill fw-bold px-5 btn-hover-scale shadow-sm">
+                                Checkout <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <!-- Empty Cart State -->
+                    <div class="text-center py-5">
+                        <div class="mb-4 text-muted opacity-50">
+                            <i class="fas fa-shopping-basket fa-5x"></i>
+                        </div>
+                        <h3 class="fw-bold font-outfit mb-3">Your cart is empty!</h3>
+                        <p class="text-muted mb-4">Looks like you haven't added anything to your cart yet.</p>
+                        <a href="/Menu/listFoods?page=1&category=All" class="btn btn-danger btn-lg rounded-pill fw-bold px-5 btn-hover-scale shadow-sm">
+                            Explore Menu
+                        </a>
+                    </div>
+                <% } %>
             </div>
-            <div class="col-md-4">
-              <h5>
-                <%= item.product.name %>
-              </h5>
-              <p>Đơn giá: <%= item.product.price.toLocaleString('vi-VN') %> VND</p>
-            </div>
-            <div class="col-md-2">
-              <form action="/cart/update/<%= item._id %>" method="POST" class="d-flex">
-                <input type="number" name="quantity" value="<%= item.quantity %>" min="1" class="form-control me-2" />
-                <button type="submit" class="btn btn-outline-primary btn-sm">
-                  Update
-                </button>
-              </form>
-            </div>
-            <div class="col-md-2 text-end">
-              <span class="fw-bold">
-                <%= (item.product.price * item.quantity).toLocaleString('vi-VN') %> VND
-              </span>
-            </div>
-            <div class="col-md-2 text-end">
-              <form action="/cart/remove/<%= item.product._id %>" method="POST">
-                <button type="submit" class="btn btn-outline-danger btn-sm">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </form>
-            </div>
-          </div>
-          <% }) %>
-
-            <hr />
-            <div class="total-section mt-4">
-              Tổng cộng: <%= items.reduce((sum, item)=> sum + item.product.price * item.quantity,
-                0).toLocaleString('vi-VN') %> VND
-            </div>
-
-            <div class="text-end mt-4">
-              <a href="/checkout" class="btn btn-checkout">Proceed to Checkout</a>
-            </div>
-            <% } else { %>
-              <p>Your cart is empty.</p>
-              <% } %>
+        </div>
+      </div>
     </div>
-    <%- include('../partials/footer.ejs') %>
-</body>
 
+    <%- include('../partials/footer.ejs') %>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({ once: true, offset: 50 });
+    </script>
+  </body>
 </html>
