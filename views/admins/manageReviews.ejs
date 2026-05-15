@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đánh giá - Foodie Express</title>
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <!-- Theme Management -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <script src="/js/theme-manager.js"></script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); }
+        .font-outfit { font-family: 'Outfit', sans-serif; }
+        
+        .management-card {
+            background: var(--bg-card);
+            border-radius: 1.5rem;
+            border: none;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        
+        .table-premium thead th {
+            background-color: var(--bg-body);
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .table-premium tbody td {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            font-size: 0.85rem;
+        }
+        .table-premium tbody tr:hover td {
+            background-color: var(--input-bg);
+        }
+        
+        .star-rating {
+            color: #ffc107;
+            font-size: 0.85rem;
+        }
+        
+        .review-comment {
+            color: #495057;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 12px;
+            display: inline-block;
+            max-width: 400px;
+        }
+        
+        .user-avatar-review {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .product-link {
+            text-decoration: none;
+            color: #ff6347;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+        .product-link:hover { color: #e5533d; }
+        
+        .btn-delete-review {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            border: 1px solid #eee;
+            background: #fff;
+            color: #dc3545;
+            text-decoration: none;
+        }
+        .btn-delete-review:hover {
+            background: #dc3545;
+            color: #fff;
+            border-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/admin_sidebar.ejs', { page: 'reviews', user: locals.user }) %>
+
+    <div class="main-content">
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-4" data-aos="fade-down">
+            <div>
+                <h2 class="fw-bold font-outfit m-0 text-dark">Quản lý Đánh giá</h2>
+                <p class="text-muted small m-0">Xem và kiểm duyệt các phản hồi từ khách hàng</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-white shadow-sm rounded-pill px-4 py-2 fw-bold small"><i class="fas fa-search me-2"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <!-- Reviews Table Card -->
+        <div class="management-card shadow-sm" data-aos="fade-up">
+            <div class="table-responsive">
+                <table class="table table-premium mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Khách hàng</th>
+                            <th>Món ăn</th>
+                            <th>Đánh giá</th>
+                            <th>Nội dung</th>
+                            <th>Ngày gửi</th>
+                            <th class="text-center pe-4">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (reviews.length === 0) { %>
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <div class="text-muted">Chưa có đánh giá nào được gửi.</div>
+                                </td>
+                            </tr>
+                        <% } %>
+                        <% reviews.forEach((review) => { %>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <img src="<%= (review.userId && review.userId.avatarUrl) ? review.userId.avatarUrl : 'https://i.pinimg.com/1200x/dc/6c/b0/dc6cb0521d182f959da46aaee82e742f.jpg' %>" class="user-avatar-review me-3" alt="User">
+                                        <div>
+                                            <div class="fw-bold text-dark"><%= (review.userId && (review.userId.name || review.userId.username)) ? (review.userId.name || review.userId.username) : 'Nguời dùng ẩn danh' %></div>
+                                            <div class="text-muted small">@<%= (review.userId && review.userId.username) ? review.userId.username : 'anonymous' %></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="<%= (review.productId && review.productId.imageUrl) ? review.productId.imageUrl : '' %>" width="32" height="32" class="rounded-2 me-2 object-fit-cover">
+                                        <a href="/detail/<%= (review.productId && review.productId._id) ? review.productId._id : '#' %>" class="product-link small">
+                                            <%= (review.productId && review.productId.name) ? review.productId.name : 'Sản phẩm đã xóa' %>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="star-rating">
+                                        <% for(let i=1; i<=5; i++) { %>
+                                            <i class="<%= i <= review.rating ? 'fas' : 'far' %> fa-star"></i>
+                                        <% } %>
+                                    </div>
+                                    <div class="text-muted small mt-1"><%= review.rating %>/5 điểm</div>
+                                </td>
+                                <td>
+                                    <div class="review-comment">
+                                        <%= review.comment %>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-dark small fw-bold"><%= new Date(review.createdAt).toLocaleDateString('vi-VN') %></div>
+                                    <div class="text-muted small"><%= new Date(review.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></div>
+                                </td>
+                                <td class="text-center pe-4">
+                                    <form action="/admin/reviews/delete/<%= review._id %>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đánh giá này?');">
+                                        <button type="submit" class="btn-delete-review" title="Xóa đánh giá">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true });
+    </script>
+</body>
+</html>

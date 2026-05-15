@@ -59,6 +59,13 @@
                     </div>
                     <% } %>
 
+                    <!-- Theme Toggle -->
+                    <button class="btn btn-link text-decoration-none p-0 me-2" onclick="toggleTheme()" title="Đổi giao diện">
+                        <div class="cart-wrapper shadow-sm bg-light text-dark">
+                            <i class="fas fa-moon theme-toggle-icon"></i>
+                        </div>
+                    </button>
+
                     <!-- Cart Icon -->
                     <% if (typeof cartCount !== 'undefined') { %>
                     <a href="/view/cart" class="text-decoration-none">

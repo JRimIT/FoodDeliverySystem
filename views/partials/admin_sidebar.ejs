@@ -1,0 +1,136 @@
+<style>
+    :root {
+        --sidebar-width: 280px;
+        --primary-gradient: linear-gradient(135deg, #ff6347 0%, #fbc02d 100%);
+    }
+    
+    .admin-sidebar {
+        width: var(--sidebar-width);
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        background: #fff;
+        border-right: 1px solid rgba(0,0,0,0.05);
+        z-index: 1000;
+        padding: 2rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 3rem;
+        text-decoration: none;
+    }
+    
+    .nav-link-admin {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.2rem;
+        border-radius: 12px;
+        color: #6c757d;
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-link-admin i {
+        width: 24px;
+        font-size: 1.1rem;
+        margin-right: 12px;
+    }
+    
+    .nav-link-admin:hover {
+        background: #fff5f5;
+        color: #ff6347;
+    }
+    
+    .nav-link-admin.active {
+        background: var(--primary-gradient);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(255, 99, 71, 0.2);
+    }
+    
+    .sidebar-footer {
+        margin-top: auto;
+        padding-top: 2rem;
+        border-top: 1px solid #f1f1f1;
+    }
+    
+    .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 2rem 3rem;
+        min-height: 100vh;
+        background-color: #fcfcfc;
+    }
+    
+    @media (max-width: 991px) {
+        .admin-sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .admin-sidebar.show {
+            transform: translateX(0);
+        }
+        .main-content {
+            margin-left: 0;
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="admin-sidebar shadow-sm">
+    <a href="/Home" class="sidebar-brand">
+        <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" width="40" alt="Logo">
+        <span class="fw-bold font-outfit text-dark fs-4">Foodie<span class="text-danger">Express</span></span>
+    </a>
+    
+    <div class="nav-links">
+        <a href="/admin/Home" class="nav-link-admin <%= (locals.page === 'dashboard') ? 'active' : '' %>">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
+        <a href="/admin/manageUser" class="nav-link-admin <%= (locals.page === 'users') ? 'active' : '' %>">
+            <i class="fas fa-users"></i> Quản lý User
+        </a>
+        <a href="/admin/products" class="nav-link-admin <%= (locals.page === 'products') ? 'active' : '' %>">
+            <i class="fas fa-utensils"></i> Quản lý Món ăn
+        </a>
+        <a href="/admin/orders" class="nav-link-admin <%= (locals.page === 'orders') ? 'active' : '' %>">
+            <i class="fas fa-shopping-bag"></i> Quản lý Đơn hàng
+        </a>
+        <a href="/admin/reviews" class="nav-link-admin <%= (locals.page === 'reviews') ? 'active' : '' %>">
+            <i class="fas fa-star"></i> Đánh giá & Phản hồi
+        </a>
+    </div>
+    
+    <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-3 mb-4 px-2">
+            <% if (locals.user) { %>
+                <img src="<%= locals.user.avatarUrl || 'https://i.pinimg.com/1200x/dc/6c/b0/dc6cb0521d182f959da46aaee82e742f.jpg' %>" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                <div class="overflow-hidden">
+                    <div class="fw-bold text-dark text-truncate" style="font-size: 0.9rem;"><%= locals.user.name || locals.user.username || 'Admin' %></div>
+                    <div class="small text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Administrator</div>
+                </div>
+            <% } else { %>
+                <div class="fw-bold text-dark">Admin</div>
+            <% } %>
+        </div>
+        <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-light w-50 rounded-pill fw-bold small" onclick="toggleTheme()">
+                <i class="fas fa-moon theme-toggle-icon me-2"></i> Theme
+            </button>
+            <a href="/" class="btn btn-outline-danger w-50 rounded-pill fw-bold small">
+                <i class="fas fa-sign-out-alt me-2"></i> Thoát
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Toggle Button -->
+<button class="btn btn-danger d-lg-none position-fixed bottom-0 end-0 m-4 rounded-circle shadow-lg" style="width: 56px; height: 56px; z-index: 2000;" onclick="document.querySelector('.admin-sidebar').classList.toggle('show')">
+    <i class="fas fa-bars"></i>
+</button>

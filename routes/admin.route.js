@@ -9,6 +9,7 @@ import { verifyUser } from '../config/jwtConfig.js';
 import Cart from '../models/cart.model.js';
 import { countProduct } from '../controllers/countCart.js';
 import Order from '../models/order.model.js';
+import Review from '../models/review.model.js';
 import multer from 'multer';
 import path from 'path';
 
@@ -183,5 +184,29 @@ router.post('/admin/products/delete/:productId', async (req, res) => {
     }
 });
 
+// Admin: Manage Reviews
+router.get('/admin/reviews', async (req, res) => {
+    try {
+        const reviews = await Review.find({})
+            .populate('userId', 'username name avatarUrl')
+            .populate('productId', 'name imageUrl')
+            .sort({ createdAt: -1 });
+        res.render('admins/manageReviews', { reviews });
+    } catch (error) {
+        console.error('Error /admin/reviews:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+// Admin: Delete Review
+router.post('/admin/reviews/delete/:reviewId', async (req, res) => {
+    try {
+        await Review.findByIdAndDelete(req.params.reviewId);
+        res.redirect('/admin/reviews');
+    } catch (error) {
+        console.error('Error deleting review:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 
 export default router;
