@@ -130,7 +130,9 @@ body, .bodyHome, .main-content {
     color: var(--text-muted) !important;
 }
 
-[data-theme="dark"] .nav-link-admin, .dropdown-item, .nav-link {
+[data-theme="dark"] .nav-link-admin,
+[data-theme="dark"] .dropdown-item,
+[data-theme="dark"] .nav-link {
     color: var(--text-main) !important;
 }
 
