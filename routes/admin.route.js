@@ -91,13 +91,63 @@ router.post('/admin/users/delete/:userId', async (req, res) => {
     }
 })
 
-// Admin: View and manage all orders
+// Admin: View and manage all orders with advanced filtering
 router.get('/admin/orders', async (req, res) => {
     try {
-        const orders = await Order.find({})
-            .populate('userId', 'username')
-            .populate('items.productId', 'name price imageUrl');
-        res.render('admins/manageOrders', { orders });
+        const { date, status, search, sort } = req.query;
+        
+        let selectedDate = date || 'today';
+        let selectedStatus = status || 'all';
+        let searchQuery = search || '';
+        let sortOrder = sort === 'asc' ? 'asc' : 'desc'; // Mặc định desc (mới nhất trước)
+        
+        let query = {};
+
+        // 1. Lọc theo khoảng thời gian
+        if (selectedDate === 'today') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // 00:00:00 today
+            query.createdAt = { $gte: today };
+        } else if (selectedDate !== 'all') {
+            const parsedDate = new Date(selectedDate);
+            if (!isNaN(parsedDate.getTime())) {
+                parsedDate.setHours(0, 0, 0, 0);
+                query.createdAt = { $gte: parsedDate };
+            }
+        }
+
+        // 2. Lọc theo trạng thái đơn hàng
+        if (selectedStatus !== 'all') {
+            query.status = selectedStatus;
+        }
+
+        // 3. Tìm kiếm theo tên khách hàng (User model query)
+        if (searchQuery) {
+            const users = await User.find({
+                $or: [
+                    { username: { $regex: searchQuery, $options: 'i' } },
+                    { name: { $regex: searchQuery, $options: 'i' } }
+                ]
+            }).select('_id');
+            const userIds = users.map(u => u._id);
+            query.userId = { $in: userIds };
+        }
+
+        // 4. Sắp xếp theo ngày
+        let sortOption = { createdAt: sortOrder === 'asc' ? 1 : -1 };
+
+        const orders = await Order.find(query)
+            .populate('userId', 'username name')
+            .populate('items.productId', 'name price imageUrl')
+            .sort(sortOption);
+
+        res.render('admins/manageOrders', { 
+            orders, 
+            selectedDate, 
+            status: selectedStatus, 
+            search: searchQuery, 
+            sort: sortOrder 
+        });
     } catch (error) {
         console.error('Error /admin/orders:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -108,7 +158,26 @@ router.get('/admin/orders', async (req, res) => {
 router.post('/admin/orders/update/:orderId', async (req, res) => {
     try {
         const { status } = req.body;
-        await Order.findByIdAndUpdate(req.params.orderId, { status });
+        const order = await Order.findByIdAndUpdate(req.params.orderId, { status });
+        
+        // Notify the user
+        if (order && order.userId) {
+            const Notification = (await import('../models/notification.model.js')).default;
+            let statusText = '';
+            if (status === 'Pending') statusText = 'đang chờ xác nhận';
+            else if (status === 'Processing') statusText = 'đang chuẩn bị';
+            else if (status === 'Shipping') statusText = 'đang được giao';
+            else if (status === 'Completed') statusText = 'đã hoàn thành';
+            else if (status === 'Cancelled') statusText = 'đã bị hủy';
+
+            await Notification.create({
+                userId: order.userId,
+                title: 'Cập nhật đơn hàng',
+                message: `Đơn hàng #${order._id.toString().slice(-8).toUpperCase()} của bạn đã chuyển sang trạng thái: ${statusText}.`,
+                type: 'order_status'
+            });
+        }
+
         res.redirect('/admin/orders');
     } catch (error) {
         console.error('Error updating order status:', error);

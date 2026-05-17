@@ -188,4 +188,42 @@ router.get('/deposit-success', verifyUser, async (req, res) => {
     res.render('pages/DepositSuccess', { amount, user });
 });
 
+// Đánh dấu tất cả thông báo là đã đọc
+router.post('/notifications/mark-read', verifyUser, async (req, res) => {
+    try {
+        const Notification = (await import('../models/notification.model.js')).default;
+        await Notification.updateMany({ userId: req.user.userId, isRead: false }, { isRead: true });
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error marking notifications as read:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Lấy thông báo mới chưa đọc trong vòng 15 giây qua
+router.get('/notifications/poll', verifyUser, async (req, res) => {
+    try {
+        const Notification = (await import('../models/notification.model.js')).default;
+        const fifteenSecondsAgo = new Date(Date.now() - 15000);
+        const newNotifications = await Notification.find({
+            userId: req.user.userId,
+            isRead: false,
+            createdAt: { $gte: fifteenSecondsAgo }
+        }).sort({ createdAt: -1 }).lean();
+        
+        const unreadCount = await Notification.countDocuments({
+            userId: req.user.userId,
+            isRead: false
+        });
+        
+        res.json({ 
+            notifications: newNotifications,
+            unreadCount: unreadCount
+        });
+    } catch (error) {
+        console.error('Error polling notifications:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 export default router;

@@ -1,67 +1,177 @@
 <%- include('../partials/header') %>
 <%- include('../partials/navbar') %>
 
-<div class="container" style="padding-top: 100px;">
-  <div class="text-center mb-4">
-    <h2><i class="fas fa-truck text-primary"></i> Shipper Dashboard</h2>
-    <p class="text-muted">Manage your assigned delivery orders here.</p>
+<div class="container" style="padding-top: 110px; padding-bottom: 50px;">
+  <!-- Dashboard Header -->
+  <div class="text-center mb-5" data-aos="fade-down">
+    <h2 class="fw-bold font-outfit text-main mb-2">
+      <i class="fas fa-truck text-danger me-2"></i> Shipper Dashboard
+    </h2>
+    <p class="text-muted small">Cập nhật và xử lý tiến độ giao hàng cho khách hàng</p>
   </div>
 
-  <% if (orders.length === 0) { %>
-    <div class="alert alert-info text-center">You have no delivery orders assigned.</div>
-  <% } else { %>
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover align-middle">
-        <thead class="table-light text-center">
-          <tr>
-            <th>Order ID</th>
-            <th>Delivery Address</th>
-            <th>Items</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% orders.forEach(o => { %>
-            <tr>
-              <td class="text-center"><%= o._id %></td>
-              <td><%= o.address %></td>
-              <td>
-                <% o.items.forEach(item => { %>
-                  <div class="d-flex align-items-center mb-2">
-                    <img src="<%= item.productId?.imageUrl || '/default.jpg' %>" width="50" height="50" class="me-2 rounded" />
-                    <div>
-                      <strong><%= item.productId?.name %></strong><br>
-                      x <%= item.quantity %> – 
-                      <%= (item.productId?.price || 0).toLocaleString() %> VND
-                    </div>
-                  </div>
+  <!-- Tabs Navigation -->
+  <ul class="nav nav-tabs justify-content-center border-bottom-0 mb-4 gap-3" id="shipperTabs" role="tablist" data-aos="fade-up">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active position-relative px-4 py-2.5 fw-bold rounded-pill shadow-sm text-decoration-none d-flex align-items-center gap-2 border-0" id="available-tab" data-bs-toggle="tab" data-bs-target="#available" type="button" role="tab" aria-controls="available" aria-selected="true" style="transition: all 0.2s;">
+        <i class="fas fa-box-open"></i> Đơn hàng chờ nhận
+        <% if (availableOrders.length > 0) { %>
+          <span class="badge bg-danger rounded-pill"><%= availableOrders.length %></span>
+        <% } %>
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link position-relative px-4 py-2.5 fw-bold rounded-pill shadow-sm text-decoration-none d-flex align-items-center gap-2 border-0" id="shipping-tab" data-bs-toggle="tab" data-bs-target="#shipping" type="button" role="tab" aria-controls="shipping" aria-selected="false" style="transition: all 0.2s;">
+        <i class="fas fa-route"></i> Đơn hàng đang giao
+        <% if (shippingOrders.length > 0) { %>
+          <span class="badge bg-warning text-dark rounded-pill"><%= shippingOrders.length %></span>
+        <% } %>
+      </button>
+    </li>
+  </ul>
+
+  <!-- Tabs Content -->
+  <div class="tab-content" id="shipperTabsContent" data-aos="fade-up" data-aos-delay="100">
+    
+    <!-- Tab 1: Available Orders -->
+    <div class="tab-pane fade show active" id="available" role="tabpanel" aria-labelledby="available-tab">
+      <% if (availableOrders.length === 0) { %>
+        <div class="alert alert-info text-center rounded-4 border-0 p-4 shadow-sm" style="background: rgba(13, 202, 240, 0.1); color: #0dcaf0;">
+          <i class="fas fa-info-circle me-2 fs-5"></i> Hiện không có đơn hàng nào đang chờ nhận.
+        </div>
+      <% } else { %>
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="background: var(--bg-card);">
+          <div class="table-responsive">
+            <table class="table table-premium mb-0">
+              <thead>
+                <tr>
+                  <th class="ps-4">Mã Đơn</th>
+                  <th>Khách Hàng</th>
+                  <th>Chi Tiết Thực Đơn</th>
+                  <th>Tổng Tiền</th>
+                  <th class="text-center pe-4">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% availableOrders.forEach(o => { %>
+                  <tr>
+                    <td class="ps-4 font-outfit fw-bold text-muted" style="font-size: 0.85rem;">#<%= o._id.toString().substring(18).toUpperCase() %></td>
+                    <td>
+                      <div class="fw-bold text-main"><%= o.userId?.name || o.userId?.username || 'Khách hàng' %></div>
+                      <div class="text-muted small mt-1"><i class="fas fa-map-marker-alt text-danger me-1"></i><%= o.address %></div>
+                    </td>
+                    <td>
+                      <ul class="list-unstyled mb-0">
+                        <% o.items.forEach(item => { %>
+                          <li class="small mb-1 text-main d-flex align-items-center gap-2">
+                            <img src="<%= item.productId?.imageUrl || '/default.jpg' %>" width="30" height="30" class="rounded object-fit-cover shadow-sm" />
+                            <span><%= item.productId?.name %> <strong class="text-danger">x<%= item.quantity %></strong></span>
+                          </li>
+                        <% }) %>
+                      </ul>
+                    </td>
+                    <td>
+                      <div class="fw-bold text-danger"><%= o.totalPrice.toLocaleString('vi-VN') %>đ</div>
+                      <div class="text-muted" style="font-size: 0.7rem;"><i class="fas fa-wallet me-1"></i> <%= o.paymentMethod === 'wallet' ? 'Ví nội bộ' : 'Tiền mặt' %></div>
+                    </td>
+                    <td class="text-center pe-4">
+                      <form action="/shipper/accept/<%= o._id %>" method="POST" class="d-inline">
+                        <button class="btn btn-danger btn-sm rounded-pill px-3 fw-bold text-white shadow-sm border-0 btn-hover-scale" style="background: #ff6347;">
+                          <i class="fas fa-check-circle me-1"></i> Nhận đơn
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
                 <% }) %>
-              </td>
-              <td class="text-center">
-                <% if (o.status === 'Shipping') { %>
-                  <span class="badge bg-warning text-dark">Shipping</span>
-                <% } else { %>
-                  <span class="badge bg-success">Delivered</span>
-                <% } %>
-              </td>
-              <td class="text-center">
-                <% if (o.status === 'Shipping') { %>
-                  <form action="/shipper/delivered/<%= o._id %>" method="POST" class="d-inline">
-                    <button class="btn btn-sm btn-success">
-                      <i class="fas fa-check-circle"></i> Mark Delivered
-                    </button>
-                  </form>
-                <% } else { %>
-                  <span class="text-muted">✓ Done</span>
-                <% } %>
-              </td>
-            </tr>
-          <% }) %>
-        </tbody>
-      </table>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% } %>
     </div>
-  <% } %>
+
+    <!-- Tab 2: Current Deliveries -->
+    <div class="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">
+      <% if (shippingOrders.length === 0) { %>
+        <div class="alert alert-info text-center rounded-4 border-0 p-4 shadow-sm" style="background: rgba(13, 202, 240, 0.1); color: #0dcaf0;">
+          <i class="fas fa-info-circle me-2 fs-5"></i> Bạn không có đơn hàng nào đang trong quá trình giao.
+        </div>
+      <% } else { %>
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="background: var(--bg-card);">
+          <div class="table-responsive">
+            <table class="table table-premium mb-0">
+              <thead>
+                <tr>
+                  <th class="ps-4">Mã Đơn</th>
+                  <th>Khách Hàng</th>
+                  <th>Chi Tiết Thực Đơn</th>
+                  <th>Tổng Tiền</th>
+                  <th class="text-center pe-4">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% shippingOrders.forEach(o => { %>
+                  <tr>
+                    <td class="ps-4 font-outfit fw-bold text-muted" style="font-size: 0.85rem;">#<%= o._id.toString().substring(18).toUpperCase() %></td>
+                    <td>
+                      <div class="fw-bold text-main"><%= o.userId?.name || o.userId?.username || 'Khách hàng' %></div>
+                      <div class="text-muted small mt-1"><i class="fas fa-map-marker-alt text-danger me-1"></i><%= o.address %></div>
+                    </td>
+                    <td>
+                      <ul class="list-unstyled mb-0">
+                        <% o.items.forEach(item => { %>
+                          <li class="small mb-1 text-main d-flex align-items-center gap-2">
+                            <img src="<%= item.productId?.imageUrl || '/default.jpg' %>" width="30" height="30" class="rounded object-fit-cover shadow-sm" />
+                            <span><%= item.productId?.name %> <strong class="text-danger">x<%= item.quantity %></strong></span>
+                          </li>
+                        <% }) %>
+                      </ul>
+                    </td>
+                    <td>
+                      <div class="fw-bold text-danger"><%= o.totalPrice.toLocaleString('vi-VN') %>đ</div>
+                      <div class="text-muted" style="font-size: 0.7rem;"><i class="fas fa-wallet me-1"></i> <%= o.paymentMethod === 'wallet' ? 'Ví nội bộ' : 'Tiền mặt' %></div>
+                    </td>
+                    <td class="text-center pe-4">
+                      <form action="/shipper/delivered/<%= o._id %>" method="POST" class="d-inline">
+                        <button class="btn btn-success btn-sm rounded-pill px-3 fw-bold text-white shadow-sm border-0 btn-hover-scale">
+                          <i class="fas fa-check-circle me-1"></i> Đã giao xong
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
 </div>
+
+<style>
+  /* Custom Tab styling matching theme */
+  #shipperTabs .nav-link {
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color) !important;
+  }
+  #shipperTabs .nav-link:hover {
+    color: var(--text-main);
+    background: var(--bg-body);
+  }
+  #shipperTabs .nav-link.active {
+    background: #ff6347 !important;
+    color: #ffffff !important;
+    border-color: #ff6347 !important;
+    box-shadow: 0 4px 15px rgba(255, 99, 71, 0.3) !important;
+  }
+  #shipping-tab.active {
+    background: #198754 !important;
+    border-color: #198754 !important;
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3) !important;
+  }
+</style>
 
 <%- include('../partials/footer') %>

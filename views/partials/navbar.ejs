@@ -30,7 +30,14 @@
                 <!-- Shipper -->
                 <% if (user && user.role === 'shipper') { %>
                 <li class="nav-item">
-                    <a class="nav-link text-primary" href="/shipper/dashboard"> <i class="fas fa-truck"></i> Shipper </a>
+                    <a class="nav-link text-primary position-relative d-inline-flex align-items-center gap-2" href="/shipper/dashboard"> 
+                        <i class="fas fa-truck"></i> Shipper 
+                        <% if (typeof shipperOrderCount !== 'undefined' && shipperOrderCount > 0) { %>
+                            <span class="badge rounded-pill bg-danger" style="font-size: 0.7rem; padding: 0.35em 0.55em; transform: translateY(-1px);">
+                                <%= shipperOrderCount %>
+                            </span>
+                        <% } %>
+                    </a>
                 </li>
                 <% } %>
             </ul>
@@ -80,7 +87,7 @@
 
                     <!-- Avatar or Login -->
                     <% if (user) { %>
-                    <div class="dropdown">
+                    <div class="dropdown me-3">
                         <a
                             href="#"
                             class="d-flex align-items-center text-decoration-none dropdown-toggle"
@@ -105,6 +112,41 @@
                             <li><a class="dropdown-item text-danger fw-bold" href="/"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
                         </ul>
                     </div>
+
+                    <!-- Notification Bell Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-link text-decoration-none p-0 position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" onclick="markAllNotificationsRead()" title="Thông báo">
+                            <div class="cart-wrapper shadow-sm bg-light text-dark">
+                                <i class="fas fa-bell"></i>
+                                <% if (typeof unreadNotificationCount !== 'undefined' && unreadNotificationCount > 0) { %>
+                                <span class="position-absolute top-0 start-100 translate-middle p-1.5 bg-danger border border-light rounded-circle" id="notificationBadge" style="width: 8px; height: 8px; margin-top: 5px; margin-right: 5px;"></span>
+                                <% } %>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 py-2 mt-2 dropdown-menu-dark" aria-labelledby="notificationDropdown" style="width: 320px; border-radius: 16px; background: rgba(30, 41, 59, 0.95) !important; backdrop-filter: blur(10px);">
+                            <div class="px-3 py-2 border-bottom border-secondary d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-white small"><i class="fas fa-bell me-2 text-danger"></i>Thông báo mới</span>
+                                <span class="cursor-pointer" onclick="clearNotificationBadge()" style="font-size: 0.75rem; color: rgba(255,255,255,0.6) !important;">Đánh dấu đã đọc</span>
+                            </div>
+                            <div class="notification-list" style="max-height: 250px; overflow-y: auto;">
+                                <% if (typeof notifications !== 'undefined' && notifications.length > 0) { %>
+                                    <% notifications.forEach(n => { %>
+                                        <li class="px-3 py-2.5 border-bottom border-secondary-subtle" style="list-style: none;">
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-bold mb-1" style="font-size: 0.8rem; color: rgba(255,255,255,0.95) !important;"><%= n.title %></span>
+                                                <span class="small" style="font-size: 0.72rem; line-height: 1.3; color: rgba(255,255,255,0.6) !important;"><%= n.message %></span>
+                                                <span class="mt-1 text-end" style="font-size: 0.6rem; color: rgba(255,255,255,0.4) !important;"><%= new Date(n.createdAt).toLocaleDateString('vi-VN') %> <%= new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) %></span>
+                                            </div>
+                                        </li>
+                                    <% }) %>
+                                <% } else { %>
+                                    <li class="text-center py-4 small" style="list-style: none; color: rgba(255,255,255,0.5) !important;">
+                                        Không có thông báo nào
+                                    </li>
+                                <% } %>
+                            </div>
+                        </ul>
+                    </div>
                     <% } else { %>
                     <a href="/login" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">Login</a>
                     <% } %>
@@ -113,3 +155,187 @@
         </div>
     </div>
 </nav>
+
+<script>
+    async function markAllNotificationsRead() {
+        try {
+            await fetch('/notifications/mark-read', { method: 'POST' });
+        } catch (err) {
+            console.error('Failed to mark notifications read:', err);
+        }
+    }
+    
+    function clearNotificationBadge() {
+        const badge = document.getElementById('notificationBadge');
+        if (badge) {
+            badge.style.display = 'none';
+        }
+    }
+
+    // --- Modern Toast Notification Engine ---
+    let toastedNotificationIds = new Set();
+
+    // Style injection for bell shaking animation
+    const style = document.createElement('style');
+    style.innerHTML = `
+        @keyframes shake-bell {
+            0% { transform: rotate(0); }
+            15% { transform: rotate(15deg); }
+            30% { transform: rotate(-15deg); }
+            45% { transform: rotate(10deg); }
+            60% { transform: rotate(-10deg); }
+            75% { transform: rotate(5deg); }
+            85% { transform: rotate(-5deg); }
+            100% { transform: rotate(0); }
+        }
+        .animate-bell {
+            animation: shake-bell 1.5s ease infinite;
+            display: inline-block;
+        }
+        .custom-glass-toast {
+            animation: slideInToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes slideInToast {
+            from { transform: translateY(50px) scale(0.9); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    function showToastNotification(title, message) {
+        let container = document.getElementById('toast-container-custom');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container-custom';
+            container.style.position = 'fixed';
+            container.style.bottom = '24px';
+            container.style.right = '24px';
+            container.style.zIndex = '10000';
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '12px';
+            document.body.appendChild(container);
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = 'custom-glass-toast shadow-lg';
+        toast.style.background = 'rgba(15, 23, 42, 0.95)';
+        toast.style.color = '#ffffff';
+        toast.style.backdropFilter = 'blur(10px)';
+        toast.style.padding = '14px 20px';
+        toast.style.borderRadius = '16px';
+        toast.style.border = '1px solid rgba(255, 255, 255, 0.1)';
+        toast.style.minWidth = '290px';
+        toast.style.maxWidth = '380px';
+        toast.style.display = 'flex';
+        toast.style.alignItems = 'center';
+        toast.style.gap = '14px';
+        toast.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.5)';
+        
+        toast.innerHTML = `
+            <div style="background: rgba(255, 99, 71, 0.2); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ff6347; flex-shrink: 0;">
+                <i class="fas fa-bell animate-bell"></i>
+            </div>
+            <div style="flex-grow: 1;">
+                <div style="font-weight: 700; font-size: 0.85rem; margin-bottom: 2px; color: #ffffff;">${title}</div>
+                <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.85); line-height: 1.35;">${message}</div>
+            </div>
+            <button onclick="this.parentElement.remove()" style="background: none; border: none; color: rgba(255,255,255,0.5); font-size: 0.85rem; cursor: pointer; padding: 0 4px;">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Auto remove after 7 seconds
+        setTimeout(() => {
+            toast.style.transition = 'all 0.3s ease';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(15px) scale(0.95)';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 7000);
+    }
+
+    async function pollNotifications() {
+        try {
+            const res = await fetch('/notifications/poll');
+            if (!res.ok) return;
+            const data = await res.json();
+            
+            // Cập nhật huy hiệu chấm đỏ
+            const badge = document.getElementById('notificationBadge');
+            if (data.unreadCount > 0) {
+                if (!badge) {
+                    const bellBtn = document.getElementById('notificationDropdown');
+                    if (bellBtn) {
+                        const wrapper = bellBtn.querySelector('.cart-wrapper');
+                        if (wrapper) {
+                            const newBadge = document.createElement('span');
+                            newBadge.id = 'notificationBadge';
+                            newBadge.className = 'position-absolute top-0 start-100 translate-middle p-1.5 bg-danger border border-light rounded-circle';
+                            newBadge.style.width = '8px';
+                            newBadge.style.height = '8px';
+                            newBadge.style.marginTop = '5px';
+                            newBadge.style.marginRight = '5px';
+                            wrapper.appendChild(newBadge);
+                        }
+                    }
+                } else {
+                    badge.style.display = 'block';
+                }
+            } else {
+                if (badge) badge.style.display = 'none';
+            }
+            
+            // Hiển thị Toast và thêm động vào list dropdown
+            if (data.notifications && data.notifications.length > 0) {
+                const listContainer = document.querySelector('.notification-list');
+                data.notifications.forEach(n => {
+                    if (!toastedNotificationIds.has(n._id)) {
+                        toastedNotificationIds.add(n._id);
+                        showToastNotification(n.title, n.message);
+                        
+                        // Thêm vào đầu danh sách dropdown
+                        if (listContainer) {
+                            if (listContainer.innerHTML.includes('Không có thông báo nào')) {
+                                listContainer.innerHTML = '';
+                            }
+                            
+                            const li = document.createElement('li');
+                            li.className = 'px-3 py-2.5 border-bottom border-secondary-subtle';
+                            li.style.listStyle = 'none';
+                            li.innerHTML = `
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold mb-1" style="font-size: 0.8rem; color: rgba(255,255,255,0.95) !important;">${n.title}</span>
+                                    <span class="small" style="font-size: 0.72rem; line-height: 1.3; color: rgba(255,255,255,0.6) !important;">${n.message}</span>
+                                    <span class="mt-1 text-end" style="font-size: 0.6rem; color: rgba(255,255,255,0.4) !important;">${new Date(n.createdAt).toLocaleDateString('vi-VN')} ${new Date(n.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                                </div>
+                            `;
+                            listContainer.insertBefore(li, listContainer.firstChild);
+                            
+                            // Giới hạn 5 phần tử
+                            while (listContainer.children.length > 5) {
+                                listContainer.removeChild(listContainer.lastChild);
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (err) {
+            console.error('Error polling notifications:', err);
+        }
+    }
+
+    // Bắt đầu lập lịch Polling mỗi 5 giây nếu user đã đăng nhập
+    <% if (user) { %>
+        // Nạp trước các ID thông báo ban đầu vào tập hợp để không bị lặp khi load trang
+        <% if (typeof notifications !== 'undefined') { %>
+            <% notifications.forEach(n => { %>
+                toastedNotificationIds.add('<%= n._id.toString() %>');
+            <% }) %>
+        <% } %>
+        setInterval(pollNotifications, 5000);
+    <% } %>
+</script>
