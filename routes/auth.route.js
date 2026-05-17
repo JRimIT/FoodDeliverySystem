@@ -32,14 +32,20 @@ router.get('/login', (req, res) => {
 // ==== Đăng ký tài khoản ====
 
 router.post('/auth/register', async (req, res) => {
-    const { username, password, role } = req.body;
+    const { username, email, password, role } = req.body;
 
     try {
-        const existing = await User.findOne({ username });
-        if (existing) return res.status(400).send('User already exists');
+        const existing = await User.findOne({ $or: [{ username }, { email }] });
+        if (existing) {
+            if (existing.username === username) {
+                return res.status(400).send('User already exists');
+            } else {
+                return res.status(400).send('Email already registered');
+            }
+        }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ username, password: hashedPassword, role });
+        const user = new User({ username, email, password: hashedPassword, role });
         await user.save();
 
         res.redirect('/goToLoginPage');
