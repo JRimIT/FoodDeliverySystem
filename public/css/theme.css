@@ -27,6 +27,12 @@
 }
 
 /* Base style overrides using variables */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 body, .bodyHome, .main-content {
     background: var(--bg-body) !important;
     color: var(--text-main) !important;
@@ -409,4 +415,73 @@ body, .bodyHome, .main-content {
     color: var(--bg-card) !important;
     background-color: var(--text-main) !important;
     border-color: var(--text-main) !important;
+}
+
+/* Dark Mode Compatibility for Tables (Wallet, Orders, etc.) */
+[data-theme="dark"] table,
+[data-theme="dark"] .table,
+[data-theme="dark"] .table-premium {
+    color: var(--text-main) !important;
+    background-color: var(--bg-card) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] th,
+[data-theme="dark"] td,
+[data-theme="dark"] .table thead th,
+[data-theme="dark"] .table-light,
+[data-theme="dark"] .table-light th,
+[data-theme="dark"] .table-premium thead th {
+    background-color: #0f172a !important; /* Đậm hơn để tạo chiều sâu */
+    color: var(--text-muted) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .table tbody tr td,
+[data-theme="dark"] .table-premium tbody tr td {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .table-hover tbody tr:hover td,
+[data-theme="dark"] .table-premium tbody tr:hover td {
+    background-color: rgba(255, 99, 71, 0.05) !important; /* Hiệu ứng hover đỏ cam thương hiệu nhẹ nhàng */
+    color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .table-bordered {
+    border-color: var(--border-color) !important;
+}
+
+/* Alerts in Dark Mode */
+[data-theme="dark"] .alert {
+    background-color: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px;
+}
+
+[data-theme="dark"] .alert-info {
+    background-color: rgba(13, 110, 253, 0.1) !important; /* soft blue glow */
+    color: #6ea8fe !important;
+    border-color: rgba(13, 110, 253, 0.2) !important;
+}
+
+[data-theme="dark"] .alert-success {
+    background-color: rgba(25, 135, 84, 0.1) !important; /* soft green glow */
+    color: #75b798 !important;
+    border-color: rgba(25, 135, 84, 0.2) !important;
+}
+
+[data-theme="dark"] .alert-danger {
+    background-color: rgba(220, 53, 69, 0.1) !important; /* soft red glow */
+    color: #ea868f !important;
+    border-color: rgba(220, 53, 69, 0.2) !important;
+}
+
+[data-theme="dark"] .alert-warning {
+    background-color: rgba(255, 193, 7, 0.1) !important; /* soft yellow glow */
+    color: #ffda6a !important;
+    border-color: rgba(255, 193, 7, 0.2) !important;
 }

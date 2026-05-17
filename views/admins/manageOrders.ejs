@@ -88,6 +88,38 @@
         .items-list { list-style: none; padding: 0; margin: 0; }
         .items-list li { font-size: 0.8rem; color: #666; margin-bottom: 2px; }
         .items-list li strong { color: #333; }
+
+        .filter-option-card {
+            background-color: var(--input-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 12px !important;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        .filter-option-card:hover {
+            background-color: var(--bg-body) !important;
+            border-color: #ff6347 !important;
+        }
+        .filter-option-card .form-check-label {
+            color: var(--text-main) !important;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .filter-option-card .form-check-input {
+            margin-top: 0;
+            cursor: pointer;
+            border-color: var(--border-color);
+        }
+        
+        /* Modal header styling in dark mode */
+        [data-theme="dark"] .modal-content {
+            background-color: var(--bg-card) !important;
+            color: var(--text-main) !important;
+        }
+        [data-theme="dark"] .modal-header .btn-close {
+            filter: invert(1);
+        }
     </style>
 </head>
 <body>
@@ -97,12 +129,64 @@
         <!-- Header -->
         <div class="d-flex align-items-center justify-content-between mb-4" data-aos="fade-down">
             <div>
-                <h2 class="fw-bold font-outfit m-0 text-dark">Quản lý Đơn hàng</h2>
-                <p class="text-muted small m-0">Theo dõi và cập nhật trạng thái đơn hàng của khách hàng</p>
+                <h2 class="fw-bold font-outfit m-0">Quản lý Đơn hàng</h2>
+                <p class="text-muted small m-0 mt-1">Theo dõi và cập nhật trạng thái đơn hàng của khách hàng</p>
             </div>
-            <div class="d-flex gap-2">
-                <button class="btn btn-white shadow-sm rounded-pill px-4 py-2 fw-bold small"><i class="fas fa-filter me-2"></i> Bộ lọc</button>
-            </div>
+        </div>
+
+        <!-- Inline Advanced Filter Card -->
+        <div class="card border-0 shadow-sm p-4 rounded-4 mb-4" style="background: var(--bg-card);" data-aos="fade-up">
+            <form action="/admin/orders" method="GET" id="filterForm">
+                <div class="row g-3 align-items-end">
+                    <!-- Search by Customer Name -->
+                    <div class="col-md-3 col-sm-6">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-2"><i class="fas fa-search me-1"></i> Tên khách hàng</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-body border-end-0 text-muted" style="border-color: var(--border-color);"><i class="fas fa-user"></i></span>
+                            <input type="text" name="search" class="form-control bg-body border-start-0 text-main" style="border-color: var(--border-color);" placeholder="Nhập tên khách hàng..." value="<%= search || '' %>">
+                        </div>
+                    </div>
+
+                    <!-- Filter by Status -->
+                    <div class="col-md-2 col-sm-6">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-2"><i class="fas fa-info-circle me-1"></i> Trạng thái</label>
+                        <select name="status" class="form-select bg-body text-main" style="border-color: var(--border-color);" onchange="this.form.submit()">
+                            <option value="all" <%= status === 'all' ? 'selected' : '' %>>Tất cả trạng thái</option>
+                            <option value="Pending" <%= status === 'Pending' ? 'selected' : '' %>>Đang chờ</option>
+                            <option value="Processing" <%= status === 'Processing' ? 'selected' : '' %>>Chuẩn bị</option>
+                            <option value="Shipping" <%= status === 'Shipping' ? 'selected' : '' %>>Giao hàng</option>
+                            <option value="Completed" <%= status === 'Completed' ? 'selected' : '' %>>Hoàn thành</option>
+                            <option value="Cancelled" <%= status === 'Cancelled' ? 'selected' : '' %>>Hủy đơn</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter by Date -->
+                    <div class="col-md-3 col-sm-6">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-2"><i class="fas fa-calendar-alt me-1"></i> Mốc thời gian</label>
+                        <select id="dateSelect" class="form-select bg-body text-main" style="border-color: var(--border-color);" onchange="handleDateSelectChange(this.value)" <%= (selectedDate !== 'today' && selectedDate !== 'all') ? '' : 'name=date' %>>
+                            <option value="today" <%= selectedDate === 'today' ? 'selected' : '' %>>Hôm nay trở về sau (Mặc định)</option>
+                            <option value="all" <%= selectedDate === 'all' ? 'selected' : '' %>>Tất cả đơn hàng</option>
+                            <option value="custom" <%= (selectedDate !== 'today' && selectedDate !== 'all') ? 'selected' : '' %>>Tùy chọn ngày trở về sau...</option>
+                        </select>
+                        <input type="date" id="customDateInput" class="form-control bg-body text-main rounded-3 mt-2 <%= (selectedDate !== 'today' && selectedDate !== 'all') ? '' : 'd-none' %>" style="border-color: var(--border-color);" value="<%= (selectedDate !== 'today' && selectedDate !== 'all') ? selectedDate : '' %>" <%= (selectedDate !== 'today' && selectedDate !== 'all') ? 'name=date' : '' %> onchange="this.form.submit()">
+                    </div>
+
+                    <!-- Sort Order -->
+                    <div class="col-md-2 col-sm-6">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-2"><i class="fas fa-sort me-1"></i> Thứ tự ngày</label>
+                        <select name="sort" class="form-select bg-body text-main" style="border-color: var(--border-color);" onchange="this.form.submit()">
+                            <option value="desc" <%= sort === 'desc' ? 'selected' : '' %>>Mới nhất trước</option>
+                            <option value="asc" <%= sort === 'asc' ? 'selected' : '' %>>Cũ nhất trước</option>
+                        </select>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="col-md-2 col-sm-6 d-flex gap-2">
+                        <button type="submit" class="btn btn-danger w-100 fw-bold rounded-3 py-2 text-white shadow-sm" style="background-color: #ff6347; border: none;"><i class="fas fa-filter me-1"></i> Lọc</button>
+                        <a href="/admin/orders" class="btn btn-secondary fw-semibold rounded-3 py-2 text-decoration-none text-center" style="min-width: 50px;"><i class="fas fa-undo"></i></a>
+                    </div>
+                </div>
+            </form>
         </div>
 
         <!-- Orders Table Card -->
@@ -189,6 +273,24 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ once: true });
+
+        function handleDateSelectChange(val) {
+            const select = document.getElementById('dateSelect');
+            const customInput = document.getElementById('customDateInput');
+            if (val === 'custom') {
+                customInput.classList.remove('d-none');
+                select.removeAttribute('name');
+                customInput.setAttribute('name', 'date');
+                if (!customInput.value) {
+                    customInput.value = new Date().toISOString().split('T')[0];
+                }
+            } else {
+                customInput.classList.add('d-none');
+                select.setAttribute('name', 'date');
+                customInput.removeAttribute('name');
+                select.form.submit();
+            }
+        }
     </script>
 </body>
 </html>

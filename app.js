@@ -35,6 +35,36 @@ app.use(session(sessionConfig));
 
 app.use(jwtPassport.initialize());
 
+// Middleware to share user, shipperOrderCount, and notifications with all templates
+app.use(async (req, res, next) => {
+    res.locals.user = req.session?.user || null;
+    res.locals.shipperOrderCount = 0;
+    res.locals.notifications = [];
+    res.locals.unreadNotificationCount = 0;
+    
+    if (res.locals.user) {
+        try {
+            const Notification = (await import('./models/notification.model.js')).default;
+            res.locals.notifications = await Notification.find({ userId: res.locals.user._id })
+                .sort({ createdAt: -1 })
+                .limit(5)
+                .lean();
+            res.locals.unreadNotificationCount = await Notification.countDocuments({ 
+                userId: res.locals.user._id, 
+                isRead: false 
+            });
+
+            if (res.locals.user.role === 'shipper') {
+                const Order = (await import('./models/order.model.js')).default;
+                res.locals.shipperOrderCount = await Order.countDocuments({ status: 'Processing' });
+            }
+        } catch (error) {
+            console.error('Error in global session middleware:', error);
+        }
+    }
+    next();
+});
+
 app.engine('ejs', ejs.renderFile);
 app.set('view engine', 'ejs');
 

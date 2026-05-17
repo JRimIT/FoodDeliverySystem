@@ -53,6 +53,7 @@
                 <label for="role" class="form-label">Role</label>
                 <select name="role" id="role" class="form-select">
                     <option value="customer" <%=user.role==='customer' ? 'selected' : '' %>>Customer</option>
+                    <option value="shipper" <%=user.role==='shipper' ? 'selected' : '' %>>Shipper</option>
                     <option value="admin" <%=user.role==='admin' ? 'selected' : '' %>>Admin</option>
                 </select>
             </div>
