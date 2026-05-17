@@ -396,3 +396,17 @@ body, .bodyHome, .main-content {
     background-color: var(--bg-card) !important;
     color: var(--text-main) !important;
 }
+
+/* Dark mode compatibility for outline dark buttons */
+[data-theme="dark"] .btn-outline-dark {
+    color: var(--text-main) !important;
+    border-color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .btn-outline-dark:hover,
+[data-theme="dark"] .btn-outline-dark:focus,
+[data-theme="dark"] .btn-outline-dark:active {
+    color: var(--bg-card) !important;
+    background-color: var(--text-main) !important;
+    border-color: var(--text-main) !important;
+}
