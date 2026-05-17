@@ -182,3 +182,46 @@
   color: #ff6347 !important;
   background-color: rgba(255, 99, 71, 0.1) !important;
 }
+
+/* Interactive Balance Badge Hover Effect */
+.balance-badge {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.balance-badge:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(25, 135, 84, 0.35) !important;
+  filter: brightness(1.05);
+}
+
+/* Quick Select Amount Pills Style */
+.quick-amount-btn {
+  border: 1px solid var(--border-color) !important;
+  background: transparent !important;
+  color: var(--text-main) !important;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.quick-amount-btn:hover {
+  background-color: #ff6347 !important;
+  color: white !important;
+  border-color: #ff6347 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(255, 99, 71, 0.25) !important;
+}
+
+.quick-amount-btn.btn-success {
+  background: linear-gradient(135deg, #198754 0%, #157347 100%) !important;
+  border-color: #198754 !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(25, 135, 84, 0.25) !important;
+}
+
+/* Fix Modal z-index conflict with fixed-top navbar */
+.modal {
+  z-index: 2200 !important;
+}
+.modal-backdrop {
+  z-index: 2150 !important;
+}

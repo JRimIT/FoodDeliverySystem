@@ -239,12 +239,14 @@ router.post('/checkout', verifyUser, async (req, res) => {
             });
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
+            const host = req.get('host');
+            const protocol = req.headers['x-forwarded-proto'] || req.protocol;
             const vnpayUrl = await vnpay.buildPaymentUrl({
                 vnp_IpAddr: '127.0.0.1',
                 vnp_Amount: totalPrice,
                 vnp_TxnRef: txnRef,
                 vnp_OrderInfo: orderInfo,
-                vnp_ReturnUrl: `https://localhost:4000/callback-vnpay`,
+                vnp_ReturnUrl: `${protocol}://${host}/callback-vnpay`,
                 vnp_OrderType: ProductCode.Other,
                 vnp_Locale: VnpLocale.VN,
                 vnp_CreateDate: dateFormat(new Date()),
@@ -459,12 +461,14 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
             });
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
+            const host = req.get('host');
+            const protocol = req.headers['x-forwarded-proto'] || req.protocol;
             const vnpayUrl = await vnpay.buildPaymentUrl({
                 vnp_IpAddr: '127.0.0.1',
                 vnp_Amount: totalPrice,
                 vnp_TxnRef: txnRef,
                 vnp_OrderInfo: orderInfo,
-                vnp_ReturnUrl: `https://localhost:4000/callback-vnpay`,
+                vnp_ReturnUrl: `${protocol}://${host}/callback-vnpay`,
                 vnp_OrderType: ProductCode.Other,
                 vnp_Locale: VnpLocale.VN,
                 vnp_CreateDate: dateFormat(new Date()),

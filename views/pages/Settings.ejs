@@ -253,33 +253,6 @@
           </div>
         </form>
       </div>
-    </div>    <!-- Deposit Modal (moved outside tab-content for proper Bootstrap behavior) -->
-    <div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="depositModalLabel">
-              Deposit to Wallet
-            </h5>
-            <button type="button" class="btn-close" data-bs-toggle="modal" aria-label="Close"></button>
-          </div>
-          <form action="/wallet/deposit" method="POST">
-            <div class="modal-body">
-              <div class="mb-3">
-                <label for="depositAmount" class="form-label">Amount (VND)</label>
-                <input type="number" class="form-control" id="depositAmount" name="amount" min="1000" step="1000"
-                  required />
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-toggle="modal">
-                Cancel
-              </button>
-              <button type="submit" class="btn btn-success">Deposit</button>
-            </div>
-          </form>
-        </div>
-      </div>
     </div>
 
     <% if (typeof depositSuccess !=='undefined' ) { %>
@@ -386,6 +359,26 @@
             }
           });
         });
+      });
+
+      // Tự động kích hoạt tab và mở modal nạp tiền từ query param/hash
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get("tab") || window.location.hash.substring(1);
+        if (tabParam) {
+          const targetTab = document.querySelector(`.settings-menu .list-group-item[data-tab="${tabParam}"]`);
+          if (targetTab) {
+            targetTab.click();
+            if (urlParams.get("openDeposit") === "true") {
+              const depositBtn = document.querySelector('[data-bs-target="#depositModal"]');
+              if (depositBtn) {
+                setTimeout(() => {
+                  depositBtn.click();
+                }, 300);
+              }
+            }
+          }
+        }
       });
     </script>
 

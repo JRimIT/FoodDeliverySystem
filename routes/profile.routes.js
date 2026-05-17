@@ -100,9 +100,7 @@ router.post('/uploadAvatar', verifyUser, upload.single('avatar'), async (req, re
 
 // Trang nạp tiền
 router.get('/wallet/deposit', verifyUser, async (req, res) => {
-    const user = await User.findById(req.user.userId);
-    const cartCount = await countProduct(req.user.userId);
-    res.render('pages/Deposit', { user, cartCount });
+    return res.redirect('/settings?tab=wallet&openDeposit=true');
 });
 
 // Xử lý nạp tiền
@@ -110,11 +108,7 @@ router.post('/wallet/deposit', verifyUser, async (req, res) => {
     const amount = parseInt(req.body.amount);
     const user = await User.findById(req.user.userId);
     if (isNaN(amount) || amount <= 0) {
-        return res.render('pages/Deposit', {
-            user,
-            cartCount: await countProduct(user._id),
-            error: 'Số tiền nạp không hợp lệ!',
-        });
+        return res.redirect('/settings?tab=wallet&depositError=1');
     }
     const txnRef = `${Date.now()}-deposit-${user._id}`;
     const orderInfo = `Nap tien vi #${txnRef}`;
@@ -128,12 +122,14 @@ router.post('/wallet/deposit', verifyUser, async (req, res) => {
     });
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
+    const host = req.get('host');
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
     const vnpayUrl = await vnpay.buildPaymentUrl({
         vnp_IpAddr: '127.0.0.1',
         vnp_Amount: amount,
         vnp_TxnRef: txnRef,
         vnp_OrderInfo: orderInfo,
-        vnp_ReturnUrl: `https://localhost:4000/callback-vnpay-deposit?amount=${amount}`,
+        vnp_ReturnUrl: `${protocol}://${host}/callback-vnpay-deposit?amount=${amount}`,
         vnp_OrderType: ProductCode.Other,
         vnp_Locale: VnpLocale.VN,
         vnp_CreateDate: dateFormat(new Date()),
