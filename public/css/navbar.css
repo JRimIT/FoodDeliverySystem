@@ -29,6 +29,10 @@
   margin: 0 0.2rem;
   border-radius: 8px;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .navbar-nav .nav-link:hover,
@@ -154,7 +158,7 @@
   }
   
   .navbar-collapse {
-    background: white;
+    background: var(--bg-card);
     padding: 1rem;
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -166,4 +170,15 @@
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
+}
+
+/* Dark Mode Nav Styles */
+[data-theme="dark"] .navbar-nav .nav-link {
+  color: var(--text-main) !important;
+}
+
+[data-theme="dark"] .navbar-nav .nav-link:hover,
+[data-theme="dark"] .navbar-nav .nav-link.active {
+  color: #ff6347 !important;
+  background-color: rgba(255, 99, 71, 0.1) !important;
 }
