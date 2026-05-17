@@ -28,47 +28,129 @@
   <body>
     <%- include('../partials/navbar') %>
 
-    <div class="container mt-5 pt-5 profile-container">
-      <div class="card shadow p-4">
-        <div class="text-center">
-          <img
-            src="<%= user.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/149/149071.png' %>"
-            class="rounded-circle mb-3"
-            width="120"
-            alt="Avatar"
-          />
-          <h3><%= user.fullName || user.username %></h3>
-          <p><i class="fas fa-envelope me-1"></i> <%= user.email || "..." %></p>
+    <div class="container profile-container profile-section mt-5 pt-5 mb-5">
+      <div class="row g-4">
+        <!-- Cột trái: Thẻ tóm tắt thông tin & Số dư ví -->
+        <div class="col-lg-4">
+          <div class="profile-card text-center p-0 shadow-sm">
+            <!-- Ảnh phủ đầu trang -->
+            <div class="profile-cover"></div>
+            
+            <!-- Ảnh đại diện & Badge Role -->
+            <div class="profile-avatar-wrapper">
+              <img
+                src="<%= user.avatarUrl || 'https://cdn-icons-png.flaticon.com/512/149/149071.png' %>"
+                class="profile-avatar shadow"
+                alt="Avatar"
+              />
+              <span class="role-badge badge <%= user.role === 'admin' ? 'bg-danger' : (user.role === 'shipper' ? 'bg-primary' : 'bg-success') %>">
+                <%= user.role ? user.role.toUpperCase() : 'USER' %>
+              </span>
+            </div>
+            
+            <!-- Tên & Email -->
+            <div class="px-3 mt-3">
+              <h3 class="fw-bold mb-1" style="color: var(--text-main); font-size: 1.5rem;">
+                <%= user.fullName || user.username %>
+              </h3>
+              <p class="text-muted small mb-4">
+                <i class="fas fa-envelope me-1 text-danger"></i> <%= user.email || "Chưa cung cấp" %>
+              </p>
+            </div>
+            
+            <!-- Thẻ số dư ví điện tử -->
+            <div class="balance-card mx-3 p-3 text-white mb-4 text-start">
+              <div class="small opacity-75 mb-1"><i class="fas fa-wallet me-1"></i> Số dư ví của bạn</div>
+              <h3 class="fw-bold mb-2 text-white text-shadow-none" style="text-shadow: none;">
+                <%= user.balance ? user.balance.toLocaleString('vi-VN') : 0 %>đ
+              </h3>
+              <a href="/wallet/deposit" class="btn btn-light btn-sm rounded-pill fw-bold px-3 py-1 mt-1">
+                <i class="fas fa-plus-circle me-1"></i> Nạp tiền ví
+              </a>
+            </div>
+            
+            <!-- Các hành động nhanh -->
+            <div class="d-grid gap-2 px-3 pb-4">
+              <a href="/settings" class="btn btn-outline-danger rounded-pill fw-bold transition-btn py-2">
+                <i class="fas fa-cog me-1"></i> Thiết lập tài khoản
+              </a>
+              <a href="/orders" class="btn btn-danger rounded-pill fw-bold transition-btn py-2">
+                <i class="fas fa-shopping-bag me-1"></i> Lịch sử mua hàng
+              </a>
+            </div>
+          </div>
         </div>
-        <hr />
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <strong>Username:</strong> <%= user.username %>
-          </li>
-          <li class="list-group-item">
-            <strong>Phone:</strong> <%= user.phone || '...' %>
-          </li>
-          <li class="list-group-item">
-            <strong>Address:</strong> <%= user.address || '...' %>
-          </li>
-          <li class="list-group-item">
-            <strong>Post Code:</strong> <%= user.postCode || '...' %>
-          </li>
-          <li class="list-group-item">
-            <strong>Date of Birth:</strong>
-            <%= user.dateOfBirth ? user.dateOfBirth.toDateString() : '...' %>
-          </li>
-
-          <li class="list-group-item">
-            <strong>Role:</strong> <%= user.role %>
-          </li>
-          <li class="list-group-item">
-            <strong>Joined:</strong> <%= user.createdAt ? user.createdAt.toDateString() : 'Not provided' %>
-          </li>
-          <li class="list-group-item">
-            <strong>Số dư ví:</strong> <%= user.balance ? user.balance.toLocaleString() : 0 %> VND
-          </li>
-        </ul>
+        
+        <!-- Cột phải: Thông tin chi tiết tài khoản -->
+        <div class="col-lg-8">
+          <div class="details-card shadow-sm p-4 h-100">
+            <h4 class="fw-bold text-danger mb-4 pb-2 border-bottom border-danger border-2 d-inline-block">
+              <i class="fas fa-user-circle me-2"></i>Thông tin tài khoản chi tiết
+            </h4>
+            
+            <div class="row g-3">
+              <!-- Item 1: Tên đăng nhập -->
+              <div class="col-md-6">
+                <div class="info-box p-3 rounded-3">
+                  <div class="text-muted small"><i class="fas fa-user-tag me-1 text-danger"></i> Tên đăng nhập</div>
+                  <div class="fw-bold mt-1 fs-5"><%= user.username %></div>
+                </div>
+              </div>
+              
+              <!-- Item 2: Số điện thoại -->
+              <div class="col-md-6">
+                <div class="info-box p-3 rounded-3">
+                  <div class="text-muted small"><i class="fas fa-phone-alt me-1 text-danger"></i> Số điện thoại</div>
+                  <div class="fw-bold mt-1 fs-5"><%= user.phone || 'Chưa cung cấp' %></div>
+                </div>
+              </div>
+              
+              <!-- Item 3: Địa chỉ nhận hàng -->
+              <div class="col-md-12">
+                <div class="info-box p-3 rounded-3">
+                  <div class="text-muted small"><i class="fas fa-map-marker-alt me-1 text-danger"></i> Địa chỉ giao hàng</div>
+                  <div class="fw-bold mt-1 fs-6"><%= user.address || 'Chưa cung cấp' %></div>
+                </div>
+              </div>
+              
+              <!-- Item 4: Mã bưu chính -->
+              <div class="col-md-6">
+                <div class="info-box p-3 rounded-3">
+                  <div class="text-muted small"><i class="fas fa-mail-bulk me-1 text-danger"></i> Mã bưu chính</div>
+                  <div class="fw-bold mt-1 fs-5"><%= user.postCode || 'Chưa cung cấp' %></div>
+                </div>
+              </div>
+              
+              <!-- Item 5: Ngày tháng năm sinh -->
+              <div class="col-md-6">
+                <div class="info-box p-3 rounded-3">
+                  <div class="text-muted small"><i class="fas fa-birthday-cake me-1 text-danger"></i> Ngày sinh</div>
+                  <div class="fw-bold mt-1 fs-5">
+                    <%= user.dateOfBirth ? user.dateOfBirth.toDateString() : 'Chưa cung cấp' %>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Item 6: Quyền hạn hệ thống -->
+              <div class="col-md-6">
+                <div class="info-box p-3 rounded-3">
+                  <div class="text-muted small"><i class="fas fa-shield-alt me-1 text-danger"></i> Vai trò tài khoản</div>
+                  <div class="fw-bold mt-1 fs-5 text-capitalize"><%= user.role %></div>
+                </div>
+              </div>
+              
+              <!-- Item 7: Ngày đăng ký tham gia -->
+              <div class="col-md-6">
+                <div class="info-box p-3 rounded-3">
+                  <div class="text-muted small"><i class="fas fa-calendar-check me-1 text-danger"></i> Ngày tham gia</div>
+                  <div class="fw-bold mt-1 fs-5">
+                    <%= user.createdAt ? user.createdAt.toDateString() : 'Không rõ' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -258,29 +258,24 @@
         </div>
       </div>
     </div>
-
-    <%- include('../partials/footer.ejs') %>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-      AOS.init({ once: true });
-      
-      // Toggle eye icon class when collapse is shown/hidden
       document.addEventListener('DOMContentLoaded', function() {
+        // Toggle eye icon class when collapse is shown/hidden
         const collapses = document.querySelectorAll('.collapse');
         collapses.forEach(el => {
             const btn = document.querySelector(`[data-bs-target="#${el.id}"]`);
-            el.addEventListener('show.bs.collapse', () => {
-                btn.classList.add('bg-danger', 'text-white');
-                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
-            });
-            el.addEventListener('hide.bs.collapse', () => {
-                btn.classList.remove('bg-danger', 'text-white');
-                btn.innerHTML = '<i class="fas fa-eye"></i>';
-            });
+            if (btn) {
+                el.addEventListener('show.bs.collapse', () => {
+                    btn.classList.add('bg-danger', 'text-white');
+                    btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                });
+                el.addEventListener('hide.bs.collapse', () => {
+                    btn.classList.remove('bg-danger', 'text-white');
+                    btn.innerHTML = '<i class="fas fa-eye"></i>';
+                });
+            }
         });
       });
     </script>
-  </body>
-</html>
+
+    <%- include('../partials/footer.ejs') %>
