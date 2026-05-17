@@ -1,30 +1,293 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nạp tiền thành công - Foodie Express</title>
+    
+    <!-- Theme Management to prevent screen flickering -->
+    <link rel="stylesheet" href="/css/theme.css">
+    <script src="/js/theme-manager.js"></script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    
     <link rel="stylesheet" href="/css/navbar.css" />
     <link rel="stylesheet" href="/css/profile.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-main) !important;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .success-page-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+
+        .success-card {
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Animated circular check icon */
+        .success-icon-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #198754 0%, #20c997 100%) !important;
+            color: white !important;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            box-shadow: 0 8px 20px rgba(25, 135, 84, 0.3);
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid rgba(32, 201, 151, 0.3);
+            animation: pulseRing 2s infinite;
+            z-index: 1;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+
+        .success-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            color: var(--text-main) !important;
+            letter-spacing: -0.5px;
+        }
+
+        /* Large styled amount displaying green gradient text */
+        .success-amount-display {
+            background: rgba(25, 135, 84, 0.05);
+            border: 1px solid rgba(25, 135, 84, 0.12);
+            border-radius: 16px;
+            padding: 16px;
+            margin: 20px 0;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .success-amount-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #20c997;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .success-amount-value {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #198754 !important;
+            margin: 0;
+        }
+
+        /* Transaction details table styled like a premium invoice */
+        .txn-details-box {
+            background: var(--bg-body) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .txn-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 0.88rem;
+        }
+
+        .txn-detail-row:not(:last-child) {
+            border-bottom: 1px dashed var(--border-color) !important;
+        }
+
+        .txn-detail-label {
+            color: var(--text-muted) !important;
+            font-weight: 500;
+        }
+
+        .txn-detail-value {
+            color: var(--text-main) !important;
+            font-weight: 600;
+        }
+
+        .status-pill {
+            background: rgba(25, 135, 84, 0.15);
+            color: #20c997;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Premium wide CTA button with animation */
+        .btn-success-cta {
+            border-radius: 14px;
+            padding: 14px 28px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            background: linear-gradient(135deg, #198754 0%, #157347 100%) !important;
+            border: none;
+            color: white !important;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 20px rgba(25, 135, 84, 0.3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            text-decoration: none;
+        }
+
+        .btn-success-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(25, 135, 84, 0.45);
+            color: white !important;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
 </head>
 
 <body>
     <%- include('../partials/navbar.ejs') %>
-        <div class="container mt-5 pt-5" style="max-width: 500px;">
-            <div class="card shadow p-4 text-center">
-                <div class="mb-4">
-                    <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                    <h3 class="mb-3">Nạp tiền thành công!</h3>
-                    <p class="fs-5">Bạn đã nạp thành công <strong>
-                            <%= amount ? amount.toLocaleString() : '' %> VND
-                        </strong> vào ví.</p>
+    
+    <div class="success-page-container">
+        <div class="success-card p-4 p-md-5 text-center">
+            
+            <!-- Beautiful animated check badge -->
+            <div class="success-icon-wrapper mb-4">
+                <div class="success-icon-circle">
+                    <i class="fas fa-check animate-check"></i>
                 </div>
-                <a href="/settings" class="btn btn-primary">Về trang cài đặt ví</a>
+                <div class="pulse-ring"></div>
             </div>
+
+            <!-- Title -->
+            <h3 class="success-title mb-1">Nạp Tiền Thành Công!</h3>
+            <p class="small text-muted mb-4">Giao dịch của bạn đã được xử lý và phê duyệt hoàn tất.</p>
+
+            <!-- Large Styled Amount Card -->
+            <div class="success-amount-display">
+                <div class="success-amount-label">Số tiền đã nạp vào ví</div>
+                <h2 class="success-amount-value">
+                    +<%= amount ? amount.toLocaleString('vi-VN') : '0' %>đ
+                </h2>
+            </div>
+
+            <!-- Transaction Details breakdown -->
+            <div class="txn-details-box text-start">
+                <div class="txn-detail-row">
+                    <span class="txn-detail-label">Phương thức</span>
+                    <span class="txn-detail-value">Cổng thanh toán VNPay</span>
+                </div>
+                <div class="txn-detail-row">
+                    <span class="txn-detail-label">Mục đích</span>
+                    <span class="txn-detail-value">Nạp số dư ví cá nhân</span>
+                </div>
+                <div class="txn-detail-row">
+                    <span class="txn-detail-label">Trạng thái</span>
+                    <span class="txn-detail-value">
+                        <span class="status-pill"><i class="fas fa-check-circle"></i> Hoàn tất</span>
+                    </span>
+                </div>
+                <div class="txn-detail-row">
+                    <span class="txn-detail-label">Thời gian</span>
+                    <span class="txn-detail-value" id="currentDateDisplay">--:-- --/--/----</span>
+                </div>
+            </div>
+
+            <!-- CTA Actions -->
+            <div class="d-flex flex-column gap-2">
+                <a href="/settings?tab=wallet" class="btn btn-success-cta py-3">
+                    <i class="fas fa-wallet"></i> Về trang quản lý ví
+                </a>
+            </div>
+
         </div>
-        <%- include('../partials/footer.ejs') %>
+    </div>
+
+    <!-- Script to display real-time current localized time -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            const timeStr = now.toLocaleTimeString('vi-VN', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            const displayEl = document.getElementById('currentDateDisplay');
+            if (displayEl) {
+                displayEl.textContent = `${timeStr} ${dateStr}`;
+            }
+        });
+    </script>
+
+    <%- include('../partials/footer.ejs') %>
 </body>
 
 </html>

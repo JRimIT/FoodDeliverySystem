@@ -60,7 +60,11 @@
                 <div class="d-flex align-items-center gap-3">
                     <!-- Balance -->
                     <% if (user) { %>
-                    <div class="balance-badge text-white shadow-sm d-flex align-items-center gap-1">
+                    <div class="balance-badge text-white shadow-sm d-flex align-items-center gap-1"
+                         style="cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);"
+                         data-bs-toggle="modal"
+                         data-bs-target="#depositModal"
+                         title="Nạp tiền vào ví">
                         <i class="fas fa-wallet"></i> 
                         <%= user.balance ? user.balance.toLocaleString('vi-VN') : 0 %>đ
                     </div>
@@ -155,6 +159,13 @@
         </div>
     </div>
 </nav>
+
+<!-- Nơi chứa dữ liệu EJS ẩn để Javascript đọc, tránh gây lỗi cú pháp cho IDE/VS Code -->
+<div id="navbar-data" 
+     data-logged-in="<%= user ? 'true' : 'false' %>"
+     data-notifications="<%= typeof notifications !== 'undefined' ? JSON.stringify(notifications.map(n => n._id.toString())) : '[]' %>"
+     style="display: none;">
+</div>
 
 <script>
     async function markAllNotificationsRead() {
@@ -327,15 +338,121 @@
             console.error('Error polling notifications:', err);
         }
     }
-
     // Bắt đầu lập lịch Polling mỗi 5 giây nếu user đã đăng nhập
-    <% if (user) { %>
-        // Nạp trước các ID thông báo ban đầu vào tập hợp để không bị lặp khi load trang
-        <% if (typeof notifications !== 'undefined') { %>
-            <% notifications.forEach(n => { %>
-                toastedNotificationIds.add('<%= n._id.toString() %>');
-            <% }) %>
-        <% } %>
-        setInterval(pollNotifications, 5000);
-    <% } %>
+    const navbarDataEl = document.getElementById('navbar-data');
+    if (navbarDataEl) {
+        const isUserLoggedIn = navbarDataEl.getAttribute('data-logged-in') === 'true';
+        if (isUserLoggedIn) {
+            // Nạp trước các ID thông báo ban đầu vào tập hợp để không bị lặp khi load trang
+            const initialNotificationIds = JSON.parse(navbarDataEl.getAttribute('data-notifications') || '[]');
+            initialNotificationIds.forEach(id => {
+                toastedNotificationIds.add(id);
+            });
+            setInterval(pollNotifications, 5000);
+        }
+    }
 </script>
+
+<% if (user) { %>
+<!-- Beautiful Unified Premium Deposit Modal -->
+<div class="modal fade" id="depositModal" tabindex="-1" aria-labelledby="depositModalLabel" aria-hidden="true" style="z-index: 2200;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 24px; overflow: hidden; background: var(--bg-card) !important; color: var(--text-main) !important;">
+      
+      <!-- Modern Modal Header with dải gradient cam-đỏ thương hiệu rực rỡ -->
+      <div class="modal-header border-0 p-4 d-flex align-items-center justify-content-between" 
+           style="background: linear-gradient(135deg, #ff6347 0%, #ff4500 100%) !important; color: white; position: relative;">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-wallet fa-lg"></i>
+          <h5 class="modal-title fw-bold" id="depositModalLabel" style="margin: 0; color: white !important;">Nạp Tiền Vào Ví</h5>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="box-shadow: none; opacity: 0.9;"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <form action="/wallet/deposit" method="POST" id="navbarDepositForm">
+        <div class="modal-body p-4">
+          
+          <!-- Balance Dashboard Card inside the modal -->
+          <div class="p-3 mb-4 text-center d-flex flex-column align-items-center justify-content-center" 
+               style="background: rgba(25, 135, 84, 0.08); border: 1px solid rgba(25, 135, 84, 0.15); border-radius: 16px;">
+            <span class="small fw-bold text-success text-uppercase mb-1" style="letter-spacing: 1px; font-size: 0.75rem;">Số dư hiện tại</span>
+            <h3 class="fw-bold mb-0 text-success" style="font-size: 1.8rem;">
+              <%= user.balance ? user.balance.toLocaleString('vi-VN') : 0 %>đ
+            </h3>
+          </div>
+
+          <!-- Amount Input Field -->
+          <div class="mb-4">
+            <label for="modalDepositAmount" class="form-label fw-bold mb-2 small text-muted">Số tiền muốn nạp (VND)</label>
+            <div class="input-group input-group-lg shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color) !important;">
+              <span class="input-group-text border-0" style="background: var(--input-bg) !important; color: var(--text-muted) !important;"><i class="fas fa-money-bill-wave text-success"></i></span>
+              <input type="number" class="form-control border-0" id="modalDepositAmount" name="amount" min="10000" step="10000" placeholder="Nhập số tiền..." required 
+                     style="background: var(--input-bg) !important; color: var(--text-main) !important; font-weight: 600; font-size: 1.1rem; box-shadow: none;" />
+              <span class="input-group-text border-0 fw-bold" style="background: var(--input-bg) !important; color: var(--text-muted) !important; font-size: 0.95rem;">VND</span>
+            </div>
+            <div class="form-text mt-2 small" style="color: var(--text-muted) !important;"><i class="fas fa-info-circle me-1"></i> Số tiền nạp tối thiểu là 10.000đ</div>
+          </div>
+
+          <!-- Quick Selection Pills -->
+          <div class="mb-4">
+            <label class="form-label fw-bold mb-2 small text-muted">Chọn nhanh số tiền</label>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 px-3 fw-bold quick-amount-btn" data-amount="50000" style="font-size: 0.82rem; border-color: var(--border-color) !important; color: var(--text-main) !important; transition: all 0.2s ease;">50.000đ</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 px-3 fw-bold quick-amount-btn" data-amount="100000" style="font-size: 0.82rem; border-color: var(--border-color) !important; color: var(--text-main) !important; transition: all 0.2s ease;">100.000đ</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 px-3 fw-bold quick-amount-btn" data-amount="200000" style="font-size: 0.82rem; border-color: var(--border-color) !important; color: var(--text-main) !important; transition: all 0.2s ease;">200.000đ</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 px-3 fw-bold quick-amount-btn" data-amount="500000" style="font-size: 0.82rem; border-color: var(--border-color) !important; color: var(--text-main) !important; transition: all 0.2s ease;">500.000đ</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 px-3 fw-bold quick-amount-btn" data-amount="1000000" style="font-size: 0.82rem; border-color: var(--border-color) !important; color: var(--text-main) !important; transition: all 0.2s ease;">1.000.000đ</button>
+              <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 px-3 fw-bold quick-amount-btn" data-amount="2000000" style="font-size: 0.82rem; border-color: var(--border-color) !important; color: var(--text-main) !important; transition: all 0.2s ease;">2.000.000đ</button>
+            </div>
+          </div>
+
+
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer border-0 p-4 pt-0 d-flex gap-2">
+          <button type="button" class="btn btn-light flex-grow-1 py-2.5 fw-bold" data-bs-dismiss="modal" style="border-radius: 12px; transition: all 0.2s ease; border: 1px solid var(--border-color) !important; color: var(--text-main) !important; background: var(--bg-body) !important;">Hủy</button>
+          <button type="submit" class="btn btn-success flex-grow-2 py-2.5 px-4 fw-bold d-flex align-items-center justify-content-center gap-2" style="border-radius: 12px; background: linear-gradient(135deg, #198754 0%, #157347 100%) !important; border: none; transition: all 0.2s ease; box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3); color: white !important;">
+            <i class="fas fa-shield-alt"></i> Nạp tiền qua VNPay
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const amountInput = document.getElementById('modalDepositAmount');
+    const quickBtns = document.querySelectorAll('.quick-amount-btn');
+    
+    quickBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Reset active states
+        quickBtns.forEach(b => {
+          b.classList.remove('btn-success', 'text-white');
+          b.classList.add('btn-outline-secondary');
+        });
+        
+        // Set this active
+        this.classList.remove('btn-outline-secondary');
+        this.classList.add('btn-success', 'text-white');
+        
+        // Set input value
+        amountInput.value = this.getAttribute('data-amount');
+      });
+    });
+    
+    amountInput.addEventListener('input', function() {
+      // Reset quick buttons active state if typing manually
+      quickBtns.forEach(b => {
+        b.classList.remove('btn-success', 'text-white');
+        b.classList.add('btn-outline-secondary');
+      });
+    });
+  });
+</script>
+<% } %>
