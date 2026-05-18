@@ -15,9 +15,15 @@ jobs:
           port: 24700
           script: |
             cd FoodDeliverySystem
+            # Sao lưu .env để không bị mất khi git pull xóa file khỏi tracking
+            [ -f .env ] && cp .env .env.bak || true
+            
             git fetch origin
             git checkout main
             git pull origin main
+            
+            # Khôi phục lại .env từ bản sao lưu
+            [ -f .env.bak ] && mv .env.bak .env || true
             
             # 1. Build image (BẮT BUỘC có dấu chấm ở cuối)
             docker build -t online-food-app .
