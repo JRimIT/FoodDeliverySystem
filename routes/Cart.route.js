@@ -228,13 +228,13 @@ router.post('/checkout', verifyUser, async (req, res) => {
         // Xử lý thanh toán VNPay
         if (paymentMethod === 'vnpay') {
             const txnRef = newOrder._id.toString();
-            const orderInfo = `Thanh toan don hang #${txnRef}`;
+            const orderInfo = `Thanh toan don hang ${txnRef}`;
             const vnpay = new VNPay({
-                tmnCode: 'F5DZKW5R',
-                secureSecret: 'FNIKCLMXJHBOBDODGDNMRISRHXSFRHDQ',
+                tmnCode: '4VQED1HG',
+                secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
                 vnpayHost: 'https://sandbox.vnpayment.vn',
                 testMode: true,
-                hashAlgorithm: HashAlgorithm.SHA512,
+                hashAlgorithm: HashAlgorithm.SHA256,
                 loggerFn: ignoreLogger,
             });
             const tomorrow = new Date();
@@ -453,13 +453,13 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
         // Xử lý thanh toán VNPay
         if (paymentMethod === 'vnpay') {
             const txnRef = newOrder._id.toString();
-            const orderInfo = `Thanh toan don hang #${txnRef}`;
+            const orderInfo = `Thanh toan don hang ${txnRef}`;
             const vnpay = new VNPay({
-                tmnCode: 'F5DZKW5R',
-                secureSecret: 'FNIKCLMXJHBOBDODGDNMRISRHXSFRHDQ',
+                tmnCode: '4VQED1HG',
+                secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
                 vnpayHost: 'https://sandbox.vnpayment.vn',
                 testMode: true,
-                hashAlgorithm: HashAlgorithm.SHA512,
+                hashAlgorithm: HashAlgorithm.SHA256,
                 loggerFn: ignoreLogger,
             });
             const tomorrow = new Date();
