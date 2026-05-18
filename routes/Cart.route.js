@@ -241,7 +241,7 @@ router.post('/checkout', verifyUser, async (req, res) => {
             tomorrow.setDate(tomorrow.getDate() + 1);
             const host = req.get('host');
             const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-            const vnpayUrl = await vnpay.buildPaymentUrl({
+            const vnpayParams = {
                 vnp_IpAddr: '127.0.0.1',
                 vnp_Amount: totalPrice,
                 vnp_TxnRef: txnRef,
@@ -251,7 +251,10 @@ router.post('/checkout', verifyUser, async (req, res) => {
                 vnp_Locale: VnpLocale.VN,
                 vnp_CreateDate: dateFormat(new Date()),
                 vnp_ExpireDate: dateFormat(tomorrow),
-            });
+            };
+            console.log("VNPay Checkout 1 Params:", vnpayParams);
+            const vnpayUrl = await vnpay.buildPaymentUrl(vnpayParams);
+            console.log("VNPay Checkout 1 Generated URL:", vnpayUrl);
             return res.redirect(vnpayUrl);
         }
 
@@ -463,7 +466,7 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
             tomorrow.setDate(tomorrow.getDate() + 1);
             const host = req.get('host');
             const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-            const vnpayUrl = await vnpay.buildPaymentUrl({
+            const vnpayParams = {
                 vnp_IpAddr: '127.0.0.1',
                 vnp_Amount: totalPrice,
                 vnp_TxnRef: txnRef,
@@ -473,7 +476,10 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
                 vnp_Locale: VnpLocale.VN,
                 vnp_CreateDate: dateFormat(new Date()),
                 vnp_ExpireDate: dateFormat(tomorrow),
-            });
+            };
+            console.log("VNPay Checkout 2 Params:", vnpayParams);
+            const vnpayUrl = await vnpay.buildPaymentUrl(vnpayParams);
+            console.log("VNPay Checkout 2 Generated URL:", vnpayUrl);
             return res.redirect(vnpayUrl);
         }
 
