@@ -231,10 +231,10 @@ router.post('/checkout', verifyUser, async (req, res) => {
             const orderInfo = `Thanh-toan-don-hang-${txnRef}`;
             const vnpay = new VNPay({
                 tmnCode: '4VQED1HG',
-                secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
+                secureSecret: 'I8N0MO2CONW9CAHRCBDWJHUD7XXXATNO',
                 vnpayHost: 'https://sandbox.vnpayment.vn',
                 testMode: true,
-                hashAlgorithm: HashAlgorithm.SHA256,
+                hashAlgorithm: HashAlgorithm.SHA512,
                 loggerFn: ignoreLogger,
             });
             const tomorrow = new Date();
@@ -456,10 +456,10 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
             const orderInfo = `Thanh-toan-don-hang-${txnRef}`;
             const vnpay = new VNPay({
                 tmnCode: '4VQED1HG',
-                secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
+                secureSecret: 'I8N0MO2CONW9CAHRCBDWJHUD7XXXATNO',
                 vnpayHost: 'https://sandbox.vnpayment.vn',
                 testMode: true,
-                hashAlgorithm: HashAlgorithm.SHA256,
+                hashAlgorithm: HashAlgorithm.SHA512,
                 loggerFn: ignoreLogger,
             });
             const tomorrow = new Date();
