@@ -129,7 +129,7 @@ router.post('/wallet/deposit', verifyUser, async (req, res) => {
         vnp_Amount: amount,
         vnp_TxnRef: txnRef,
         vnp_OrderInfo: orderInfo,
-        vnp_ReturnUrl: `${protocol}://${host}/callback-vnpay-deposit?amount=${amount}`,
+        vnp_ReturnUrl: `${protocol}://${host}/callback-vnpay-deposit`,
         vnp_OrderType: ProductCode.Other,
         vnp_Locale: VnpLocale.VN,
         vnp_CreateDate: dateFormat(new Date()),
@@ -160,10 +160,10 @@ router.get('/orders', verifyUser, async (req, res) => {
 });
 
 router.get('/callback-vnpay-deposit', verifyUser, async (req, res) => {
-    const { vnp_TransactionStatus, amount } = req.query;
+    const { vnp_TransactionStatus, vnp_Amount } = req.query;
     const user = await User.findById(req.user.userId);
-    if (vnp_TransactionStatus === '00' && amount && user) {
-        const depositAmount = parseInt(amount);
+    if (vnp_TransactionStatus === '00' && vnp_Amount && user) {
+        const depositAmount = parseInt(vnp_Amount) / 100;
         user.balance += depositAmount;
         await user.save();
         await Transaction.create({
