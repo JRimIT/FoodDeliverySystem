@@ -230,8 +230,8 @@ router.post('/checkout', verifyUser, async (req, res) => {
             const txnRef = newOrder._id.toString();
             const orderInfo = `Thanh toan don hang #${txnRef}`;
             const vnpay = new VNPay({
-                tmnCode: 'DH2F13SW',
-                secureSecret: '7VJPG70RGPOWFO47VSBT29WPDYND0EJG',
+                tmnCode: '4VQED1HG',
+                secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
                 vnpayHost: 'https://sandbox.vnpayment.vn',
                 testMode: true,
                 hashAlgorithm: 'SHA512',
@@ -452,8 +452,8 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
             const txnRef = newOrder._id.toString();
             const orderInfo = `Thanh toan don hang #${txnRef}`;
             const vnpay = new VNPay({
-                tmnCode: 'DH2F13SW',
-                secureSecret: '7VJPG70RGPOWFO47VSBT29WPDYND0EJG',
+                tmnCode: '4VQED1HG',
+                secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
                 vnpayHost: 'https://sandbox.vnpayment.vn',
                 testMode: true,
                 hashAlgorithm: 'SHA512',

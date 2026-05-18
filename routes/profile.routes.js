@@ -113,8 +113,8 @@ router.post('/wallet/deposit', verifyUser, async (req, res) => {
     const txnRef = `${Date.now()}-deposit-${user._id}`;
     const orderInfo = `Nap tien vi #${txnRef}`;
     const vnpay = new VNPay({
-        tmnCode: 'DH2F13SW',
-        secureSecret: '7VJPG70RGPOWFO47VSBT29WPDYND0EJG',
+        tmnCode: '4VQED1HG',
+        secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
         vnpayHost: 'https://sandbox.vnpayment.vn',
         testMode: true,
         hashAlgorithm: 'SHA512',
