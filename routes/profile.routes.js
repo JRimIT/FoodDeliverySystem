@@ -117,7 +117,7 @@ router.post('/wallet/deposit', verifyUser, async (req, res) => {
         secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
         vnpayHost: 'https://sandbox.vnpayment.vn',
         testMode: true,
-        hashAlgorithm: HashAlgorithm.SHA256,
+        hashAlgorithm: HashAlgorithm.SHA512,
         loggerFn: ignoreLogger,
     });
     const tomorrow = new Date();
