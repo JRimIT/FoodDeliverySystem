@@ -6,7 +6,7 @@ import { countProduct } from '../controllers/countCart.js';
 import Transaction from '../models/transaction.model.js';
 import Order from '../models/order.model.js';
 
-import { VNPay, ignoreLogger, ProductCode, VnpLocale, dateFormat } from 'vnpay';
+import { VNPay, ignoreLogger, ProductCode, VnpLocale, dateFormat, HashAlgorithm } from 'vnpay';
 
 const router = express.Router();
 
@@ -117,7 +117,7 @@ router.post('/wallet/deposit', verifyUser, async (req, res) => {
         secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
         vnpayHost: 'https://sandbox.vnpayment.vn',
         testMode: true,
-        hashAlgorithm: 'SHA512',
+        hashAlgorithm: HashAlgorithm.SHA256,
         loggerFn: ignoreLogger,
     });
     const tomorrow = new Date();

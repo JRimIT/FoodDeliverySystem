@@ -11,7 +11,7 @@ import { countProduct } from '../controllers/countCart.js';
 import Transaction from '../models/transaction.model.js';
 import sendMail from '../utils/mailer.js';
 
-import { VNPay, ignoreLogger, ProductCode, VnpLocale, dateFormat } from 'vnpay';
+import { VNPay, ignoreLogger, ProductCode, VnpLocale, dateFormat, HashAlgorithm } from 'vnpay';
 
 const router = express.Router();
 const axiosInstance = axios.create({
@@ -234,7 +234,7 @@ router.post('/checkout', verifyUser, async (req, res) => {
                 secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
                 vnpayHost: 'https://sandbox.vnpayment.vn',
                 testMode: true,
-                hashAlgorithm: 'SHA512',
+                hashAlgorithm: HashAlgorithm.SHA256,
                 loggerFn: ignoreLogger,
             });
             const tomorrow = new Date();
@@ -459,7 +459,7 @@ router.post('/order/:productId', verifyUser, async (req, res) => {
                 secureSecret: 'F43V3N46QH9TNA0P02KKNMOZ1P1412SM',
                 vnpayHost: 'https://sandbox.vnpayment.vn',
                 testMode: true,
-                hashAlgorithm: 'SHA512',
+                hashAlgorithm: HashAlgorithm.SHA256,
                 loggerFn: ignoreLogger,
             });
             const tomorrow = new Date();
