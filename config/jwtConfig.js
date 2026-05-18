@@ -35,9 +35,15 @@ passport.use(
             try {
                 let user = await User.findOne({ facebookId: profile.id });
                 if (!user) {
+                    let username = profile.displayName;
+                    const existingUser = await User.findOne({ username });
+                    if (existingUser) {
+                        username = `${profile.displayName}_${profile.id.slice(-4)}`;
+                    }
                     user = await User.create({
                         facebookId: profile.id,
-                        username: profile.displayName,
+                        username: username,
+                        fullName: profile.displayName,
                     });
                 }
                 console.log('User facebook: ', user);
